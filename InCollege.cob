@@ -94,11 +94,11 @@
                PERFORM VALIDATE-LOGIN
                
                IF WS-LOGIN-SUCCESS = 'Y'
-                   DISPLAY "You have successfully logged in"
+                   DISPLAY "You have successfully logged in."
                    PERFORM WRITE-TO-OUTPUT
                ELSE
-                   DISPLAY "Incorrect username/password, please tr
-      -                "y again"
+                   DISPLAY "Incorrect username/password, please "
+      -                "try again"
                    PERFORM WRITE-TO-OUTPUT
                END-IF
            END-IF.
