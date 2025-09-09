@@ -1,0 +1,30 @@
+* Positive Test: Successful login with valid credentials
+1
+testuser
+Password123!
+1
+
+* Negative Test: Login with incorrect username
+1
+wronguser
+testpass
+
+* Negative Test: Login with incorrect password
+1
+testuser
+wrongpass
+
+* Negative Test: Invalid menu choice at main menu
+9
+
+* Negative Test: Invalid menu choice at post-login menu
+1
+testuser
+testpass
+9
+
+* Negative Test: Invalid menu choice at learn skill menu
+1
+testuser
+Password123!
+9
