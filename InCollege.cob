@@ -126,7 +126,56 @@
                            DISPLAY "Find someone is under construction."
                            PERFORM WRITE-TO-OUTPUT
                        WHEN 3
-                           DISPLAY "Learn skill is under construction."
+                           PERFORM LEARN-SKILL-MENU
+                       WHEN OTHER
+                           DISPLAY "Invalid choice, please try again"
+                           PERFORM WRITE-TO-OUTPUT
+                   END-EVALUATE
+           END-READ.
+       
+       LEARN-SKILL-MENU.
+           DISPLAY "Learn a New Skill"
+           PERFORM WRITE-TO-OUTPUT
+           DISPLAY "1. Programming"
+           PERFORM WRITE-TO-OUTPUT
+           DISPLAY "2. Data Analysis"
+           PERFORM WRITE-TO-OUTPUT
+           DISPLAY "3. Digital Marketing"
+           PERFORM WRITE-TO-OUTPUT
+           DISPLAY "4. Project Management"
+           PERFORM WRITE-TO-OUTPUT
+           DISPLAY "5. Communication"
+           PERFORM WRITE-TO-OUTPUT
+           DISPLAY "6. Go Back"
+           PERFORM WRITE-TO-OUTPUT
+           DISPLAY "Enter your choice:"
+           PERFORM WRITE-TO-OUTPUT
+           
+           READ INPUT-FILE INTO WS-TEMP-INPUT
+               AT END MOVE 'Y' TO WS-EOF-FLAG
+               NOT AT END
+                   MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
+                   EVALUATE WS-USER-CHOICE
+                       WHEN 1
+                           DISPLAY "Programming is under construction."
+                           PERFORM WRITE-TO-OUTPUT
+                       WHEN 2
+                           DISPLAY "Data Analysis under construction."
+                           PERFORM WRITE-TO-OUTPUT
+                       WHEN 3
+                           DISPLAY "Digital Marketing "
+                           DISPLAY "under construction."
+                           PERFORM WRITE-TO-OUTPUT
+                       WHEN 4
+                           DISPLAY "Project Management "
+                           DISPLAY "under construction."
+                           PERFORM WRITE-TO-OUTPUT
+                           PERFORM WRITE-TO-OUTPUT
+                       WHEN 5
+                           DISPLAY "Communication under construction."
+                           PERFORM WRITE-TO-OUTPUT
+                       WHEN 6
+                           DISPLAY "Returning to main menu..."
                            PERFORM WRITE-TO-OUTPUT
                        WHEN OTHER
                            DISPLAY "Invalid choice, please try again"
