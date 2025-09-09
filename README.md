@@ -13,6 +13,16 @@ cobc -x InCollege.cob
 ./InCollege
 ```
 
+### Testing with Input Files:
+The program reads all user inputs from `InCollege-Input.txt`. For testing, you can:
+1. Modify `InCollege-Input.txt` with your test inputs
+2. Use the provided `InCollege-Test.txt` as a comprehensive test suite
+3. Copy `InCollege-Test.txt` to `InCollege-Input.txt` to run the test suite:
+   ```bash
+   cp InCollege-Test.txt InCollege-Input.txt
+   ./InCollege
+   ```
+
 ## Features
 - User registration with password validation
 - User login with personalized welcome message
