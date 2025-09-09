@@ -29,6 +29,7 @@
        01 WS-ACCOUNTS-EOF PIC X VALUE 'N'.
        01 WS-USER-CHOICE PIC 9.
        01 WS-USERNAME PIC X(20).
+       01 WS-USER-TRIM PIC X(20).
        01 WS-PASSWORD PIC X(12).
        01 WS-ACCOUNT-COUNT PIC 9(2) VALUE 0.
        01 WS-LOGIN-SUCCESS PIC X VALUE 'N'.
@@ -94,7 +95,7 @@
                PERFORM VALIDATE-LOGIN
                
                IF WS-LOGIN-SUCCESS = 'Y'
-                   DISPLAY "You have successfully logged in."
+                   DISPLAY "Welcome " FUNCTION TRIM(WS-USERNAME) "!"
                    PERFORM WRITE-TO-OUTPUT
                    PERFORM POST-LOGIN-MENU
                ELSE
