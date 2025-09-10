@@ -5,7 +5,7 @@ Cobol Program for a LinkedIn-like app for college students
 
 ### Compile the program:
 ```bash
-cobc -x InCollege.cob
+cobc -x -free InCollege.cob
 ```
 
 ### Execute the program:
