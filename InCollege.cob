@@ -8,7 +8,7 @@
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
-           SELECT ACCOUNTS-FILE ASSIGN TO "accounts.dat"
+           SELECT ACCOUNTS-FILE ASSIGN TO "accounts.doc"
                ORGANIZATION IS LINE SEQUENTIAL.
        
        DATA DIVISION.
@@ -45,7 +45,6 @@
        01 WS-TRAIL-SP PIC 99.
        01 WS-LEAD-SP PIC 99.
        01 IDX PIC 99.
-       01 WS-LAST-DISPLAY PIC X(80).
        
        PROCEDURE DIVISION.
        MAIN-LOGIC.
@@ -60,17 +59,13 @@
            PERFORM COUNT-EXISTING-ACCOUNTS.
        
        MAIN-MENU.
-           MOVE "Welcome to InCollege!" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Welcome to InCollege!"
 
-           MOVE "Log In" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Log In"
 
-           MOVE "Create New Account" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Create New Account"
 
-           MOVE "Enter your choice:" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Enter your choice:"
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -82,24 +77,21 @@
                        WHEN 2
                            PERFORM CREATE-ACCOUNT
                        WHEN OTHER
-                           MOVE "Invalid choice, please try again" TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "Invalid choice, please try again"
                    END-EVALUATE
            END-READ.
        
        LOGIN-PROCESS.
            MOVE 'N' TO WS-LOGIN-SUCCESS
            
-           MOVE "Please enter your username:" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Please enter your username:"
 
            READ INPUT-FILE INTO WS-USERNAME
                AT END MOVE 'Y' TO WS-EOF-FLAG
            END-READ
            
            IF WS-EOF-FLAG NOT = 'Y'
-               MOVE "Please enter your password:" TO WS-LAST-DISPLAY
-               PERFORM DISPLAY-AND-WRITE
+               DISPLAY "Please enter your password:"
 
                READ INPUT-FILE INTO WS-PASSWORD
                    AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -116,29 +108,23 @@
                        INTO WS-MESSAGE
                    END-STRING
 
-                   MOVE WS-MESSAGE TO WS-LAST-DISPLAY
-                   PERFORM DISPLAY-AND-WRITE
+                   DISPLAY WS-MESSAGE
                    MOVE SPACES TO WS-MESSAGE
 
                    PERFORM POST-LOGIN-MENU
                ELSE
-                   MOVE "Incorrect username/password, try again." TO WS-LAST-DISPLAY
-                   PERFORM DISPLAY-AND-WRITE
+                   DISPLAY "Incorrect username/password, try again."
                END-IF
            END-IF.
 		
        POST-LOGIN-MENU.
-           MOVE "Search for a job" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Search for a job"
 
-           MOVE "Find someone you know" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Find someone you know"
 
-           MOVE "Learn a new skill" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Learn a new skill"
 
-           MOVE "Enter your choice:" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Enter your choice:"
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -146,43 +132,32 @@
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
-                           MOVE "Job search under construction." TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "Job search under construction."
                        WHEN 2
-                           MOVE "Find someone under construction." TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "Find someone under construction."
                        WHEN 3
                            PERFORM LEARN-SKILL-MENU
                        WHEN OTHER
-                           MOVE "Invalid choice, please try again" TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "Invalid choice, please try again"
                    END-EVALUATE
            END-READ.
        
        LEARN-SKILL-MENU.
-           MOVE "Learn a New Skill" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Learn a New Skill"
 
-           MOVE "Skill 1" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Skill 1"
 
-           MOVE "Skill 2" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Skill 2"
 
-           MOVE "Skill 3" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Skill 3"
 
-           MOVE "Skill 4" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Skill 4"
 
-           MOVE "Skill 5" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Skill 5"
 
-           MOVE "Go Back" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Go Back"
 
-           MOVE "Enter your choice:" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Enter your choice:"
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -190,26 +165,19 @@
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
-                           MOVE "This skill is under construction." TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "This skill is under construction."
                        WHEN 2
-                           MOVE "This skill is under construction." TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "This skill is under construction."
                        WHEN 3
-                           MOVE "This skill is under construction." TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "This skill is under construction."
                        WHEN 4
-                           MOVE "This skill is under construction." TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "This skill is under construction."
                        WHEN 5
-                           MOVE "This skill is under construction." TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "This skill is under construction."
                        WHEN 6
-                           MOVE "Returning to main menu..." TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "Returning to main menu..."
                        WHEN OTHER
-                           MOVE "Invalid choice, please try again" TO WS-LAST-DISPLAY
-                           PERFORM DISPLAY-AND-WRITE
+                           DISPLAY "Invalid choice, please try again"
                    END-EVALUATE
            END-READ.
        
@@ -232,13 +200,11 @@
        
        CREATE-ACCOUNT.
            IF WS-ACCOUNT-COUNT >= 5
-              MOVE "All permitted accounts have been created, please come back later." TO WS-LAST-DISPLAY
-              PERFORM DISPLAY-AND-WRITE
+              DISPLAY "All permitted accounts have been created, please come back later."
               EXIT PARAGRAPH
            END-IF
 
-           MOVE "Enter Username:" TO WS-LAST-DISPLAY
-           PERFORM DISPLAY-AND-WRITE
+           DISPLAY "Enter Username:"
            READ INPUT-FILE INTO WS-USERNAME
                AT END MOVE 'Y' TO WS-EOF-FLAG
            END-READ
@@ -246,14 +212,10 @@
            IF WS-EOF-FLAG NOT = 'Y'
                MOVE "N" TO WS-VALID
                PERFORM UNTIL WS-VALID = "Y" OR WS-EOF-FLAG = 'Y'
-                  MOVE "Enter Password:" TO WS-LAST-DISPLAY
-                  PERFORM DISPLAY-AND-WRITE
-                  MOVE "(Password must be 8-12 characters long.)" TO WS-LAST-DISPLAY
-                  PERFORM DISPLAY-AND-WRITE
-                  MOVE "(Password must include at least 1 uppercase, 1 digit, and 1 special character.)" TO WS-LAST-DISPLAY
-                  PERFORM DISPLAY-AND-WRITE
-                  MOVE "(Leading and trailing spaces will be ignored.)" TO WS-LAST-DISPLAY
-                  PERFORM DISPLAY-AND-WRITE
+                  DISPLAY "Enter Password:"
+                  DISPLAY "(Password must be 8-12 characters long.)"
+                  DISPLAY "(Password must include at least 1 uppercase, 1 digit, and 1 special character.)"
+                  DISPLAY "(Leading and trailing spaces will be ignored.)"
                   READ INPUT-FILE INTO WS-PASSWORD
                       AT END MOVE 'Y' TO WS-EOF-FLAG
                   END-READ
@@ -270,8 +232,7 @@
                    CLOSE ACCOUNTS-FILE
 
                    ADD 1 TO WS-ACCOUNT-COUNT
-                   MOVE "Account successfully created!" TO WS-LAST-DISPLAY
-                   PERFORM DISPLAY-AND-WRITE
+                   DISPLAY "Account successfully created!"
                END-IF
            END-IF.
        
@@ -291,8 +252,7 @@
            SUBTRACT WS-TRAIL-SP FROM WS-LEN GIVING WS-LEN
            SUBTRACT WS-LEAD-SP FROM WS-LEN GIVING WS-LEN
            IF WS-LEN < 8 OR WS-LEN > 12
-              MOVE "Error: Password must be 8-12 characters long." TO WS-LAST-DISPLAY
-              PERFORM DISPLAY-AND-WRITE
+              DISPLAY "Error: Password must be 8-12 characters long."
               EXIT PARAGRAPH
            END-IF
 
@@ -317,8 +277,7 @@
               AND WS-HAS-SPECIAL = "Y"
               MOVE "Y" TO WS-VALID
            ELSE
-             MOVE "Error: Password must include at least 1 uppercase, 1 digit, and 1 special character." TO WS-LAST-DISPLAY
-             PERFORM DISPLAY-AND-WRITE
+             DISPLAY "Error: Password must include at least 1 uppercase, 1 digit, and 1 special character."
            END-IF.
        
        VALIDATE-LOGIN.
@@ -344,14 +303,6 @@
            
            CLOSE ACCOUNTS-FILE.
        
-       DISPLAY-AND-WRITE.
-           DISPLAY WS-LAST-DISPLAY
-           MOVE WS-LAST-DISPLAY TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD.
-       
-       WRITE-TO-OUTPUT.
-           MOVE WS-LAST-DISPLAY TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD.
        
        CLEANUP.
            CLOSE INPUT-FILE
