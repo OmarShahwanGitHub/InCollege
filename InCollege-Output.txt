@@ -1,156 +1,157 @@
-
-
-
-
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-2
-2
-2
-2
-2
-1
-1
-1
-1
-1
-1
-1
-3
-3
-3
-3
-3
-3
-3
-3
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-1
-3
-3
-3
-3
-3
-3
-3
-3
-2
-2
-2
-2
-2
-1
-1
-1
-1
-1
-1
-1
-3
-3
-3
-3
-3
-3
-3
-3
-3
-3
-3
-3
-3
-1
-1
-1
-1
-1
-1
-1
-3
-3
-3
-3
-3
-3
-3
-3
-4
-4
-4
-4
-4
-4
-1
-1
-1
-1
-1
-1
-1
-3
-3
-3
-3
-3
-3
-3
-3
-5
-5
-5
-5
-5
-1
-1
-1
-1
-1
-1
-1
-3
-3
-3
-3
-3
-3
-3
-3
-6
-6
-6
-6
-6
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome testuser!
+Search for a job
+Find someone you know
+Learn a new skill
+Enter your choice:
+Job search is under construction.
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Incorrect username/password, try again.
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome testuser!
+Search for a job
+Find someone you know
+Learn a new skill
+Enter your choice:
+Find someone is under construction.
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome testuser!
+Search for a job
+Find someone you know
+Learn a new skill
+Enter your choice:
+Learn a New Skill
+1. Programming
+2. Data Analysis
+3. Digital Marketing
+4. Project Management
+5. Communication
+6. Go Back
+Enter your choice:
+Enter your choice:
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome testuser!
+Search for a job
+Find someone you know
+Learn a new skill
+Enter your choice:
+Learn a New Skill
+1. Programming
+2. Data Analysis
+3. Digital Marketing
+4. Project Management
+5. Communication
+6. Go Back
+Enter your choice:
+Enter your choice:
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome testuser!
+Search for a job
+Find someone you know
+Learn a new skill
+Enter your choice:
+Learn a New Skill
+1. Programming
+2. Data Analysis
+3. Digital Marketing
+4. Project Management
+5. Communication
+6. Go Back
+Enter your choice:
+Digital Marketing
+under construction.
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome testuser!
+Search for a job
+Find someone you know
+Learn a new skill
+Enter your choice:
+Learn a New Skill
+1. Programming
+2. Data Analysis
+3. Digital Marketing
+4. Project Management
+5. Communication
+6. Go Back
+Enter your choice:
+Project Management
+under construction.
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome testuser!
+Search for a job
+Find someone you know
+Learn a new skill
+Enter your choice:
+Learn a New Skill
+1. Programming
+2. Data Analysis
+3. Digital Marketing
+4. Project Management
+5. Communication
+6. Go Back
+Enter your choice:
+Communication under construction.
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome testuser!
+Search for a job
+Find someone you know
+Learn a new skill
+Enter your choice:
+Learn a New Skill
+1. Programming
+2. Data Analysis
+3. Digital Marketing
+4. Project Management
+5. Communication
+6. Go Back
+Enter your choice:
+Returning to main menu...
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:

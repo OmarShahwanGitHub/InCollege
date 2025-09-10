@@ -36,6 +36,7 @@
        01 WS-TEMP-INPUT PIC X(80).
        01 WS-STORED-USERNAME PIC X(20).
        01 WS-STORED-PASSWORD PIC X(12).
+       01 WS-MESSAGE PIC X(90).
        
        PROCEDURE DIVISION.
        MAIN-LOGIC.
@@ -50,13 +51,20 @@
        
        MAIN-MENU.
            DISPLAY "Welcome to InCollege!"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Welcome to InCollege!" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "1. Log In"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "1. Log In" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "2. Create New Account"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "2. Create New Account" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "Enter your choice:"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Enter your choice:" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -67,10 +75,12 @@
                            PERFORM LOGIN-PROCESS
                        WHEN 2
                            DISPLAY "Create account feature coming soon"
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Create account feature coming soon" TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                        WHEN OTHER
                            DISPLAY "Invalid choice, please try again"
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                    END-EVALUATE
            END-READ.
        
@@ -78,14 +88,18 @@
            MOVE 'N' TO WS-LOGIN-SUCCESS
            
            DISPLAY "Please enter your username:"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Please enter your username:" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            READ INPUT-FILE INTO WS-USERNAME
                AT END MOVE 'Y' TO WS-EOF-FLAG
            END-READ
            
            IF WS-EOF-FLAG NOT = 'Y'
                DISPLAY "Please enter your password:"
-               PERFORM WRITE-TO-OUTPUT
+               MOVE "Please enter your password:" TO OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
                READ INPUT-FILE INTO WS-PASSWORD
                    AT END MOVE 'Y' TO WS-EOF-FLAG
                END-READ
@@ -95,24 +109,41 @@
                PERFORM VALIDATE-LOGIN
                
                IF WS-LOGIN-SUCCESS = 'Y'
-                   DISPLAY "Welcome " FUNCTION TRIM(WS-USERNAME) "!"
-                   PERFORM WRITE-TO-OUTPUT
+                   STRING "Welcome " DELIMITED BY SIZE
+                       WS-USERNAME DELIMITED BY SPACE
+                       "!" DELIMITED BY SIZE
+                       INTO WS-MESSAGE
+                   END-STRING
+
+                   DISPLAY WS-MESSAGE
+                   MOVE WS-MESSAGE TO OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   MOVE SPACES TO WS-MESSAGE
+
                    PERFORM POST-LOGIN-MENU
                ELSE
                    DISPLAY "Incorrect username/password, try again."
-                   PERFORM WRITE-TO-OUTPUT
+                   MOVE "Incorrect username/password, try again." TO OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
                END-IF
            END-IF.
 		
        POST-LOGIN-MENU.
            DISPLAY "Search for a job"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Search for a job" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "Find someone you know"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Find someone you know" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "Learn a new skill"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Learn a new skill" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "Enter your choice:"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Enter your choice:" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -121,35 +152,53 @@
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
                            DISPLAY "Job search is under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Job search is under construction." TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                        WHEN 2
                            DISPLAY "Find someone is under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Find someone is under construction." TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                        WHEN 3
                            PERFORM LEARN-SKILL-MENU
                        WHEN OTHER
                            DISPLAY "Invalid choice, please try again"
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                    END-EVALUATE
            END-READ.
        
        LEARN-SKILL-MENU.
            DISPLAY "Learn a New Skill"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Learn a New Skill" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "1. Programming"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "1. Programming" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "2. Data Analysis"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "2. Data Analysis" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "3. Digital Marketing"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "3. Digital Marketing" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "4. Project Management"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "4. Project Management" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "5. Communication"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "5. Communication" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "6. Go Back"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "6. Go Back" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            DISPLAY "Enter your choice:"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Enter your choice:" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -158,28 +207,40 @@
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
                            DISPLAY "Programming is under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Enter your choice:" TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                        WHEN 2
                            DISPLAY "Data Analysis under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Enter your choice:" TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                        WHEN 3
                            DISPLAY "Digital Marketing "
+                           MOVE "Digital Marketing " TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
                            DISPLAY "under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "under construction." TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                        WHEN 4
                            DISPLAY "Project Management "
+                           MOVE "Project Management " TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
                            DISPLAY "under construction."
-                           PERFORM WRITE-TO-OUTPUT
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "under construction." TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                        WHEN 5
                            DISPLAY "Communication under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Communication under construction." TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                        WHEN 6
                            DISPLAY "Returning to main menu..."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Returning to main menu..." TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                        WHEN OTHER
                            DISPLAY "Invalid choice, please try again"
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
                    END-EVALUATE
            END-READ.
        
@@ -215,4 +276,4 @@
        CLEANUP.
            CLOSE INPUT-FILE
            CLOSE OUTPUT-FILE.
-		   
+		  
