@@ -40,6 +40,7 @@
        
        77  WS-Choice        PIC 9 VALUE 0.
        77  WS-Account-Count PIC 9 VALUE 0.
+       77  WS-COUNTER       PIC 9 VALUE 0.
        77  WS-FILE-STATUS   PIC XX.
        77  WS-EOF           PIC X VALUE "N".
        77  WS-Valid-Pass    PIC X VALUE "N".
@@ -58,7 +59,7 @@
        PROCEDURE DIVISION.
        MAIN-LOGIC.
            PERFORM INITIALIZE-PROGRAM
-           PERFORM MAIN-MENU UNTIL WS-EOF-FLAG = 'Y'
+           PERFORM MAIN-MENU UNTIL WS-EOF-FLAG = "Y"
            PERFORM CLEANUP
            STOP RUN.
        
@@ -78,6 +79,7 @@
               READ ACCOUNTS-FILE INTO WS-Existing-Record
                  AT END MOVE "Y" TO WS-EOF
                  NOT AT END ADD 1 TO WS-Account-Count
+                   DISPLAY WS-Existing-Record
               END-READ
            END-PERFORM
            CLOSE ACCOUNTS-FILE
@@ -101,7 +103,7 @@
            WRITE OUTPUT-RECORD
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
-               AT END MOVE 'Y' TO WS-EOF-FLAG
+               AT END MOVE "Y" TO WS-EOF-FLAG
                NOT AT END
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
@@ -120,8 +122,8 @@
            OPEN EXTEND ACCOUNTS-FILE
 
            IF WS-Account-Count >= 5
-              DISPLAY "All permitted accounts have been created, please come back later."
-              MOVE "All permitted accounts have been created, please come back later." TO OUTPUT-RECORD
+              DISPLAY "All permitted accounts have been created, Max 5 accounts."
+              MOVE "All permitted accounts have been created, Max 5 accounts." TO OUTPUT-RECORD
               WRITE OUTPUT-RECORD
               EXIT PARAGRAPH
            END-IF
@@ -129,18 +131,20 @@
            DISPLAY "Enter Username:"
            MOVE "Enter Username:" TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD
-           READ INPUT-FILE INTO WS-USERNAME
-               AT END MOVE 'Y' TO WS-EOF-FLAG
-           END-READ
-
+           IF WS-EOF-FLAG NOT = "Y"
+             READ INPUT-FILE INTO WS-USERNAME
+                 AT END MOVE "Y" TO WS-EOF-FLAG
+             END-READ
+           END-IF
+     
            MOVE "N" TO WS-Valid-Pass
            PERFORM UNTIL WS-Valid-Pass = "Y"
                DISPLAY "Enter Password:"
                MOVE "Enter Password:" TO OUTPUT-RECORD
                WRITE OUTPUT-RECORD
-               IF WS-EOF-FLAG NOT = 'Y'
+               IF WS-EOF-FLAG NOT = "Y"
                  READ INPUT-FILE INTO WS-PASSWORD
-                    AT END MOVE 'Y' TO WS-EOF-FLAG
+                    AT END MOVE "Y" TO WS-EOF-FLAG
                  END-READ
                END-IF
                PERFORM VALIDATE-PASSWORD
@@ -208,30 +212,32 @@
            .
 
        LOGIN-PROCESS.
-           MOVE 'N' TO WS-LOGIN-SUCCESS
+           MOVE "N" TO WS-LOGIN-SUCCESS
            
            DISPLAY "Please enter your username:"
            MOVE "Please enter your username:" TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           READ INPUT-FILE INTO WS-USERNAME
-               AT END MOVE 'Y' TO WS-EOF-FLAG
-           END-READ
-           
-           IF WS-EOF-FLAG NOT = 'Y'
-               DISPLAY "Please enter your password:"
-               MOVE "Please enter your password:" TO OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+           IF WS-EOF-FLAG NOT = "Y"
+             READ INPUT-FILE INTO WS-USERNAME
+                 AT END MOVE "Y" TO WS-EOF-FLAG
+             END-READ
+           END-IF
 
+           DISPLAY "Please enter your password:"
+           MOVE "Please enter your password:" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           IF WS-EOF-FLAG NOT = "Y"
                READ INPUT-FILE INTO WS-PASSWORD
-                   AT END MOVE 'Y' TO WS-EOF-FLAG
+                   AT END MOVE "Y" TO WS-EOF-FLAG
                END-READ
            END-IF
            
-           IF WS-EOF-FLAG NOT = 'Y'
+           IF WS-EOF-FLAG NOT = "Y"
                PERFORM VALIDATE-LOGIN
                
-               IF WS-LOGIN-SUCCESS = 'Y'
+               IF WS-LOGIN-SUCCESS = "Y"
                    STRING "Welcome " DELIMITED BY SIZE
                        WS-USERNAME DELIMITED BY SPACE
                        "!" DELIMITED BY SIZE
@@ -249,7 +255,8 @@
                    MOVE "Incorrect username/password, try again." TO OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
-           END-IF.
+           END-IF
+           .
 		
        POST-LOGIN-MENU.
            DISPLAY "Search for a job"
@@ -268,8 +275,10 @@
            MOVE "Enter your choice:" TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            
+
+           IF WS-EOF-FLAG NOT = "Y"
            READ INPUT-FILE INTO WS-TEMP-INPUT
-               AT END MOVE 'Y' TO WS-EOF-FLAG
+               AT END MOVE "Y" TO WS-EOF-FLAG
                NOT AT END
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
@@ -288,7 +297,8 @@
                            MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                    END-EVALUATE
-           END-READ.
+           END-READ
+           END-IF.
        
        LEARN-SKILL-MENU.
            DISPLAY "Learn a New Skill"
@@ -323,8 +333,9 @@
            MOVE "Enter your choice:" TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            
+           IF WS-EOF-FLAG NOT = "Y"
            READ INPUT-FILE INTO WS-TEMP-INPUT
-               AT END MOVE 'Y' TO WS-EOF-FLAG
+               AT END MOVE "Y" TO WS-EOF-FLAG
                NOT AT END
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
@@ -365,27 +376,39 @@
                            MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                    END-EVALUATE
-           END-READ.
+           END-READ
+           END-IF.
        
        VALIDATE-LOGIN.
-           MOVE 'N' TO WS-LOGIN-SUCCESS
-           MOVE 'N' TO WS-ACCOUNTS-EOF
+           MOVE "N" TO WS-LOGIN-SUCCESS
+           MOVE "N" TO WS-ACCOUNTS-EOF
+           MOVE 0 TO WS-COUNTER
            
            OPEN INPUT ACCOUNTS-FILE
+           CLOSE ACCOUNTS-FILE
+           OPEN INPUT ACCOUNTS-FILE
            
-           PERFORM UNTIL WS-ACCOUNTS-EOF = 'Y' OR WS-LOGIN-SUCCESS = 'Y'
+           PERFORM UNTIL WS-ACCOUNTS-EOF = "Y" OR WS-LOGIN-SUCCESS = "Y"
+             OR WS-COUNTER > 5
+               ADD 1 TO WS-COUNTER
+               DISPLAY ACCOUNT-USERNAME"HI"
+               DISPLAY ACCOUNT-PASSWORD"HI"
+               DISPLAY WS-USERNAME"HI"
+               DISPLAY WS-PASSWORD"HI"
+               DISPLAY WS-ACCOUNTS-EOF 
+               DISPLAY WS-LOGIN-SUCCESS
+               DISPLAY WS-COUNTER
                READ ACCOUNTS-FILE INTO ACCOUNT-RECORD
-                   AT END 
-                       MOVE 'Y' TO WS-ACCOUNTS-EOF
-                   NOT AT END
-                       MOVE ACCOUNT-USERNAME TO WS-STORED-USERNAME
-                       MOVE ACCOUNT-PASSWORD TO WS-STORED-PASSWORD
-                       
-                       IF WS-USERNAME = WS-STORED-USERNAME AND
-                          WS-PASSWORD = WS-STORED-PASSWORD
-                           MOVE 'Y' TO WS-LOGIN-SUCCESS
-                       END-IF
+                   AT END MOVE "Y" TO WS-ACCOUNTS-EOF
                END-READ
+               MOVE ACCOUNT-USERNAME TO WS-STORED-USERNAME
+               MOVE ACCOUNT-PASSWORD TO WS-STORED-PASSWORD
+                       
+               IF WS-ACCOUNTS-EOF = 'N' AND 
+                  WS-USERNAME = WS-STORED-USERNAME AND
+                  WS-PASSWORD = WS-STORED-PASSWORD
+                  MOVE "Y" TO WS-LOGIN-SUCCESS
+               END-IF
            END-PERFORM
            
            CLOSE ACCOUNTS-FILE.
@@ -398,5 +421,6 @@
        
        CLEANUP.
            CLOSE INPUT-FILE
-           CLOSE OUTPUT-FILE.
+           CLOSE OUTPUT-FILE
+           CLOSE ACCOUNTS-FILE.
 		  
