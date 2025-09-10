@@ -45,6 +45,7 @@
        01 WS-TRAIL-SP PIC 99.
        01 WS-LEAD-SP PIC 99.
        01 IDX PIC 99.
+       01 WS-LAST-DISPLAY PIC X(80).
        
        PROCEDURE DIVISION.
        MAIN-LOGIC.
@@ -59,17 +60,17 @@
            PERFORM COUNT-EXISTING-ACCOUNTS.
        
        MAIN-MENU.
-           DISPLAY "Welcome to InCollege!"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Welcome to InCollege!" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Log In"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Log In" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Create New Account"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Create New Account" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Enter your choice:"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Enter your choice:" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -81,24 +82,24 @@
                        WHEN 2
                            PERFORM CREATE-ACCOUNT
                        WHEN OTHER
-                           DISPLAY "Invalid choice, please try again"
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Invalid choice, please try again" TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                    END-EVALUATE
            END-READ.
        
        LOGIN-PROCESS.
            MOVE 'N' TO WS-LOGIN-SUCCESS
            
-           DISPLAY "Please enter your username:"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Please enter your username:" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
            READ INPUT-FILE INTO WS-USERNAME
                AT END MOVE 'Y' TO WS-EOF-FLAG
            END-READ
            
            IF WS-EOF-FLAG NOT = 'Y'
-               DISPLAY "Please enter your password:"
-               PERFORM WRITE-TO-OUTPUT
+               MOVE "Please enter your password:" TO WS-LAST-DISPLAY
+               PERFORM DISPLAY-AND-WRITE
 
                READ INPUT-FILE INTO WS-PASSWORD
                    AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -115,30 +116,29 @@
                        INTO WS-MESSAGE
                    END-STRING
 
-                   DISPLAY WS-MESSAGE
-                   MOVE WS-MESSAGE TO OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE WS-MESSAGE TO WS-LAST-DISPLAY
+                   PERFORM DISPLAY-AND-WRITE
                    MOVE SPACES TO WS-MESSAGE
 
                    PERFORM POST-LOGIN-MENU
                ELSE
-                   DISPLAY "Incorrect username/password, try again."
-                   PERFORM WRITE-TO-OUTPUT
+                   MOVE "Incorrect username/password, try again." TO WS-LAST-DISPLAY
+                   PERFORM DISPLAY-AND-WRITE
                END-IF
            END-IF.
 		
        POST-LOGIN-MENU.
-           DISPLAY "Search for a job"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Search for a job" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Find someone you know"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Find someone you know" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Learn a new skill"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Learn a new skill" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Enter your choice:"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Enter your choice:" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -146,43 +146,43 @@
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
-                           DISPLAY "Job search under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Job search under construction." TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                        WHEN 2
-                           DISPLAY "Find someone under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Find someone under construction." TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                        WHEN 3
                            PERFORM LEARN-SKILL-MENU
                        WHEN OTHER
-                           DISPLAY "Invalid choice, please try again"
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Invalid choice, please try again" TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                    END-EVALUATE
            END-READ.
        
        LEARN-SKILL-MENU.
-           DISPLAY "Learn a New Skill"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Learn a New Skill" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Skill 1"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Skill 1" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Skill 2"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Skill 2" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Skill 3"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Skill 3" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Skill 4"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Skill 4" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Skill 5"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Skill 5" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Go Back"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Go Back" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
 
-           DISPLAY "Enter your choice:"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Enter your choice:" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -190,26 +190,26 @@
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
-                           DISPLAY "This skill is under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "This skill is under construction." TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                        WHEN 2
-                           DISPLAY "This skill is under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "This skill is under construction." TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                        WHEN 3
-                           DISPLAY "This skill is under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "This skill is under construction." TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                        WHEN 4
-                           DISPLAY "This skill is under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "This skill is under construction." TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                        WHEN 5
-                           DISPLAY "This skill is under construction."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "This skill is under construction." TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                        WHEN 6
-                           DISPLAY "Returning to main menu..."
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Returning to main menu..." TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                        WHEN OTHER
-                           DISPLAY "Invalid choice, please try again"
-                           PERFORM WRITE-TO-OUTPUT
+                           MOVE "Invalid choice, please try again" TO WS-LAST-DISPLAY
+                           PERFORM DISPLAY-AND-WRITE
                    END-EVALUATE
            END-READ.
        
@@ -232,13 +232,13 @@
        
        CREATE-ACCOUNT.
            IF WS-ACCOUNT-COUNT >= 5
-              DISPLAY "All permitted accounts have been created, please come back later."
-              PERFORM WRITE-TO-OUTPUT
+              MOVE "All permitted accounts have been created, please come back later." TO WS-LAST-DISPLAY
+              PERFORM DISPLAY-AND-WRITE
               EXIT PARAGRAPH
            END-IF
 
-           DISPLAY "Enter Username:"
-           PERFORM WRITE-TO-OUTPUT
+           MOVE "Enter Username:" TO WS-LAST-DISPLAY
+           PERFORM DISPLAY-AND-WRITE
            READ INPUT-FILE INTO WS-USERNAME
                AT END MOVE 'Y' TO WS-EOF-FLAG
            END-READ
@@ -246,14 +246,14 @@
            IF WS-EOF-FLAG NOT = 'Y'
                MOVE "N" TO WS-VALID
                PERFORM UNTIL WS-VALID = "Y" OR WS-EOF-FLAG = 'Y'
-                  DISPLAY "Enter Password:"
-                  PERFORM WRITE-TO-OUTPUT
-                  DISPLAY "(Password must be 8-12 characters long.)"
-                  PERFORM WRITE-TO-OUTPUT
-                  DISPLAY "(Password must include at least 1 uppercase, 1 digit, and 1 special character.)"
-                  PERFORM WRITE-TO-OUTPUT
-                  DISPLAY "(Leading and trailing spaces will be ignored.)"
-                  PERFORM WRITE-TO-OUTPUT
+                  MOVE "Enter Password:" TO WS-LAST-DISPLAY
+                  PERFORM DISPLAY-AND-WRITE
+                  MOVE "(Password must be 8-12 characters long.)" TO WS-LAST-DISPLAY
+                  PERFORM DISPLAY-AND-WRITE
+                  MOVE "(Password must include at least 1 uppercase, 1 digit, and 1 special character.)" TO WS-LAST-DISPLAY
+                  PERFORM DISPLAY-AND-WRITE
+                  MOVE "(Leading and trailing spaces will be ignored.)" TO WS-LAST-DISPLAY
+                  PERFORM DISPLAY-AND-WRITE
                   READ INPUT-FILE INTO WS-PASSWORD
                       AT END MOVE 'Y' TO WS-EOF-FLAG
                   END-READ
@@ -270,8 +270,8 @@
                    CLOSE ACCOUNTS-FILE
 
                    ADD 1 TO WS-ACCOUNT-COUNT
-                   DISPLAY "Account successfully created!"
-                   PERFORM WRITE-TO-OUTPUT
+                   MOVE "Account successfully created!" TO WS-LAST-DISPLAY
+                   PERFORM DISPLAY-AND-WRITE
                END-IF
            END-IF.
        
@@ -291,8 +291,8 @@
            SUBTRACT WS-TRAIL-SP FROM WS-LEN GIVING WS-LEN
            SUBTRACT WS-LEAD-SP FROM WS-LEN GIVING WS-LEN
            IF WS-LEN < 8 OR WS-LEN > 12
-              DISPLAY "Error: Password must be 8-12 characters long."
-              PERFORM WRITE-TO-OUTPUT
+              MOVE "Error: Password must be 8-12 characters long." TO WS-LAST-DISPLAY
+              PERFORM DISPLAY-AND-WRITE
               EXIT PARAGRAPH
            END-IF
 
@@ -317,8 +317,8 @@
               AND WS-HAS-SPECIAL = "Y"
               MOVE "Y" TO WS-VALID
            ELSE
-             DISPLAY "Error: Password must include at least 1 uppercase, 1 digit, and 1 special character."
-             PERFORM WRITE-TO-OUTPUT
+             MOVE "Error: Password must include at least 1 uppercase, 1 digit, and 1 special character." TO WS-LAST-DISPLAY
+             PERFORM DISPLAY-AND-WRITE
            END-IF.
        
        VALIDATE-LOGIN.
@@ -344,8 +344,13 @@
            
            CLOSE ACCOUNTS-FILE.
        
+       DISPLAY-AND-WRITE.
+           DISPLAY WS-LAST-DISPLAY
+           MOVE WS-LAST-DISPLAY TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD.
+       
        WRITE-TO-OUTPUT.
-           MOVE SPACES TO OUTPUT-RECORD
+           MOVE WS-LAST-DISPLAY TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD.
        
        CLEANUP.
