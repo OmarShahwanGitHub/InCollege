@@ -37,6 +37,14 @@
        01 WS-STORED-USERNAME PIC X(20).
        01 WS-STORED-PASSWORD PIC X(12).
        01 WS-MESSAGE PIC X(90).
+       01 WS-VALID PIC X VALUE 'N'.
+       01 WS-HAS-UPPER PIC X VALUE 'N'.
+       01 WS-HAS-DIGIT PIC X VALUE 'N'.
+       01 WS-HAS-SPECIAL PIC X VALUE 'N'.
+       01 WS-LEN PIC 99.
+       01 WS-TRAIL-SP PIC 99.
+       01 WS-LEAD-SP PIC 99.
+       01 IDX PIC 99.
        
        PROCEDURE DIVISION.
        MAIN-LOGIC.
@@ -47,24 +55,21 @@
        
        INITIALIZE-PROGRAM.
            OPEN INPUT INPUT-FILE
-           OPEN OUTPUT OUTPUT-FILE.
+           OPEN OUTPUT OUTPUT-FILE
+           PERFORM COUNT-EXISTING-ACCOUNTS.
        
        MAIN-MENU.
            DISPLAY "Welcome to InCollege!"
-           MOVE "Welcome to InCollege!" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM WRITE-TO-OUTPUT
 
-           DISPLAY "1. Log In"
-           MOVE "1. Log In" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           DISPLAY "Log In"
+           PERFORM WRITE-TO-OUTPUT
 
-           DISPLAY "2. Create New Account"
-           MOVE "2. Create New Account" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           DISPLAY "Create New Account"
+           PERFORM WRITE-TO-OUTPUT
 
            DISPLAY "Enter your choice:"
-           MOVE "Enter your choice:" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM WRITE-TO-OUTPUT
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -74,13 +79,10 @@
                        WHEN 1
                            PERFORM LOGIN-PROCESS
                        WHEN 2
-                           DISPLAY "Create account feature coming soon"
-                           MOVE "Create account feature coming soon" TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM CREATE-ACCOUNT
                        WHEN OTHER
                            DISPLAY "Invalid choice, please try again"
-                           MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM WRITE-TO-OUTPUT
                    END-EVALUATE
            END-READ.
        
@@ -88,8 +90,7 @@
            MOVE 'N' TO WS-LOGIN-SUCCESS
            
            DISPLAY "Please enter your username:"
-           MOVE "Please enter your username:" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM WRITE-TO-OUTPUT
 
            READ INPUT-FILE INTO WS-USERNAME
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -97,8 +98,7 @@
            
            IF WS-EOF-FLAG NOT = 'Y'
                DISPLAY "Please enter your password:"
-               MOVE "Please enter your password:" TO OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+               PERFORM WRITE-TO-OUTPUT
 
                READ INPUT-FILE INTO WS-PASSWORD
                    AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -109,7 +109,7 @@
                PERFORM VALIDATE-LOGIN
                
                IF WS-LOGIN-SUCCESS = 'Y'
-                   STRING "Welcome " DELIMITED BY SIZE
+                   STRING "Welcome, " DELIMITED BY SIZE
                        WS-USERNAME DELIMITED BY SPACE
                        "!" DELIMITED BY SIZE
                        INTO WS-MESSAGE
@@ -123,27 +123,22 @@
                    PERFORM POST-LOGIN-MENU
                ELSE
                    DISPLAY "Incorrect username/password, try again."
-                   MOVE "Incorrect username/password, try again." TO OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   PERFORM WRITE-TO-OUTPUT
                END-IF
            END-IF.
 		
        POST-LOGIN-MENU.
            DISPLAY "Search for a job"
-           MOVE "Search for a job" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM WRITE-TO-OUTPUT
 
            DISPLAY "Find someone you know"
-           MOVE "Find someone you know" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM WRITE-TO-OUTPUT
 
            DISPLAY "Learn a new skill"
-           MOVE "Learn a new skill" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM WRITE-TO-OUTPUT
 
            DISPLAY "Enter your choice:"
-           MOVE "Enter your choice:" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM WRITE-TO-OUTPUT
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -151,54 +146,43 @@
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
-                           DISPLAY "Job search is under construction."
-                           MOVE "Job search is under construction." TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           DISPLAY "Job search under construction."
+                           PERFORM WRITE-TO-OUTPUT
                        WHEN 2
-                           DISPLAY "Find someone is under construction."
-                           MOVE "Find someone is under construction." TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           DISPLAY "Find someone under construction."
+                           PERFORM WRITE-TO-OUTPUT
                        WHEN 3
                            PERFORM LEARN-SKILL-MENU
                        WHEN OTHER
                            DISPLAY "Invalid choice, please try again"
-                           MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM WRITE-TO-OUTPUT
                    END-EVALUATE
            END-READ.
        
        LEARN-SKILL-MENU.
            DISPLAY "Learn a New Skill"
-           MOVE "Learn a New Skill" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM WRITE-TO-OUTPUT
 
-           DISPLAY "1. Programming"
-           MOVE "1. Programming" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           DISPLAY "Skill 1"
+           PERFORM WRITE-TO-OUTPUT
 
-           DISPLAY "2. Data Analysis"
-           MOVE "2. Data Analysis" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           DISPLAY "Skill 2"
+           PERFORM WRITE-TO-OUTPUT
 
-           DISPLAY "3. Digital Marketing"
-           MOVE "3. Digital Marketing" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           DISPLAY "Skill 3"
+           PERFORM WRITE-TO-OUTPUT
 
-           DISPLAY "4. Project Management"
-           MOVE "4. Project Management" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           DISPLAY "Skill 4"
+           PERFORM WRITE-TO-OUTPUT
 
-           DISPLAY "5. Communication"
-           MOVE "5. Communication" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           DISPLAY "Skill 5"
+           PERFORM WRITE-TO-OUTPUT
 
-           DISPLAY "6. Go Back"
-           MOVE "6. Go Back" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           DISPLAY "Go Back"
+           PERFORM WRITE-TO-OUTPUT
 
            DISPLAY "Enter your choice:"
-           MOVE "Enter your choice:" TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM WRITE-TO-OUTPUT
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE 'Y' TO WS-EOF-FLAG
@@ -206,43 +190,136 @@
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
-                           DISPLAY "Programming is under construction."
-                           MOVE "Enter your choice:" TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           DISPLAY "This skill is under construction."
+                           PERFORM WRITE-TO-OUTPUT
                        WHEN 2
-                           DISPLAY "Data Analysis under construction."
-                           MOVE "Enter your choice:" TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           DISPLAY "This skill is under construction."
+                           PERFORM WRITE-TO-OUTPUT
                        WHEN 3
-                           DISPLAY "Digital Marketing "
-                           MOVE "Digital Marketing " TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
-
-                           DISPLAY "under construction."
-                           MOVE "under construction." TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           DISPLAY "This skill is under construction."
+                           PERFORM WRITE-TO-OUTPUT
                        WHEN 4
-                           DISPLAY "Project Management "
-                           MOVE "Project Management " TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
-
-                           DISPLAY "under construction."
-                           MOVE "under construction." TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           DISPLAY "This skill is under construction."
+                           PERFORM WRITE-TO-OUTPUT
                        WHEN 5
-                           DISPLAY "Communication under construction."
-                           MOVE "Communication under construction." TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           DISPLAY "This skill is under construction."
+                           PERFORM WRITE-TO-OUTPUT
                        WHEN 6
                            DISPLAY "Returning to main menu..."
-                           MOVE "Returning to main menu..." TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM WRITE-TO-OUTPUT
                        WHEN OTHER
                            DISPLAY "Invalid choice, please try again"
-                           MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM WRITE-TO-OUTPUT
                    END-EVALUATE
            END-READ.
+       
+       COUNT-EXISTING-ACCOUNTS.
+           MOVE 0 TO WS-ACCOUNT-COUNT
+           MOVE 'N' TO WS-ACCOUNTS-EOF
+           
+           OPEN INPUT ACCOUNTS-FILE
+           
+           PERFORM UNTIL WS-ACCOUNTS-EOF = 'Y'
+               READ ACCOUNTS-FILE INTO ACCOUNT-RECORD
+                   AT END 
+                       MOVE 'Y' TO WS-ACCOUNTS-EOF
+                   NOT AT END
+                       ADD 1 TO WS-ACCOUNT-COUNT
+               END-READ
+           END-PERFORM
+           
+           CLOSE ACCOUNTS-FILE.
+       
+       CREATE-ACCOUNT.
+           IF WS-ACCOUNT-COUNT >= 5
+              DISPLAY "All permitted accounts have been created, please come back later."
+              PERFORM WRITE-TO-OUTPUT
+              EXIT PARAGRAPH
+           END-IF
+
+           DISPLAY "Enter Username:"
+           PERFORM WRITE-TO-OUTPUT
+           READ INPUT-FILE INTO WS-USERNAME
+               AT END MOVE 'Y' TO WS-EOF-FLAG
+           END-READ
+
+           IF WS-EOF-FLAG NOT = 'Y'
+               MOVE "N" TO WS-VALID
+               PERFORM UNTIL WS-VALID = "Y" OR WS-EOF-FLAG = 'Y'
+                  DISPLAY "Enter Password:"
+                  PERFORM WRITE-TO-OUTPUT
+                  DISPLAY "(Password must be 8-12 characters long.)"
+                  PERFORM WRITE-TO-OUTPUT
+                  DISPLAY "(Password must include at least 1 uppercase, 1 digit, and 1 special character.)"
+                  PERFORM WRITE-TO-OUTPUT
+                  DISPLAY "(Leading and trailing spaces will be ignored.)"
+                  PERFORM WRITE-TO-OUTPUT
+                  READ INPUT-FILE INTO WS-PASSWORD
+                      AT END MOVE 'Y' TO WS-EOF-FLAG
+                  END-READ
+                  IF WS-EOF-FLAG NOT = 'Y'
+                      PERFORM VALIDATE-PASSWORD
+                  END-IF
+               END-PERFORM
+
+               IF WS-EOF-FLAG NOT = 'Y' AND WS-VALID = 'Y'
+                   OPEN EXTEND ACCOUNTS-FILE
+                   MOVE WS-USERNAME TO ACCOUNT-USERNAME
+                   MOVE WS-PASSWORD TO ACCOUNT-PASSWORD
+                   WRITE ACCOUNT-RECORD
+                   CLOSE ACCOUNTS-FILE
+
+                   ADD 1 TO WS-ACCOUNT-COUNT
+                   DISPLAY "Account successfully created!"
+                   PERFORM WRITE-TO-OUTPUT
+               END-IF
+           END-IF.
+       
+       VALIDATE-PASSWORD.
+           MOVE "N" TO WS-VALID
+           MOVE "N" TO WS-HAS-UPPER
+           MOVE "N" TO WS-HAS-DIGIT
+           MOVE "N" TO WS-HAS-SPECIAL
+           MOVE 0 TO WS-LEN
+           MOVE 0 TO WS-TRAIL-SP
+           MOVE 0 TO WS-LEAD-SP
+
+           INSPECT WS-PASSWORD TALLYING WS-TRAIL-SP FOR TRAILING SPACES
+           INSPECT WS-PASSWORD TALLYING WS-LEAD-SP FOR LEADING SPACES
+           INSPECT WS-PASSWORD TALLYING WS-LEN FOR CHARACTERS
+
+           SUBTRACT WS-TRAIL-SP FROM WS-LEN GIVING WS-LEN
+           SUBTRACT WS-LEAD-SP FROM WS-LEN GIVING WS-LEN
+           IF WS-LEN < 8 OR WS-LEN > 12
+              DISPLAY "Error: Password must be 8-12 characters long."
+              PERFORM WRITE-TO-OUTPUT
+              EXIT PARAGRAPH
+           END-IF
+
+           PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > WS-LEN
+              EVALUATE TRUE
+                 WHEN WS-PASSWORD(IDX:1) >= "A" AND WS-PASSWORD(IDX:1) <= "Z"
+                    MOVE "Y" TO WS-HAS-UPPER
+                 WHEN WS-PASSWORD(IDX:1) >= "0" AND WS-PASSWORD(IDX:1) <= "9"
+                    MOVE "Y" TO WS-HAS-DIGIT
+                 WHEN WS-PASSWORD(IDX:1) < "0" OR
+                      WS-PASSWORD(IDX:1) > "9" AND
+                      WS-PASSWORD(IDX:1) < "A" OR
+                      WS-PASSWORD(IDX:1) > "Z" AND
+                      WS-PASSWORD(IDX:1) < "a" OR
+                      WS-PASSWORD(IDX:1) > "z"
+                    MOVE "Y" TO WS-HAS-SPECIAL
+              END-EVALUATE
+           END-PERFORM
+
+           IF WS-HAS-UPPER = "Y"
+              AND WS-HAS-DIGIT = "Y"
+              AND WS-HAS-SPECIAL = "Y"
+              MOVE "Y" TO WS-VALID
+           ELSE
+             DISPLAY "Error: Password must include at least 1 uppercase, 1 digit, and 1 special character."
+             PERFORM WRITE-TO-OUTPUT
+           END-IF.
        
        VALIDATE-LOGIN.
            MOVE 'N' TO WS-LOGIN-SUCCESS
@@ -268,9 +345,7 @@
            CLOSE ACCOUNTS-FILE.
        
        WRITE-TO-OUTPUT.
-           MOVE FUNCTION TRIM(FUNCTION REVERSE(
-               FUNCTION TRIM(FUNCTION REVERSE(
-               WS-TEMP-INPUT)))) TO OUTPUT-RECORD
+           MOVE SPACES TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD.
        
        CLEANUP.
