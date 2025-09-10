@@ -146,12 +146,17 @@ Welcome to InCollege!
 Log In
 Create New Account
 Enter your choice:
-Enter Username:
-Enter Password:
-(Password must be 8-12 characters long.)
-(Password must include at least 1 uppercase, 1 digit, and 1 special character.)
-(Leading and trailing spaces will be ignored.)
-Account successfully created!
+All permitted accounts have been created, please come back later.
+Welcome to InCollege!
+Log In
+Create New Account
+Enter your choice:
+Invalid choice, please try again
+Welcome to InCollege!
+Log In
+Create New Account
+Enter your choice:
+Invalid choice, please try again
 Welcome to InCollege!
 Log In
 Create New Account
