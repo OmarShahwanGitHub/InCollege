@@ -341,11 +341,11 @@
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
                            DISPLAY "Programming is under construction."
-                           MOVE "Enter your choice:" TO OUTPUT-RECORD
+                           MOVE "Programming is under construction." TO OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        WHEN 2
                            DISPLAY "Data Analysis under construction."
-                           MOVE "Enter your choice:" TO OUTPUT-RECORD
+                           MOVE "Data Analysis under construction." TO OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        WHEN 3
                            DISPLAY "Digital Marketing "
