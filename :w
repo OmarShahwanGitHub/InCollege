@@ -229,10 +229,10 @@
                    FUNCTION NUMVAL(TEMP-GRAD-YEAR) <= 2035
                    MOVE "Y" TO WS-VALID-GRAD-YEAR
                ELSE
-                   DISPLAY "Please enter a valid graduation year. (1925-
+                   DISPLAY "Please enter a valid graduation year. (1925-20
       *> this is just a line continuation to use because it didn't fit 
       *> in the previous line
-      -     "2035)"
+      -     "35)"
                END-IF
            END-PERFORM
 
