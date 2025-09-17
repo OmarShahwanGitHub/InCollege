@@ -51,7 +51,7 @@
                INDEXED BY PR-EDU-IDX.
                10 PR-EDU-DEGREE PIC X(30).
                10 PR-EDU-SCHOOL PIC X(30).
-               10 PR-EDU-YEARS PIC X(2).
+               10 PR-EDU-YEARS PIC X(10).
 
        WORKING-STORAGE SECTION.
        01 WS-EOF-FLAG PIC X VALUE 'N'.
@@ -102,7 +102,7 @@
            INDEXED BY TEMP-EDU-IDX.
            10  TEMP-EDU-DEGREE PIC X(30).
            10  TEMP-EDU-SCHOOL PIC X(30).
-           10  TEMP-EDU-YEARS  PIC X(3).
+           10  TEMP-EDU-YEARS  PIC X(10).
 
        01  CURRENT-USERNAME   PIC X(20).
        01  FOUND-PROFILE-FLAG PIC X VALUE "N".
