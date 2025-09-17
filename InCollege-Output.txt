@@ -20,19 +20,29 @@ Welcome testuser!
 5. Learn a new skill
 9. Logout
 Enter your choice:
-==== YOUR PROFILE ====
-First Name: Aibek
-Last Name: Shadybekov
-University: USF
-Major: CS
-Graduation Year: 2026
-About Me: My Bio
-Experience:
-  Title: SWE
-  Company: USF
-  Dates: SUmmer 2026
-  Description: Dev
---- END OF PROFILE VIEW ---
+Profile found. Editing existing records
+Enter First Name:
+(Leave empty to keep the old record)
+Enter Last Name:
+(Leave empty to keep the old record)
+Enter University:
+(Leave empty to keep the old record)
+Enter Major:
+(Leave empty to keep the old record)
+Enter Graduation Year:
+(Leave empty to keep the old record)
+Please enter a valid graduation year. (1925-2035)
+About Me (optional, blank = skip/keep):
+=== Add Experience (optional, max 3 entries. Enter 'DONE' to finish) ===
+Experience #1 - Title:
+Add Education (optional, max 3 entries. Enter 'DONE' to finish):
+Education #1 - Degree:
+Education #1 - University/College:
+Education #1 - Years Attended (e.g., 2023-2025):
+Add Education (optional, max 3 entries. Enter 'DONE' to finish):
+Education #2 - Degree:
+Profile updated successfully.
+Profile saved successfully.
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
@@ -41,83 +51,23 @@ Experience:
 5. Learn a new skill
 9. Logout
 Enter your choice:
-Logging out.
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Please enter your username:
-Please enter your password:
-Incorrect username/password, try again.
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Invalid choice, please try again
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Invalid choice, please try again
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Invalid choice, please try again
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-All permitted accounts have been created, Max 5 accounts.
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Invalid choice, please try again
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Invalid choice, please try again
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Invalid choice, please try again
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Invalid choice, please try again
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Invalid choice, please try again
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Invalid choice, please try again
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Invalid choice, please try again
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
+==== YOUR PROFILE ====
+First Name: test
+Last Name: user
+University: usf
+Major: bis
+Graduation Year: 2025
+About Me: im just testing
+Education:
+  Degree: BSCS
+  University: EXUSF
+  Years: 2020-2025
+--- END OF PROFILE VIEW ---
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+9. Logout
 Enter your choice:

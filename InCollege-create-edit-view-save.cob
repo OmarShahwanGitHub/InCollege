@@ -306,6 +306,7 @@
                
                MOVE WS-USERNAME TO CURRENT-USERNAME
                IF WS-LOGIN-SUCCESS = "Y"
+                   MOVE SPACES TO WS-MESSAGE
                    STRING "Welcome " DELIMITED BY SIZE
                        WS-USERNAME DELIMITED BY SPACE
                        "!" DELIMITED BY SIZE
@@ -412,32 +413,38 @@
            WRITE OUTPUT-RECORD
            CLOSE PROFILE-FILE
 
+           MOVE SPACES TO OUTPUT-RECORD
            STRING "First Name: " PR-FIRST-NAME
                DELIMITED BY SIZE INTO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
+           MOVE SPACES TO OUTPUT-RECORD
            STRING "Last Name: " PR-LAST-NAME
                DELIMITED BY SIZE INTO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
+           MOVE SPACES TO OUTPUT-RECORD
            STRING "University: " PR-UNIVERSITY
                DELIMITED BY SIZE INTO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
+           MOVE SPACES TO OUTPUT-RECORD
            STRING "Major: " PR-MAJOR
                DELIMITED BY SIZE INTO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
+           MOVE SPACES TO OUTPUT-RECORD
            STRING "Graduation Year: " PR-GRAD-YEAR
                DELIMITED BY SIZE INTO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
            IF PR-ABOUT-ME NOT = SPACES
+           MOVE SPACES TO OUTPUT-RECORD
                STRING "About Me: " PR-ABOUT-ME
                    DELIMITED BY SIZE INTO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
@@ -450,19 +457,23 @@
                WRITE OUTPUT-RECORD
                MOVE 1 TO TEMP-EXP-COUNT
                PERFORM UNTIL TEMP-EXP-COUNT > PR-EXP-COUNT
+           MOVE SPACES TO OUTPUT-RECORD
                    STRING "  Title: " PR-EXP-TITLE(TEMP-EXP-COUNT)
                        DELIMITED BY SIZE INTO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
+           MOVE SPACES TO OUTPUT-RECORD
                    STRING "  Company: " PR-EXP-COMPANY(TEMP-EXP-COUNT)
                        DELIMITED BY SIZE INTO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
+           MOVE SPACES TO OUTPUT-RECORD
                    STRING "  Dates: " PR-EXP-DATES(TEMP-EXP-COUNT)
                        DELIMITED BY SIZE INTO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                    IF PR-EXP-DESC(TEMP-EXP-COUNT) NOT = SPACES
+           MOVE SPACES TO OUTPUT-RECORD
                        STRING "  Description: " PR-EXP-DESC(TEMP-EXP-COUNT)
                            DELIMITED BY SIZE INTO OUTPUT-RECORD
                        DISPLAY OUTPUT-RECORD
@@ -477,20 +488,26 @@
                DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
                
+               MOVE 1 TO TEMP-EDU-COUNT
                PERFORM UNTIL TEMP-EDU-COUNT > PR-EDU-COUNT
+           MOVE SPACES TO OUTPUT-RECORD
                    STRING "  Degree: " PR-EDU-DEGREE(TEMP-EDU-COUNT)
                        DELIMITED BY SIZE INTO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
+           MOVE SPACES TO OUTPUT-RECORD
                    STRING "  University: " PR-EDU-SCHOOL(TEMP-EDU-COUNT)
                        DELIMITED BY SIZE INTO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
+           MOVE SPACES TO OUTPUT-RECORD
                    STRING "  Years: " PR-EDU-YEARS(TEMP-EDU-COUNT)
                        DELIMITED BY SIZE INTO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
+                   ADD 1 TO TEMP-EDU-COUNT
                END-PERFORM
+
            END-IF
 
            MOVE "--- END OF PROFILE VIEW ---" TO OUTPUT-RECORD
@@ -710,7 +727,6 @@
                    FUNCTION NUMVAL(TEMP-GRAD-YEAR) <= 2035
                    MOVE "Y" TO WS-VALID-GRAD-YEAR
                ELSE
-                   DISPLAY "DEBUG: " TEMP-GRAD-YEAR "*"
                    DISPLAY "Please enter a valid graduation year. (1925-2035)"
                    MOVE "Please enter a valid graduation year. (1925-2035)" TO OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
@@ -738,6 +754,7 @@
                WRITE OUTPUT-RECORD
 
                ADD 1 TO TEMP-EXP-COUNT
+               MOVE SPACES TO OUTPUT-RECORD
                STRING "Experience #" TEMP-EXP-COUNT " - Title:" 
                    DELIMITED BY SIZE INTO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
@@ -752,6 +769,7 @@
                    END-IF
                END-IF
 
+               MOVE SPACES TO OUTPUT-RECORD
                STRING "Experience #" TEMP-EXP-COUNT " - Company/Organization:" 
                    DELIMITED BY SIZE INTO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
@@ -762,6 +780,7 @@
                    END-READ
                END-IF
 
+               MOVE SPACES TO OUTPUT-RECORD
                STRING "Experience #" TEMP-EXP-COUNT " - Dates (e.g., Summer 2024):" 
                    DELIMITED BY SIZE INTO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
@@ -772,6 +791,7 @@
                    END-READ
                END-IF
 
+               MOVE SPACES TO OUTPUT-RECORD
                STRING "Experience #" TEMP-EXP-COUNT " - Description (optional, max 100 chars, blank to skip):" 
                    DELIMITED BY SIZE INTO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
@@ -782,16 +802,17 @@
                    END-READ
                END-IF
                MOVE TEMP-EXP(TEMP-EXP-COUNT) TO PR-EXP(TEMP-EXP-COUNT)
+               MOVE TEMP-EXP-COUNT TO PR-EXP-COUNT
            END-PERFORM
-           MOVE TEMP-EXP-COUNT TO PR-EXP-COUNT
 
            MOVE 0 TO TEMP-EDU-COUNT
-           PERFORM UNTIL TEMP-EDU-COUNT >= 3 OR WS-EOF-FLAG = "Y"
+           PERFORM UNTIL TEMP-EDU-COUNT > 3 OR WS-EOF-FLAG = "Y"
                MOVE "Add Education (optional, max 3 entries. Enter 'DONE' to finish):" TO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
 
                ADD 1 TO TEMP-EDU-COUNT
+               MOVE SPACES TO OUTPUT-RECORD
                STRING "Education #" TEMP-EDU-COUNT " - Degree:" 
                    DELIMITED BY SIZE INTO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
@@ -806,6 +827,7 @@
                    END-IF
                END-IF
 
+               MOVE SPACES TO OUTPUT-RECORD
                STRING "Education #" TEMP-EDU-COUNT " - University/College:" 
                    DELIMITED BY SIZE INTO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
@@ -816,6 +838,7 @@
                    END-READ
                END-IF
 
+               MOVE SPACES TO OUTPUT-RECORD
                STRING "Education #" TEMP-EDU-COUNT " - Years Attended (e.g., 2023-2025):" 
                    DELIMITED BY SIZE INTO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
@@ -826,8 +849,8 @@
                    END-READ
                END-IF
                MOVE TEMP-EDU(TEMP-EDU-COUNT) TO PR-EDU(TEMP-EDU-COUNT)
+               MOVE TEMP-EDU-COUNT TO PR-EDU-COUNT
            END-PERFORM
-           MOVE TEMP-EDU-COUNT TO PR-EDU-COUNT
 
            MOVE CURRENT-USERNAME TO PR-USERNAME
            IF FOUND-PROFILE-FLAG = "Y"

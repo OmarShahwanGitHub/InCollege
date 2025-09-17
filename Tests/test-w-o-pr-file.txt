@@ -2,19 +2,17 @@
 1
 testuser
 Password123!
+1
+test
+user
+usf
+bis
+2036
+2025
+im just testing
+DONE
+BSCS
+EXUSF
+2020-2025
+DONE
 2
-9
-1
-1
-Aibek
-Shadybekov
-USF
-CS
-2026
-My Bio
-SWE
-USF
-SUmmer 2026
-Dev
-DONE
-DONE
