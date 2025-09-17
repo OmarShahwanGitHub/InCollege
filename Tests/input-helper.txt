@@ -1,0 +1,39 @@
+Main menu
+DISPLAY "1. Log In"
+DISPLAY "2. Create New Account"
+DISPLAY "Enter your choice:"
+======================================
+REGISTRATION (From main menu: 2. Create New Account)
+IF count >= 5
+DISPLAY "All permitted accounts have been created, Max 5 accounts."
+EXIT PARAGRAPH
+END-IF
+
+DISPLAY "Enter Username:"
+DISPLAY "Enter Password:"
+WHILE VALID-PASS = FALSE
+VALIDATE IF INVALID WILL DISPLAY "Error: Password must be 8-12 characters long."
+END-WHILE
+IF VALID
+DISPLAY "Account successfully created!"
+======================================
+LOGIN-PROCESS (From main menu: 1. Log in)
+
+           DISPLAY "Please enter your username:"
+           DISPLAY "Please enter your password:"
+           VALIDATE
+           IF VALID
+           DISPLAY "WELCOME"
+           ELSE
+                   DISPLAY "Incorrect username/password, try again."
+           END-IF
+======================================
+       POST-LOGIN-MENU (From LOGIN-PROCESS: IF VALID)
+           DISPLAY "1. Create/Edit My Profile"
+           DISPLAY "2. View My Profile"
+           DISPLAY "3. Search for a job"
+           DISPLAY "4. Find someone you know"
+           DISPLAY "5. Learn a new skill"
+           DISPLAY "9. Logout"
+           DISPLAY "Enter your choice:"
+UNFINISHED WILL FINISH WHEN WILL ADD TITLE, COMPANY NAME, ETC FUNCTIONALITY

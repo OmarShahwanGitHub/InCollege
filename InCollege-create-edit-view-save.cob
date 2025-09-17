@@ -39,10 +39,19 @@
            05  PR-MAJOR           PIC X(30).
            05  PR-GRAD-YEAR       PIC 9(4).
            05  PR-ABOUT-ME        PIC X(200).
-           05  PR-EXP OCCURS 3 TIMES.
+           05  PR-EXP-COUNT       PIC 9.
+           05  PR-EXP OCCURS 3 TIMES
+               INDEXED BY PR-EXP-IDX.
+               10 PR-EXP-TITLE    PIC X(30).
+               10 PR-EXP-COMPANY  PIC X(30).
+               10 PR-EXP-DATES    PIC X(20).
                10 PR-EXP-DESC     PIC X(100).
-           05  PR-EDU OCCURS 3 TIMES.
-               10 PR-EDU-DESC     PIC X(100).
+           05  PR-EDU-COUNT          PIC 9.
+           05  PR-EDU OCCURS 3 TIMES
+               INDEXED BY PR-EDU-IDX.
+               10 EDU-DEGREE PIC X(30).
+               10 EDU-SCHOOL PIC X(30).
+               10 EDU-YEARS PIC X(2).
 
        WORKING-STORAGE SECTION.
        01 WS-EOF-FLAG PIC X VALUE 'N'.
@@ -79,12 +88,21 @@
        01  TEMP-LAST-NAME     PIC X(20).
        01  TEMP-UNIVERSITY    PIC X(30).
        01  TEMP-MAJOR         PIC X(30).
-       01  TEMP-GRAD-YEAR     PIC X(4).
+       01  TEMP-GRAD-YEAR     PIC X(5).
        01  TEMP-ABOUT-ME      PIC X(200).
-       01  TEMP-EXP OCCURS 3 TIMES.
-           05  TEMP-EXP-DESC   PIC X(100).
-       01  TEMP-EDU OCCURS 3 TIMES.
-           05  TEMP-EDU-DESC   PIC X(100).
+       01  TEMP-EXP-COUNT PIC 9.
+       01  TEMP-EXP OCCURS 3 TIMES
+           INDEXED BY TEMP-EXP-IDX.
+           10  TEMP-EXP-TITLE PIC X(30).
+           10  TEMP-EXP-COMPANY PIC X(30).
+           10  TEMP-EXP-DATES PIC X(20).
+           10  TEMP-EXP-DESC   PIC X(100).
+       01  TEMP-EDU-COUNT          PIC 9.
+       01  TEMP-EDU OCCURS 3 TIMES
+           INDEXED BY TEMP-EDU-IDX.
+           10  TEMP-EDU-DEGREE PIC X(30).
+           10  TEMP-EDU-SCHOOL PIC X(30).
+           10  TEMP-EDU-YEARS  PIC X(3).
 
        01  CURRENT-USERNAME   PIC X(20).
        01  FOUND-PROFILE-FLAG PIC X VALUE "N".
@@ -514,6 +532,7 @@
            MOVE SPACES TO TEMP-MAJOR
            MOVE SPACES TO TEMP-GRAD-YEAR
            MOVE SPACES TO TEMP-ABOUT-ME
+      *> THIS WILL FILL SPACES TO ANY ELEMENTS OF TEMP-EXP, FOR EX: TITLE
            MOVE SPACES TO TEMP-EXP (1)
            MOVE SPACES TO TEMP-EXP (2)
            MOVE SPACES TO TEMP-EXP (3)
@@ -699,80 +718,104 @@
                MOVE TEMP-ABOUT-ME TO PR-ABOUT-ME
            END-IF
 
-           DISPLAY "Experience 1 (optional, blank = skip/keep): "
-           MOVE "Experience 1 (optional, blank = skip/keep): " TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-           IF WS-EOF-FLAG NOT = "Y"
-               READ INPUT-FILE INTO TEMP-EXP (1)
-                   AT END MOVE "Y" TO WS-EOF-FLAG
-               END-READ
-           END-IF
-           IF TEMP-EXP (1) NOT = SPACES
-               MOVE TEMP-EXP (1) TO PR-EXP (1)
-           END-IF
+           MOVE 0 TO TEMP-EXP-COUNT
+           PERFORM UNTIL TEMP-EXP-COUNT > 3 OR WS-EOF-FLAG = "Y"
+               MOVE "=== Add Experience (optional, max 3 entries. Enter 'DONE' to finish) ===" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
 
-           DISPLAY "Experience 2 (optional, blank = skip/keep): "
-           MOVE "Experience 2 (optional, blank = skip/keep): " TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-           IF WS-EOF-FLAG NOT = "Y"
-               READ INPUT-FILE INTO TEMP-EXP (2)
-                   AT END MOVE "Y" TO WS-EOF-FLAG
-               END-READ
-           END-IF
-           IF TEMP-EXP (2) NOT = SPACES
-               MOVE TEMP-EXP (2) TO PR-EXP (2)
-           END-IF
+               ADD 1 TO TEMP-EXP-COUNT
+               STRING "Experience #" TEMP-EXP-COUNT " - Title:" 
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO TEMP-EXP-TITLE (TEMP-EXP-COUNT)
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+                   IF FUNCTION UPPER-CASE(TEMP-EXP-TITLE(TEMP-EXP-COUNT)) = "DONE"
+                       SUBTRACT 1 FROM TEMP-EXP-COUNT
+                       EXIT PERFORM
+                   END-IF
+               END-IF
 
-           DISPLAY "Experience 3 (optional, blank = skip/keep): "
-           MOVE "Experience 3 (optional, blank = skip/keep): " TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-           IF WS-EOF-FLAG NOT = "Y"
-               READ INPUT-FILE INTO TEMP-EXP (3)
-                   AT END MOVE "Y" TO WS-EOF-FLAG
-               END-READ
-           END-IF
-           IF TEMP-EXP (3) NOT = SPACES
-               MOVE TEMP-EXP (3) TO PR-EXP (3)
-           END-IF
+               STRING "Experience #" TEMP-EXP-COUNT " - Company/Organization:" 
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO TEMP-EXP-COMPANY (TEMP-EXP-COUNT)
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
 
-           DISPLAY "Education 1 (optional, blank = skip/keep): "
-           MOVE "Education 1 (optional, blank = skip/keep): " TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-           IF WS-EOF-FLAG NOT = "Y"
-               READ INPUT-FILE INTO TEMP-EDU (1)
-                   AT END MOVE "Y" TO WS-EOF-FLAG
-               END-READ
-           END-IF
-           IF TEMP-EDU (1) NOT = SPACES
-               MOVE TEMP-EDU (1) TO PR-EDU (1)
-           END-IF
+               STRING "Experience #" TEMP-EXP-COUNT " - Dates (e.g., Summer 2024):" 
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO TEMP-EXP-DATES (TEMP-EXP-COUNT)
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
 
-           DISPLAY "Education 2 (optional, blank = skip/keep): "
-           MOVE "Education 2 (optional, blank = skip/keep): " TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-           IF WS-EOF-FLAG NOT = "Y"
-               READ INPUT-FILE INTO TEMP-EDU (2)
-                   AT END MOVE "Y" TO WS-EOF-FLAG
-               END-READ
-           END-IF
-           IF TEMP-EDU (2) NOT = SPACES
-               MOVE TEMP-EDU (2) TO PR-EDU (2)
-           END-IF
+               STRING "Experience #" TEMP-EXP-COUNT " - Description (optional, max 100 chars, blank to skip):" 
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO TEMP-EXP-DESC (TEMP-EXP-COUNT)
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
+               MOVE TEMP-EXP(TEMP-EXP-COUNT) TO PR-EXP(TEMP-EXP-COUNT)
+           END-PERFORM
+           MOVE TEMP-EXP-COUNT TO PR-EXP-COUNT
 
-           DISPLAY "Education 3 (optional, blank = skip/keep): "
-           MOVE "Education 3 (optional, blank = skip/keep): " TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-           IF WS-EOF-FLAG NOT = "Y"
-               READ INPUT-FILE INTO TEMP-EDU (3)
-                   AT END MOVE "Y" TO WS-EOF-FLAG
-               END-READ
-           END-IF
-           IF TEMP-EDU (3) NOT = SPACES
-               MOVE TEMP-EDU (3) TO PR-EDU (3)
-           END-IF
+           MOVE 0 TO TEMP-EDU-COUNT
+           PERFORM UNTIL TEMP-EDU-COUNT >= 3 OR WS-EOF-FLAG = "Y"
+               MOVE "Add Education (optional, max 3 entries. Enter 'DONE' to finish):" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
 
-      *> MOVE USERNAME HERE BECAUSE IT MEANS THAT EVERYOTHER FIELD WAS
-      *>ENTERED CORRECTLTY
+               ADD 1 TO TEMP-EDU-COUNT
+               STRING "Education #" TEMP-EDU-COUNT " - Degree:" 
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO TEMP-EDU-DEGREE(TEMP-EDU-COUNT)
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+                   IF FUNCTION UPPER-CASE(TEMP-EDU-DEGREE(TEMP-EDU-COUNT)) = "DONE"
+                       SUBTRACT 1 FROM TEMP-EDU-COUNT
+                       EXIT PERFORM
+                   END-IF
+               END-IF
+
+               STRING "Education #" TEMP-EDU-COUNT " - University/College:" 
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO TEMP-EDU-SCHOOL(TEMP-EDU-COUNT)
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
+
+               STRING "Education #" TEMP-EDU-COUNT " - Years Attended (e.g., 2023-2025):" 
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO TEMP-EDU-YEARS(TEMP-EDU-COUNT)
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
+               MOVE TEMP-EDU(TEMP-EDU-COUNT) TO PR-EDU(TEMP-EDU-COUNT)
+           END-PERFORM
+           MOVE TEMP-EDU-COUNT TO PR-EDU-COUNT
+
            MOVE CURRENT-USERNAME TO PR-USERNAME
            IF FOUND-PROFILE-FLAG = "Y"
                REWRITE PROFILE-RECORD
