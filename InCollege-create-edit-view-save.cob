@@ -12,7 +12,9 @@
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-FILE-STATUS.
            SELECT PROFILE-FILE ASSIGN TO "profiles.doc"
-               ORGANIZATION IS RELATIVE
+               ORGANIZATION IS INDEXED
+               ACCESS MODE IS DYNAMIC
+               RECORD KEY IS PR-USERNAME
                FILE STATUS IS WS-FILE-STATUS.
        
        DATA DIVISION.
@@ -118,11 +120,11 @@
            END-PERFORM
            CLOSE ACCOUNTS-FILE
 
-           OPEN INPUT PROFILE-FILE
+           OPEN I-O PROFILE-FILE
            IF WS-FILE-STATUS NOT = "00"
               OPEN OUTPUT PROFILE-FILE
               CLOSE PROFILE-FILE
-              OPEN INPUT PROFILE-FILE
+              OPEN I-O PROFILE-FILE
            END-IF
            CLOSE PROFILE-FILE
            .
@@ -297,7 +299,7 @@
 
                    MOVE SPACES TO WS-MESSAGE
 
-                   PERFORM POST-LOGIN-MENU UNTIL WS-USER-CHOICE = 9
+                   PERFORM POST-LOGIN-MENU UNTIL WS-USER-CHOICE = 9 OR WS-EOF-FLAG = "Y"
                ELSE
                    DISPLAY "Incorrect username/password, try again."
                    MOVE "Incorrect username/password, try again." TO OUTPUT-RECORD
@@ -467,22 +469,26 @@
            .
 
        LOAD-PROFILE.
-           MOVE "N" TO FOUND-PROFILE-FLAG
+           MOVE "Y" TO FOUND-PROFILE-FLAG
            MOVE "N" TO END-PROFILE-FILE
            CLOSE PROFILE-FILE
            OPEN I-O PROFILE-FILE
-           PERFORM UNTIL END-PROFILE-FILE = "Y" OR FOUND-PROFILE-FLAG= "Y"
-               READ PROFILE-FILE
-                   AT END MOVE "Y" TO END-PROFILE-FILE
-                   NOT AT END
-                       IF PR-USERNAME = CURRENT-USERNAME
-                           MOVE "Y" TO FOUND-PROFILE-FLAG
-                       END-IF
-               END-READ
-           END-PERFORM
-           IF FOUND-PROFILE-FLAG = "N"
-      *>        If no profile, start a fresh one
-           END-IF
+           MOVE CURRENT-USERNAME TO PR-USERNAME
+           READ PROFILE-FILE KEY IS PR-USERNAME
+               INVALID KEY MOVE "N" TO FOUND-PROFILE-FLAG
+               NOT INVALID KEY MOVE "Y" TO FOUND-PROFILE-FLAG
+           END-READ
+      *>     PERFORM UNTIL END-PROFILE-FILE = "Y" OR
+      *>       FOUND-PROFILE-FLAG= "Y"
+      *>         READ PROFILE-FILE
+      *>             AT END MOVE "Y" TO END-PROFILE-FILE
+      *>             NOT AT END
+      *>                 DISPLAY PR-USERNAME CURRENT-USERNAME
+      *>                 IF PR-USERNAME = CURRENT-USERNAME
+      *>                     MOVE "Y" TO FOUND-PROFILE-FLAG
+      *>                 END-IF
+      *>         END-READ
+      *>     END-PERFORM
            .
        CREATE-EDIT-PROFILE.
            PERFORM LOAD-PROFILE
@@ -490,7 +496,13 @@
                DISPLAY "Profile found. Editing existing records"
                MOVE "Profile found. Editing existing records" TO OUTPUT-RECORD
                WRITE OUTPUT-RECORD
-           ELSE
+           END-IF
+      *> If we didn't file user's profile and we wanted to create an
+      *>accout (choice = 1) then output this
+      *>without this if when redirected from profile-view paragraph it
+      *>would duplicate Profile not found. Create a new profile. in the
+      *>output
+           IF FOUND-PROFILE-FLAG = "N" AND WS-USER-CHOICE = 1
                DISPLAY "Profile not found. Create a new profile."
                MOVE "Profile not found. Create a new profile." TO OUTPUT-RECORD
                WRITE OUTPUT-RECORD
@@ -527,6 +539,9 @@
            MOVE "N" TO WS-VALID-REQUIRED
       *>CHECKING IF THE VALUE ENTERED NON-EMPTY
            PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG = "Y"
+                   EXIT PARAGRAPH
+               END-IF
                IF WS-EOF-FLAG NOT = "Y"
                    READ INPUT-FILE INTO TEMP-FIRST-NAME
                        AT END MOVE "Y" TO WS-EOF-FLAG
@@ -555,6 +570,9 @@
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
            PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG = "Y"
+                   EXIT PARAGRAPH
+               END-IF
                IF WS-EOF-FLAG NOT = "Y"
                  READ INPUT-FILE INTO TEMP-LAST-NAME
                      AT END MOVE "Y" TO WS-EOF-FLAG
@@ -584,6 +602,9 @@
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
            PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG = "Y"
+                   EXIT PARAGRAPH
+               END-IF
                IF WS-EOF-FLAG NOT = "Y"
                  READ INPUT-FILE INTO TEMP-UNIVERSITY
                      AT END MOVE "Y" TO WS-EOF-FLAG
@@ -613,6 +634,9 @@
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
            PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG = "Y"
+                   EXIT PARAGRAPH
+               END-IF
                IF WS-EOF-FLAG NOT = "Y"
                  READ INPUT-FILE INTO TEMP-MAJOR
                      AT END MOVE "Y" TO WS-EOF-FLAG
@@ -640,7 +664,11 @@
                WRITE OUTPUT-RECORD
            END-IF
       *>Graduation year validation
+           MOVE "N" TO WS-VALID-GRAD-YEAR
            PERFORM UNTIL WS-VALID-GRAD-YEAR = "Y"
+               IF WS-EOF-FLAG = "Y"
+                   EXIT PARAGRAPH
+               END-IF
                IF WS-EOF-FLAG NOT = "Y"
                    READ INPUT-FILE INTO TEMP-GRAD-YEAR
                        AT END MOVE "Y" TO WS-EOF-FLAG
@@ -657,9 +685,7 @@
                END-IF
            END-PERFORM
 
-           IF TEMP-GRAD-YEAR NOT = SPACES
-               MOVE FUNCTION NUMVAL(TEMP-GRAD-YEAR) TO PR-GRAD-YEAR
-           END-IF
+           MOVE FUNCTION NUMVAL(TEMP-GRAD-YEAR) TO PR-GRAD-YEAR
 
            DISPLAY "About Me (optional, blank = skip/keep): "
            MOVE "About Me (optional, blank = skip/keep): " TO OUTPUT-RECORD
@@ -754,8 +780,6 @@
                MOVE "Profile updated successfully." TO OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            ELSE
-               CLOSE PROFILE-FILE
-               OPEN EXTEND PROFILE-FILE
                WRITE PROFILE-RECORD
                DISPLAY "Profile created successfully."
                MOVE "Profile created successfully." TO OUTPUT-RECORD
@@ -882,4 +906,6 @@
        CLEANUP.
            CLOSE INPUT-FILE
            CLOSE OUTPUT-FILE
-           CLOSE ACCOUNTS-FILE.
+           CLOSE ACCOUNTS-FILE
+           CLOSE PROFILE-FILE
+           .

@@ -3,6 +3,24 @@ testuser
 Password123!
 9
 1
+testuser
+Password123!
+1
+test2
+user
+uni
+maj
+2026
+boutme
+exp1
+exp22
+exp333
+edu1
+edutwo
+edu3
+2
+9
+1
 Aibek
 hihihiHi1+
 2
@@ -11,6 +29,7 @@ Shadybekov
 USF
 CS
 2026
+my bio
 1
 2
 3
@@ -18,4 +37,3 @@ CS
 5
 6
 2
-9
