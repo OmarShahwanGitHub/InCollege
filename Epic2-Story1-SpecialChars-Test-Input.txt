@@ -1,0 +1,20 @@
+1
+testuser7
+Password123!
+1
+José
+O'Connor
+St. Mary's University
+Computer Science & Engineering
+2025
+I love programming! #coding #tech @university
+Software Developer @ TechCorp
+Tech Solutions Inc.
+Summer 2024
+Developed web apps using React & Node.js
+DONE
+Bachelor of Science (B.S.)
+University of Florida
+2021-2025
+DONE
+9

@@ -1,0 +1,50 @@
+1
+testuser1
+Password123!
+1
+John
+Doe
+University of Florida
+Computer Science
+2025
+I am passionate about software development and love learning new technologies.
+Software Intern
+Tech Solutions Inc.
+Summer 2024
+Developed web applications using React and Node.js
+DONE
+Bachelor of Science
+University of Florida
+2021-2025
+DONE
+9
+1
+testuser1
+Password123!
+2
+9
+1
+testuser1
+Password123!
+1
+John
+Doe
+University of Florida
+Software Engineering
+2026
+I am passionate about software development and love learning new technologies. I also enjoy mentoring others.
+Senior Software Intern
+Tech Solutions Inc.
+Summer 2024 - Fall 2024
+Developed web applications using React and Node.js and mentored junior developers
+DONE
+Bachelor of Science
+University of Florida
+2021-2025
+DONE
+9
+1
+testuser1
+Password123!
+2
+9

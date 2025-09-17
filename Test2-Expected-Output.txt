@@ -1,0 +1,30 @@
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome testuser1!
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+Enter your choice:
+--- Your Profile ---
+Name: John Doe
+University: University of Florida
+Major: Computer Science
+Graduation Year: 2025
+About Me: I am passionate about software development and love learning new technologies.
+Experience:
+ Title: Software Intern
+ Company: Tech Solutions Inc.
+ Dates: Summer 2024
+ Description: Developed web applications using React and Node.js
+ 
+Education:
+ Degree: Bachelor of Science
+ University: University of Florida
+ Years: 2021-2025
+ 
+---

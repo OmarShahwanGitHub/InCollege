@@ -1,0 +1,34 @@
+1
+testuser3
+Password123!
+1
+Jane
+Smith
+MIT
+Data Science
+2035
+I love data analysis and machine learning.
+Data Analyst
+Google
+Jan 2023 - Dec 2023
+Analyzed user behavior data and created predictive models
+Software Engineer
+Microsoft
+Jan 2024 - Present
+Developing cloud-based applications using Azure
+Research Assistant
+MIT
+Summer 2022
+Conducted research on machine learning algorithms
+DONE
+Master of Science
+MIT
+2023-2025
+Bachelor of Science
+UC Berkeley
+2019-2023
+PhD
+Stanford
+2025-2029
+DONE
+9

@@ -1,0 +1,13 @@
+1
+testuser6
+Password123!
+1
+ThisIsAVeryLongFirstNameThatExceedsTwentyCharacters
+ThisIsAVeryLongLastNameThatExceedsTwentyCharacters
+ThisIsAVeryLongUniversityNameThatExceedsThirtyCharacters
+ThisIsAVeryLongMajorNameThatExceedsTwentyCharacters
+2035
+This is a very long about me section that contains exactly two hundred characters to test the maximum length validation and ensure that the system properly handles the maximum allowed characters for the about me field without truncation or overflow issues that could cause data loss or corruption in the profile system.
+DONE
+DONE
+9
