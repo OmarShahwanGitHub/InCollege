@@ -49,9 +49,9 @@
            05  PR-EDU-COUNT          PIC 9.
            05  PR-EDU OCCURS 3 TIMES
                INDEXED BY PR-EDU-IDX.
-               10 EDU-DEGREE PIC X(30).
-               10 EDU-SCHOOL PIC X(30).
-               10 EDU-YEARS PIC X(2).
+               10 PR-EDU-DEGREE PIC X(30).
+               10 PR-EDU-SCHOOL PIC X(30).
+               10 PR-EDU-YEARS PIC X(2).
 
        WORKING-STORAGE SECTION.
        01 WS-EOF-FLAG PIC X VALUE 'N'.
@@ -443,42 +443,53 @@
                WRITE OUTPUT-RECORD
            END-IF
 
-           IF PR-EXP(1) NOT = SPACES
-               STRING "Experience 1: " PR-EXP(1)
-                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+           IF PR-EXP-COUNT > 0
+               MOVE "Experience:" TO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
-           END-IF
-           IF PR-EXP(2) NOT = SPACES
-               STRING "Experience 2: " PR-EXP(2)
-                   DELIMITED BY SIZE INTO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
-           END-IF
-           IF PR-EXP(3) NOT = SPACES
-               STRING "Experience 3: " PR-EXP(3)
-                   DELIMITED BY SIZE INTO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+               MOVE 1 TO TEMP-EXP-COUNT
+               PERFORM UNTIL TEMP-EXP-COUNT > PR-EXP-COUNT
+                   STRING "  Title: " PR-EXP-TITLE(TEMP-EXP-COUNT)
+                       DELIMITED BY SIZE INTO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   STRING "  Company: " PR-EXP-COMPANY(TEMP-EXP-COUNT)
+                       DELIMITED BY SIZE INTO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   STRING "  Dates: " PR-EXP-DATES(TEMP-EXP-COUNT)
+                       DELIMITED BY SIZE INTO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   IF PR-EXP-DESC(TEMP-EXP-COUNT) NOT = SPACES
+                       STRING "  Description: " PR-EXP-DESC(TEMP-EXP-COUNT)
+                           DELIMITED BY SIZE INTO OUTPUT-RECORD
+                       DISPLAY OUTPUT-RECORD
+                       WRITE OUTPUT-RECORD
+                   END-IF
+                   ADD 1 TO TEMP-EXP-COUNT
+               END-PERFORM
            END-IF
 
-           IF PR-EDU(1) NOT = SPACES
-               STRING "Education 1: " PR-EDU(1)
-                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+           IF PR-EDU-COUNT > 0
+               MOVE "Education:" TO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
-           END-IF
-           IF PR-EDU(2) NOT = SPACES
-               STRING "Education 2: " PR-EDU(2)
-                   DELIMITED BY SIZE INTO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
-           END-IF
-           IF PR-EDU(3) NOT = SPACES
-               STRING "Education 3: " PR-EDU(3)
-                   DELIMITED BY SIZE INTO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+               
+               PERFORM UNTIL TEMP-EDU-COUNT > PR-EDU-COUNT
+                   STRING "  Degree: " PR-EDU-DEGREE(TEMP-EDU-COUNT)
+                       DELIMITED BY SIZE INTO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   STRING "  University: " PR-EDU-SCHOOL(TEMP-EDU-COUNT)
+                       DELIMITED BY SIZE INTO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   STRING "  Years: " PR-EDU-YEARS(TEMP-EDU-COUNT)
+                       DELIMITED BY SIZE INTO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-PERFORM
            END-IF
 
            MOVE "--- END OF PROFILE VIEW ---" TO OUTPUT-RECORD
