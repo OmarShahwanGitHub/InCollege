@@ -54,6 +54,7 @@
        01  FOUND-FLAG         PIC X VALUE "N".
        01  END-FILE           PIC X VALUE "N".
        77  WS-VALID-GRAD-YEAR PIC X VALUE "N".
+       77  WS-VALID-REQUIRED  PIC X VALUE "N".
 
        PROCEDURE DIVISION.
        MAIN-PROCEDURE.
@@ -167,56 +168,89 @@
       *>REQUIRED
            DISPLAY "Enter First Name: "
       *>added IF BLOCK to add skip functionality
-           IF FOUND-FLAG = "Y" OR
+           IF FOUND-FLAG = "Y" AND
              PR-FIRST-NAME NOT = SPACES AND
              PR-FIRST-NAME NOT = LOW-VALUE
-               display FOUND-FLAG "(" PR-FIRST-NAME ")"
+               DISPLAY FOUND-FLAG "(" PR-FIRST-NAME ")"
                DISPLAY "(blank = keep: " PR-FIRST-NAME ")"
+           ELSE
+               MOVE "N" TO WS-VALID-REQUIRED
+               PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+                   ACCEPT TEMP-FIRST-NAME
+                   IF TEMP-FIRST-NAME NOT = SPACES
+                       MOVE "Y" TO WS-VALID-REQUIRED 
+                   ELSE
+                     DISPLAY "This is a required field. Please enter
+      -           "non-empty value"
+                   END-IF
+               END-PERFORM
            END-IF
-           ACCEPT TEMP-FIRST-NAME
-           IF TEMP-FIRST-NAME NOT = SPACES
-               MOVE TEMP-FIRST-NAME TO PR-FIRST-NAME
-           END-IF
+      *>CHECKING IF THE VALUE ENTERED NON-EMPTY
+           MOVE TEMP-FIRST-NAME TO PR-FIRST-NAME
 
       *>REQUIRED
            DISPLAY "Enter Last Name: "
-           IF FOUND-FLAG = "Y" OR
+           IF FOUND-FLAG = "Y" AND
              PR-LAST-NAME NOT EQUAL SPACES AND
              PR-LAST-NAME NOT = LOW-VALUE
                DISPLAY "(blank = keep: " PR-LAST-NAME ")"
+           ELSE
+               MOVE "N" TO WS-VALID-REQUIRED
+               PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+                   ACCEPT TEMP-LAST-NAME
+                   IF TEMP-LAST-NAME NOT = SPACES
+                       MOVE "Y" TO WS-VALID-REQUIRED 
+                   ELSE
+                     DISPLAY "This is a required field. Please enter
+      -           "non-empty value"
+                   END-IF
+               END-PERFORM
            END-IF
-           ACCEPT TEMP-LAST-NAME
-           IF TEMP-LAST-NAME NOT = SPACES
-               MOVE TEMP-LAST-NAME TO PR-LAST-NAME
-           END-IF
+           MOVE TEMP-LAST-NAME TO PR-LAST-NAME
 
       *>REQUIRED
            DISPLAY "Enter University: "
-           IF FOUND-FLAG = "Y" OR
+           IF FOUND-FLAG = "Y" AND
              PR-UNIVERSITY NOT EQUAL SPACES AND
              PR-UNIVERSITY NOT = LOW-VALUE
                DISPLAY "(blank = keep: " PR-UNIVERSITY ")"
+           ELSE
+               MOVE "N" TO WS-VALID-REQUIRED
+               PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+                   ACCEPT TEMP-UNIVERSITY
+                   IF TEMP-UNIVERSITY NOT = SPACES
+                       MOVE "Y" TO WS-VALID-REQUIRED 
+                   ELSE
+                     DISPLAY "This is a required field. Please enter
+      -           "non-empty value"
+                   END-IF
+               END-PERFORM
            END-IF
-           ACCEPT TEMP-UNIVERSITY
-           IF TEMP-UNIVERSITY NOT = SPACES
-               MOVE TEMP-UNIVERSITY TO PR-UNIVERSITY
-           END-IF
+           MOVE TEMP-UNIVERSITY TO PR-UNIVERSITY
 
       *>REQUIRED
            DISPLAY "Enter Major: "
-           IF FOUND-FLAG = "Y" OR
+           IF FOUND-FLAG = "Y" AND
              PR-MAJOR NOT EQUAL SPACES AND
              PR-MAJOR NOT = LOW-VALUE
                DISPLAY "(blank = keep: " PR-MAJOR ")"
+           ELSE
+               MOVE "N" TO WS-VALID-REQUIRED
+               PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+                   ACCEPT TEMP-MAJOR
+                   IF TEMP-MAJOR NOT = SPACES
+                       MOVE "Y" TO WS-VALID-REQUIRED 
+                   ELSE
+                     DISPLAY "This is a required field. Please enter
+      -           "non-empty value"
+                   END-IF
+               END-PERFORM
            END-IF
-           ACCEPT TEMP-MAJOR
-           IF TEMP-MAJOR NOT = SPACES
-               MOVE TEMP-MAJOR TO PR-MAJOR
-           END-IF
+           MOVE TEMP-MAJOR TO PR-MAJOR
 
       *>REQUIRED
            DISPLAY "Enter Graduation Year: "
-           IF FOUND-FLAG = "Y" OR
+           IF FOUND-FLAG = "Y" AND
              PR-GRAD-YEAR NOT EQUAL SPACES AND
              PR-GRAD-YEAR NOT = LOW-VALUE
                DISPLAY "(blank = keep: " PR-GRAD-YEAR ")"
