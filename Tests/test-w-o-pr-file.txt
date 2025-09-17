@@ -1,0 +1,20 @@
+2
+1
+testuser
+Password123!
+2
+9
+1
+1
+Aibek
+Shadybekov
+USF
+CS
+2026
+My Bio
+SWE
+USF
+SUmmer 2026
+Dev
+DONE
+DONE

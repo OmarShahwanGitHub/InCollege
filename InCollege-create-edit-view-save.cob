@@ -5,6 +5,7 @@
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
            SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
+      *>     SELECT INPUT-FILE ASSIGN TO "Tests/test-w-o-pr-file.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
@@ -88,7 +89,7 @@
        01  TEMP-LAST-NAME     PIC X(20).
        01  TEMP-UNIVERSITY    PIC X(30).
        01  TEMP-MAJOR         PIC X(30).
-       01  TEMP-GRAD-YEAR     PIC X(5).
+       01  TEMP-GRAD-YEAR     PIC X(4).
        01  TEMP-ABOUT-ME      PIC X(200).
        01  TEMP-EXP-COUNT PIC 9.
        01  TEMP-EXP OCCURS 3 TIMES
@@ -709,6 +710,7 @@
                    FUNCTION NUMVAL(TEMP-GRAD-YEAR) <= 2035
                    MOVE "Y" TO WS-VALID-GRAD-YEAR
                ELSE
+                   DISPLAY "DEBUG: " TEMP-GRAD-YEAR "*"
                    DISPLAY "Please enter a valid graduation year. (1925-2035)"
                    MOVE "Please enter a valid graduation year. (1925-2035)" TO OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
