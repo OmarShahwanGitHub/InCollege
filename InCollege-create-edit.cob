@@ -85,7 +85,8 @@
            05  TEMP-EDU-DESC   PIC X(100).
 
        01  CURRENT-USERNAME   PIC X(20).
-       01  FOUND-FLAG         PIC X VALUE "N".
+       01  FOUND-PROFILE-FLAG PIC X VALUE "N".
+       01  END-PROFILE-FILE   PIC X VALUE "N".
        77  WS-VALID-GRAD-YEAR PIC X VALUE "N".
        77  WS-VALID-REQUIRED  PIC X VALUE "N".
 
@@ -128,7 +129,7 @@
        
        MAIN-MENU.
            DISPLAY "==== INCOLLEGE MAIN MENU ===="
-           MOVE "Welcome to InCollege!" TO OUTPUT-RECORD
+           MOVE "==== INCOLLEGE MAIN MENU ====" TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
            DISPLAY "Welcome to InCollege!"
@@ -282,7 +283,6 @@
            IF WS-EOF-FLAG NOT = "Y"
                PERFORM VALIDATE-LOGIN
                
-      *> STOPPED MERGIN HERE
                MOVE WS-USERNAME TO CURRENT-USERNAME
                IF WS-LOGIN-SUCCESS = "Y"
                    STRING "Welcome " DELIMITED BY SIZE
@@ -305,24 +305,35 @@
                END-IF
            END-IF
            .
-		
+
        POST-LOGIN-MENU.
-           DISPLAY "Search for a job"
-           MOVE "Search for a job" TO OUTPUT-RECORD
+           DISPLAY "==== PROFILE MENU ===="
+           MOVE "==== PROFILE MENU ====" TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "Find someone you know"
-           MOVE "Find someone you know" TO OUTPUT-RECORD
+           DISPLAY "1. Create/Edit My Profile"
+           MOVE "1. Create/Edit My Profile" TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "Learn a new skill"
-           MOVE "Learn a new skill" TO OUTPUT-RECORD
+           DISPLAY "2. Search for a job"
+           MOVE "2. Search for a job" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           DISPLAY "3. Find someone you know"
+           MOVE "3. Find someone you know" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           DISPLAY "4. Learn a new skill"
+           MOVE "4. Learn a new skill" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           DISPLAY "9. Logout"
+           MOVE "9. Logout" TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
            DISPLAY "Enter your choice:"
            MOVE "Enter your choice:" TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD
-           
 
            IF WS-EOF-FLAG NOT = "Y"
            READ INPUT-FILE INTO WS-TEMP-INPUT
@@ -331,15 +342,22 @@
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
+                           PERFORM CREATE-EDIT-PROFILE
+                       WHEN 2
                            DISPLAY "Job search is under construction."
                            MOVE "Job search is under construction." TO OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
-                       WHEN 2
+                       WHEN 3
                            DISPLAY "Find someone is under construction."
                            MOVE "Find someone is under construction." TO OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
-                       WHEN 3
+                       WHEN 4
                            PERFORM LEARN-SKILL-MENU
+                       WHEN 9
+                           DISPLAY "Logging out."
+                           MOVE "Logging out." TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                           EXIT PARAGRAPH
                        WHEN OTHER
                            DISPLAY "Invalid choice, please try again"
                            MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
@@ -347,7 +365,304 @@
                    END-EVALUATE
            END-READ
            END-IF.
-       
+
+       CREATE-EDIT-PROFILE.
+           MOVE "N" TO FOUND-PROFILE-FLAG
+           MOVE "N" TO END-PROFILE-FILE
+
+           OPEN I-O PROFILE-FILE
+           PERFORM UNTIL END-PROFILE-FILE = "Y" OR FOUND-PROFILE-FLAG= "Y"
+               READ PROFILE-FILE
+                   AT END MOVE "Y" TO END-PROFILE-FILE
+                   NOT AT END
+                       IF PR-USERNAME = CURRENT-USERNAME
+                           MOVE "Y" TO FOUND-PROFILE-FLAG
+                           DISPLAY "Profile found. Editing"
+                           MOVE "Profile found. Editing" TO OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+      *>DISPLAY PROFILE IF FOUND IN THE FUTURE TO ADD NICE FEATURE IF
+      *>HAVE TIME
+                       END-IF
+               END-READ
+           END-PERFORM
+
+           IF FOUND-PROFILE-FLAG = "N"
+      *>        If no profile, start a fresh one
+               MOVE CURRENT-USERNAME TO PR-USERNAME
+               DISPLAY "Profile not found. Create a new account."
+               MOVE "Profile not found. Create a new account." TO OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+
+      *> FILLED WITH SPACES JUST IN CASE
+           MOVE SPACES TO TEMP-FIRST-NAME
+           MOVE SPACES TO TEMP-LAST-NAME
+           MOVE SPACES TO TEMP-UNIVERSITY
+           MOVE SPACES TO TEMP-MAJOR
+           MOVE SPACES TO TEMP-GRAD-YEAR
+           MOVE SPACES TO TEMP-ABOUT-ME
+           MOVE SPACES TO TEMP-EXP (1)
+           MOVE SPACES TO TEMP-EXP (2)
+           MOVE SPACES TO TEMP-EXP (3)
+      *>    MOVE SPACES TO TEMP-EXP-DESC
+           MOVE SPACES TO TEMP-EDU (1)
+           MOVE SPACES TO TEMP-EDU (2)
+           MOVE SPACES TO TEMP-EDU (3)
+      *>    MOVE SPACES TO TEMP-EDU-DESC
+
+      *>REQUIRED
+           DISPLAY "Enter First Name: "
+           MOVE "Enter First Name: " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+      *>added IF BLOCK to add skip functionality if required field is
+      *>nonempty
+           IF FOUND-PROFILE-FLAG = "Y" AND
+             PR-FIRST-NAME NOT = SPACES AND
+             PR-FIRST-NAME NOT = LOW-VALUE
+               DISPLAY "DEBUG:"FOUND-PROFILE-FLAG "(" PR-FIRST-NAME ")"
+               DISPLAY "(Leave empty to keep the old record)"
+               MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+           MOVE "N" TO WS-VALID-REQUIRED
+      *>CHECKING IF THE VALUE ENTERED NON-EMPTY
+           PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO TEMP-FIRST-NAME
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
+               IF TEMP-FIRST-NAME NOT = SPACES
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               ELSE
+                   DISPLAY "This is a required field. Please enter non-empty value"
+                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+           END-PERFORM
+           MOVE TEMP-FIRST-NAME TO PR-FIRST-NAME
+
+      *>REQUIRED
+           DISPLAY "Enter Last Name: "
+           MOVE "Enter Last Name: " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF FOUND-PROFILE-FLAG = "Y" AND
+             PR-LAST-NAME NOT EQUAL SPACES AND
+             PR-LAST-NAME NOT = LOW-VALUE
+               DISPLAY "(Leave empty to keep the old record)"
+               MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+           MOVE "N" TO WS-VALID-REQUIRED
+           PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG NOT = "Y"
+                 READ INPUT-FILE INTO TEMP-LAST-NAME
+                     AT END MOVE "Y" TO WS-EOF-FLAG
+                 END-READ
+               END-IF
+
+               IF TEMP-LAST-NAME NOT = SPACES
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               ELSE
+                   DISPLAY "This is a required field. Please enter non-empty value"
+                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+           END-PERFORM
+           MOVE TEMP-LAST-NAME TO PR-LAST-NAME
+
+      *>REQUIRED
+           DISPLAY "Enter University: "
+           MOVE "Enter University: " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF FOUND-PROFILE-FLAG = "Y" AND
+             PR-UNIVERSITY NOT EQUAL SPACES AND
+             PR-UNIVERSITY NOT = LOW-VALUE
+               DISPLAY "(Leave empty to keep the old record)"
+               MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+           MOVE "N" TO WS-VALID-REQUIRED
+           PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG NOT = "Y"
+                 READ INPUT-FILE INTO TEMP-UNIVERSITY
+                     AT END MOVE "Y" TO WS-EOF-FLAG
+                 END-READ
+               END-IF
+
+               IF TEMP-UNIVERSITY NOT = SPACES
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               ELSE
+                   DISPLAY "This is a required field. Please enter non-empty value"
+                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+           END-PERFORM
+           MOVE TEMP-UNIVERSITY TO PR-UNIVERSITY
+
+      *>REQUIRED
+           DISPLAY "Enter Major: "
+           MOVE "Enter Major: " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF FOUND-PROFILE-FLAG = "Y" AND
+             PR-MAJOR NOT EQUAL SPACES AND
+             PR-MAJOR NOT = LOW-VALUE
+               DISPLAY "(Leave empty to keep the old record)"
+               MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+           MOVE "N" TO WS-VALID-REQUIRED
+           PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG NOT = "Y"
+                 READ INPUT-FILE INTO TEMP-MAJOR
+                     AT END MOVE "Y" TO WS-EOF-FLAG
+                 END-READ
+               END-IF
+               IF TEMP-MAJOR NOT = SPACES
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               ELSE
+                   DISPLAY "This is a required field. Please enter non-empty value"
+                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+           END-PERFORM
+           MOVE TEMP-MAJOR TO PR-MAJOR
+
+      *>REQUIRED
+           DISPLAY "Enter Graduation Year: "
+           MOVE "Enter Graduation Year: " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF FOUND-PROFILE-FLAG = "Y" AND
+             PR-GRAD-YEAR NOT EQUAL SPACES AND
+             PR-GRAD-YEAR NOT = LOW-VALUE
+               DISPLAY "(Leave empty to keep the old record)"
+               MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+      *>Graduation year validation
+           PERFORM UNTIL WS-VALID-GRAD-YEAR = "Y"
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO TEMP-GRAD-YEAR
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
+               IF TEMP-GRAD-YEAR IS NUMERIC AND
+                   FUNCTION NUMVAL(TEMP-GRAD-YEAR) >= 1925 AND
+                   FUNCTION NUMVAL(TEMP-GRAD-YEAR) <= 2035
+                   MOVE "Y" TO WS-VALID-GRAD-YEAR
+               ELSE
+                   DISPLAY "Please enter a valid graduation year. (1925-2035)"
+                   MOVE "Please enter a valid graduation year. (1925-2035)" TO OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+           END-PERFORM
+
+           IF TEMP-GRAD-YEAR NOT = SPACES
+               MOVE FUNCTION NUMVAL(TEMP-GRAD-YEAR) TO PR-GRAD-YEAR
+           END-IF
+
+           DISPLAY "About Me (optional, blank = skip/keep): "
+           MOVE "About Me (optional, blank = skip/keep): " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO TEMP-ABOUT-ME
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+           IF TEMP-ABOUT-ME NOT = SPACES
+               MOVE TEMP-ABOUT-ME TO PR-ABOUT-ME
+           END-IF
+
+           DISPLAY "Experience 1 (optional, blank = skip/keep): "
+           MOVE "Experience 1 (optional, blank = skip/keep): " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO TEMP-EXP (1)
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+           IF TEMP-EXP (1) NOT = SPACES
+               MOVE TEMP-EXP (1) TO PR-EXP (1)
+           END-IF
+
+           DISPLAY "Experience 2 (optional, blank = skip/keep): "
+           MOVE "Experience 2 (optional, blank = skip/keep): " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO TEMP-EXP (2)
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+           IF TEMP-EXP (2) NOT = SPACES
+               MOVE TEMP-EXP (2) TO PR-EXP (2)
+           END-IF
+
+           DISPLAY "Experience 3 (optional, blank = skip/keep): "
+           MOVE "Experience 3 (optional, blank = skip/keep): " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO TEMP-EXP (3)
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+           IF TEMP-EXP (3) NOT = SPACES
+               MOVE TEMP-EXP (3) TO PR-EXP (3)
+           END-IF
+
+           DISPLAY "Education 1 (optional, blank = skip/keep): "
+           MOVE "Education 1 (optional, blank = skip/keep): " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO TEMP-EDU (1)
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+           IF TEMP-EDU (1) NOT = SPACES
+               MOVE TEMP-EDU (1) TO PR-EDU (1)
+           END-IF
+
+           DISPLAY "Education 2 (optional, blank = skip/keep): "
+           MOVE "Education 2 (optional, blank = skip/keep): " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO TEMP-EDU (2)
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+           IF TEMP-EDU (2) NOT = SPACES
+               MOVE TEMP-EDU (2) TO PR-EDU (2)
+           END-IF
+
+           DISPLAY "Education 3 (optional, blank = skip/keep): "
+           MOVE "Education 3 (optional, blank = skip/keep): " TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO TEMP-EDU (3)
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+           IF TEMP-EDU (3) NOT = SPACES
+               MOVE TEMP-EDU (3) TO PR-EDU (3)
+           END-IF
+
+           IF FOUND-PROFILE-FLAG = "Y"
+               REWRITE PROFILE-RECORD
+               DISPLAY "Profile updated successfully."
+               MOVE "Profile updated successfully." TO OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           ELSE
+               CLOSE PROFILE-FILE
+               OPEN EXTEND PROFILE-FILE
+               WRITE PROFILE-RECORD
+               DISPLAY "Profile created successfully."
+               MOVE "Profile created successfully." TO OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+           CLOSE PROFILE-FILE
+           DISPLAY "Profile saved successfully.".
+           MOVE "Profile saved successfully." TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD.
+
        LEARN-SKILL-MENU.
            DISPLAY "Learn a New Skill"
            MOVE "Learn a New Skill" TO OUTPUT-RECORD
@@ -464,4 +779,3 @@
            CLOSE INPUT-FILE
            CLOSE OUTPUT-FILE
            CLOSE ACCOUNTS-FILE.
-		  
