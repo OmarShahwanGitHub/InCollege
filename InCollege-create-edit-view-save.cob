@@ -763,7 +763,7 @@
            END-IF
 
            MOVE 0 TO TEMP-EXP-COUNT
-           PERFORM UNTIL TEMP-EXP-COUNT > 3 OR WS-EOF-FLAG = "Y"
+           PERFORM UNTIL TEMP-EXP-COUNT >= 3 OR WS-EOF-FLAG = "Y"
                MOVE "=== Add Experience (optional, max 3 entries. Enter 'DONE' to finish) ===" TO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
@@ -821,7 +821,7 @@
            END-PERFORM
 
            MOVE 0 TO TEMP-EDU-COUNT
-           PERFORM UNTIL TEMP-EDU-COUNT > 3 OR WS-EOF-FLAG = "Y"
+           PERFORM UNTIL TEMP-EDU-COUNT >= 3 OR WS-EOF-FLAG = "Y"
                MOVE "Add Education (optional, max 3 entries. Enter 'DONE' to finish):" TO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
