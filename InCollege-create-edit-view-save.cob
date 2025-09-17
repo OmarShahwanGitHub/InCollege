@@ -595,6 +595,9 @@
                        AT END MOVE "Y" TO WS-EOF-FLAG
                    END-READ
                END-IF
+               IF TEMP-FIRST-NAME = SPACES AND FOUND-PROFILE-FLAG = "Y"
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               END-IF
                IF TEMP-FIRST-NAME NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
@@ -627,6 +630,9 @@
                  END-READ
                END-IF
 
+               IF TEMP-LAST-NAME = SPACES AND FOUND-PROFILE-FLAG = "Y"
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               END-IF
                IF TEMP-LAST-NAME NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
@@ -659,6 +665,9 @@
                  END-READ
                END-IF
 
+               IF TEMP-UNIVERSITY = SPACES AND FOUND-PROFILE-FLAG = "Y"
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               END-IF
                IF TEMP-UNIVERSITY NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
@@ -689,6 +698,9 @@
                  READ INPUT-FILE INTO TEMP-MAJOR
                      AT END MOVE "Y" TO WS-EOF-FLAG
                  END-READ
+               END-IF
+               IF TEMP-MAJOR = SPACES AND FOUND-PROFILE-FLAG = "Y"
+                   MOVE "Y" TO WS-VALID-REQUIRED 
                END-IF
                IF TEMP-MAJOR NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
@@ -721,6 +733,9 @@
                    READ INPUT-FILE INTO TEMP-GRAD-YEAR
                        AT END MOVE "Y" TO WS-EOF-FLAG
                    END-READ
+               END-IF
+               IF TEMP-GRAD-YEAR = SPACES AND FOUND-PROFILE-FLAG = "Y"
+                   MOVE "Y" TO WS-VALID-GRAD-YEAR
                END-IF
                IF TEMP-GRAD-YEAR IS NUMERIC AND
                    FUNCTION NUMVAL(TEMP-GRAD-YEAR) >= 1925 AND
