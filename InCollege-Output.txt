@@ -3,12 +3,6 @@ Welcome to InCollege!
 1. Log In
 2. Create New Account
 Enter your choice:
-All permitted accounts have been created, Max 5 accounts.
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
 Please enter your username:
 Please enter your password:
 Welcome testuser!
@@ -20,43 +14,12 @@ Welcome testuser!
 5. Learn a new skill
 9. Logout
 Enter your choice:
-==== YOUR PROFILE ====
-First Name: test
-Last Name: user
-University: usf
-Major: bis
-Graduation Year: 2025
-About Me: im just testing
-Experience:
-  Title: STUDNET
-  Company: USF
-  Dates: SUMMER 2022
-  Description: no desc
-Education:
-  Degree: BSCS
-  University: EXUSF
-  Years: 2020-2025
---- END OF PROFILE VIEW ---
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-9. Logout
-Enter your choice:
-Profile found. Editing existing records
+Profile not found. Create a new profile.
 Enter First Name:
-(Leave empty to keep the old record)
 Enter Last Name:
-(Leave empty to keep the old record)
 Enter University:
-(Leave empty to keep the old record)
 Enter Major:
-(Leave empty to keep the old record)
 Enter Graduation Year:
-(Leave empty to keep the old record)
-Please enter a valid graduation year. (1925-2035)
 About Me (optional, blank = skip/keep):
 === Add Experience (optional, max 3 entries. Enter 'DONE' to finish) ===
 Experience #1 - Title:
@@ -71,7 +34,7 @@ Education #1 - University/College:
 Education #1 - Years Attended (e.g., 2023-2025):
 Add Education (optional, max 3 entries. Enter 'DONE' to finish):
 Education #2 - Degree:
-Profile updated successfully.
+Profile created successfully.
 Profile saved successfully.
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
@@ -82,21 +45,21 @@ Profile saved successfully.
 9. Logout
 Enter your choice:
 ==== YOUR PROFILE ====
-First Name: test
-Last Name: user
-University: usf
-Major: bis
+First Name: John
+Last Name: Doe
+University: USF
+Major: Computer Science
 Graduation Year: 2025
-About Me: im just testing
+About Me: I am a computer science student
 Experience:
-  Title: STUDNET
-  Company: USF
-  Dates: SUMMER 2022
-  Description: no desc
+  Title: Software Intern
+  Company: Tech Company
+  Dates: Summer 2024
+  Description: Worked on web development
 Education:
-  Degree: BSCS
-  University: EXUSF
-  Years: 2020-2025
+  Degree: Bachelor's Degree
+  University: USF
+  Years: 2021-2025
 --- END OF PROFILE VIEW ---
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
@@ -105,4 +68,10 @@ Education:
 4. Find someone you know
 5. Learn a new skill
 9. Logout
+Enter your choice:
+Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
 Enter your choice:

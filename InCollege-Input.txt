@@ -1,39 +1,21 @@
 1
 testuser
 Password123!
-9
 1
-testuser
-Password123!
-1
-test2
-user
-uni
-maj
-2026
-boutme
-exp1
-exp22
-exp333
-edu1
-edutwo
-edu3
-2
-9
-1
-Aibek
-hihihiHi1+
-2
-Aibek
-Shadybekov
+John
+Doe
 USF
-CS
-2026
-my bio
-1
+Computer Science
+2025
+I am a computer science student
+Software Intern
+Tech Company
+Summer 2024
+Worked on web development
+DONE
+Bachelor's Degree
+USF
+2021-2025
+DONE
 2
-3
-4
-5
-6
-2
+9
