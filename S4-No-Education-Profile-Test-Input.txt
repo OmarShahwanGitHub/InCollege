@@ -1,0 +1,19 @@
+1
+testuser
+Password123!
+1
+Alice
+Brown
+Stanford
+Business
+2025
+I love entrepreneurship.
+Marketing Intern
+Apple
+Summer 2023
+Worked on product marketing
+DONE
+DONE
+4
+Alice Brown
+9

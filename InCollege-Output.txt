@@ -14,28 +14,22 @@ Welcome testuser!
 5. Learn a new skill
 9. Logout
 Enter your choice:
-Profile not found. Create a new profile.
-Enter First Name:
-Enter Last Name:
-Enter University:
-Enter Major:
-Enter Graduation Year:
-About Me (optional, blank = skip/keep):
-=== Add Experience (optional, max 3 entries. Enter 'DONE' to finish) ===
-Experience #1 - Title:
-Experience #1 - Company/Organization:
-Experience #1 - Dates (e.g., Summer 2024):
-Experience #1 - Description (optional, max 100 chars, blank to skip):
-=== Add Experience (optional, max 3 entries. Enter 'DONE' to finish) ===
-Experience #2 - Title:
-Add Education (optional, max 3 entries. Enter 'DONE' to finish):
-Education #1 - Degree:
-Education #1 - University/College:
-Education #1 - Years Attended (e.g., 2023-2025):
-Add Education (optional, max 3 entries. Enter 'DONE' to finish):
-Education #2 - Degree:
-Profile created successfully.
-Profile saved successfully.
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: John                 Doe
+University: University of Florida
+Major: Computer Science
+Graduation Year: 2025
+About Me: I am passionate about software development and love working on innovat
+Experience:
+  Title: Software Engineer Intern
+  Company: Google
+  Dates: Summer 2024
+  Description: Worked on front-end development using React and JavaScript
+Education:
+  Degree: Bachelor of Science
+  University: University of Florida
+  Years: 2021-2025
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
@@ -45,22 +39,31 @@ Profile saved successfully.
 9. Logout
 Enter your choice:
 ==== YOUR PROFILE ====
-First Name: John
-Last Name: Doe
-University: USF
+Name: John                 Doe
+University: University of Florida
 Major: Computer Science
 Graduation Year: 2025
-About Me: I am a computer science student
+About Me: I am passionate about software development and love working on innovat
 Experience:
-  Title: Software Intern
-  Company: Tech Company
+  Title: Software Engineer Intern
+  Company: Google
   Dates: Summer 2024
-  Description: Worked on web development
+  Description: Worked on front-end development using React and JavaScript
 Education:
-  Degree: Bachelor's Degree
-  University: USF
+  Degree: Bachelor of Science
+  University: University of Florida
   Years: 2021-2025
 --- END OF PROFILE VIEW ---
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+No one by that name could be found.
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
