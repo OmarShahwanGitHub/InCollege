@@ -1,0 +1,46 @@
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome aibek!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Aibek Shadybekov
+University: USF
+Major: BSCS
+Graduation Year: 2026
+About Me: Something about me
+Experience:
+  Title: Full-time student
+  Company: University of South Florida
+  Dates: 2022-2026
+  Description: Some description
+Education:
+  Degree: Computer and Information Scien
+  University: USF
+  Years: 2022-2026
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+9. Logout
+Enter your choice:
+Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
