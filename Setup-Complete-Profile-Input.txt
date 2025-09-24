@@ -1,0 +1,20 @@
+1
+testuser
+Password123!
+1
+John
+Doe
+University of Florida
+Computer Science
+2025
+I am passionate about software development and love working on innovative projects.
+Software Engineer Intern
+Google
+Summer 2024
+Worked on front-end development using React and JavaScript
+DONE
+Bachelor of Science
+University of Florida
+2021-2025
+DONE
+9

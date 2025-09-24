@@ -1,0 +1,18 @@
+1
+testuser
+Password123!
+1
+Bob
+Wilson
+MIT
+Engineering
+2024
+I am a software engineer.
+DONE
+Bachelor of Science
+MIT
+2020-2024
+DONE
+4
+Bob Wilson
+9

@@ -1,5 +1,5 @@
-Parker Scrum Master
-Deekshita Developer#1
-Aibek Developer#2
-Omar Tester#1
-Maazin Tester#2
+Maazin Scrum Master
+Parker Developer#1
+Deekshita Developer#2
+Aibek Tester#1
+Omar Tester#2

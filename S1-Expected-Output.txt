@@ -1,0 +1,41 @@
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome testuser!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a New Skill
+9. Logout
+Enter your choice:
+==== YOUR PROFILE ====
+Name: John Doe
+University: University of Florida
+Major: Computer Science
+Graduation Year: 2025
+About Me: I am passionate about software development and love working on innovative projects.
+Experience:
+  Title: Software Engineer Intern
+  Company: Google
+  Dates: Summer 2024
+  Description: Worked on front-end development using React and JavaScript
+Education:
+  Degree: Bachelor of Science
+  University: University of Florida
+  Years: 2021-2025
+--- END OF PROFILE VIEW ---
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a New Skill
+9. Logout
+Enter your choice:
+Logging out.

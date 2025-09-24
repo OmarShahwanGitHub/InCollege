@@ -1,21 +1,9 @@
 1
 testuser
 Password123!
-1
-John
-Doe
-USF
-Computer Science
-2025
-I am a computer science student
-Software Intern
-Tech Company
-Summer 2024
-Worked on web development
-DONE
-Bachelor's Degree
-USF
-2021-2025
-DONE
+4
+John Doe
 2
+4
+Jane Smith
 9
