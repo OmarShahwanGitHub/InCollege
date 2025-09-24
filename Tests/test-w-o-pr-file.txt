@@ -1,0 +1,30 @@
+2
+1
+testuser
+Password123!
+2
+1
+test
+user
+usf
+bis
+2036
+2025
+im just testing
+STUDNET
+USF
+SUMMER 2022
+no desc
+STUDNET2
+USF2
+SUMMER 2022
+no desc2
+DONE
+BSCS
+EXUSF
+2020-2025
+BSCS2
+EXUSF2
+2020-2025
+DONE
+2
