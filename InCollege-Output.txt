@@ -20,7 +20,7 @@ Name: John Doe
 University: University of Florida
 Major: Computer Science
 Graduation Year: 2025
-About Me: I am passionate about software development and love working on innovat
+About Me: I am passionate about software development and love working on innovative projec
 Experience:
   Title: Software Engineer Intern
   Company: Google
@@ -43,7 +43,7 @@ Name: John Doe
 University: University of Florida
 Major: Computer Science
 Graduation Year: 2025
-About Me: I am passionate about software development and love working on innovat
+About Me: I am passionate about software development and love working on innovative projec
 Experience:
   Title: Software Engineer Intern
   Company: Google

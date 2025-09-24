@@ -30,7 +30,7 @@
        01 INPUT-RECORD PIC X(80).
        
        FD OUTPUT-FILE.
-       01 OUTPUT-RECORD PIC X(80).
+       01 OUTPUT-RECORD PIC X(100).
        
        FD ACCOUNTS-FILE.
        01 ACCOUNT-RECORD.
