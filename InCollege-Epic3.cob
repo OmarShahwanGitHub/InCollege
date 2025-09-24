@@ -6,7 +6,7 @@
       *> Creating file variables
        FILE-CONTROL.
            SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
-      *> This one is my folder of test files
+      *> This one is Aibek's folder of test files
       *>     SELECT INPUT-FILE ASSIGN TO "Tests/epic3-1.in"
       *>     SELECT INPUT-FILE ASSIGN TO "create-acc-profile.in"
       *>     SELECT INPUT-FILE ASSIGN TO "search-people.in"
