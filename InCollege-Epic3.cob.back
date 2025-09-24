@@ -7,9 +7,7 @@
        FILE-CONTROL.
            SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
       *> This one is my folder of test files
-      *>     SELECT INPUT-FILE ASSIGN TO "Tests/epic3-1.in"
-      *>     SELECT INPUT-FILE ASSIGN TO "create-acc-profile.in"
-      *>     SELECT INPUT-FILE ASSIGN TO "search-people.in"
+      *>     SELECT INPUT-FILE ASSIGN TO "Tests/test-w-o-pr-file.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
@@ -463,12 +461,8 @@
       *> EX: OUTPUT-RECORD VALUE = "HI**********" NOT "HI          " (OR "HI")
       *> SO WE NEED TO FILL OUTPUT-RECORD WITH SPACES FOR NICE OUTPUT
            MOVE SPACES TO OUTPUT-RECORD
-           STRING "Name: " DELIMITED BY SIZE
-                   PR-FIRST-NAME DELIMITED BY SPACE
-                   " " DELIMITED BY SIZE
-                   PR-LAST-NAME DELIMITED BY SPACE
-                   INTO OUTPUT-RECORD
-           END-STRING
+           STRING "Name: " PR-FIRST-NAME " " PR-LAST-NAME
+               DELIMITED BY SIZE INTO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
@@ -594,16 +588,10 @@
       *>without this if when redirected from profile-view paragraph it
       *>would duplicate Profile not found. Create a new profile. in the
       *>output
-           IF FOUND-PROFILE-FLAG = "N"
-               IF WS-USER-CHOICE = 2
-                   DISPLAY "You don't have a profile. Create a profile."
-                   MOVE "You don't have a profile. Create a profile." TO OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
-               ELSE
-                   DISPLAY "Welcome to Create a Profile Page."
-                   MOVE "Welcome to Create a Profile Page." TO OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
-               END-IF
+           IF FOUND-PROFILE-FLAG = "N" AND WS-USER-CHOICE = 1
+               DISPLAY "Profile not found. Create a new profile."
+               MOVE "Profile not found. Create a new profile." TO OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
            END-IF
       *> FILLED WITH SPACES JUST IN CASE
            MOVE SPACES TO TEMP-FIRST-NAME
@@ -940,7 +928,6 @@
            WRITE OUTPUT-RECORD
            CLOSE PROFILE-FILE
            .
-
        SEARCH-USER.
            DISPLAY "Enter the full name of the person you are looking for:"
            MOVE "Enter the full name of the person you are looking for:" TO OUTPUT-RECORD
@@ -956,7 +943,6 @@
                INTO TEMP-FIRST-NAME TEMP-LAST-NAME
            END-UNSTRING
 
-      *> DISPLAY "DEBUG******************"TEMP-FIRST-NAME"*"TEMP-LAST-NAME"*"
            MOVE "N" TO FOUND-PROFILE-FLAG
            OPEN INPUT PROFILE-FILE
            PERFORM UNTIL WS-EOF-FLAG = "Y" OR FOUND-PROFILE-FLAG = "Y"
@@ -977,12 +963,8 @@
                WRITE OUTPUT-RECORD
 
                MOVE SPACES TO OUTPUT-RECORD
-               STRING "Name: " DELIMITED BY SIZE
-                       PR-FIRST-NAME DELIMITED BY SPACE
-                       " " DELIMITED BY SIZE
-                       PR-LAST-NAME DELIMITED BY SPACE
-                       INTO OUTPUT-RECORD
-               END-STRING
+               STRING "Name: " PR-FIRST-NAME " " PR-LAST-NAME
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
 
