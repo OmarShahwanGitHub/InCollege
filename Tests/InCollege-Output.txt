@@ -5,7 +5,7 @@ Welcome to InCollege!
 Enter your choice:
 Please enter your username:
 Please enter your password:
-Welcome aibek!
+Welcome test!
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
@@ -16,20 +16,34 @@ Welcome aibek!
 Enter your choice:
 Enter the full name of the person you are looking for:
 --- Found User Profile ---
-Name: Aibek Shadybekov
-University: USF
-Major: BSCS
-Graduation Year: 2026
-About Me: Something about me
+Name: Full User
+University: UCF test
+Major: MBA test
+Graduation Year: 2028
+About Me: Hi my profile info is full
 Experience:
-  Title: Full-time student
-  Company: University of South Florida
-  Dates: 2022-2026
-  Description: Some description
+  Title: Full-time test
+  Company: University of Central Florida
+  Dates: 2022fl-2026
+  Description: Some description test
+  Title: Full-time hobo
+  Company: Somewhere
+  Dates: 1999fl-2026
+  Description: Second description test
+  Title: Full-time test
+  Company: UNIVERSE
+  Dates: 2022fl-2026
+  Description: Thirddescription test
 Education:
   Degree: Computer and Information Scien
-  University: USF
+  University: USF test
   Years: 2022-2026
+  Degree: Information Science test
+  University: test
+  Years: -2026 test
+  Degree: Science test
+  University: testing
+  Years: 2026
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile

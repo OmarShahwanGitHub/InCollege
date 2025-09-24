@@ -5,11 +5,11 @@
        INPUT-OUTPUT SECTION.
       *> Creating file variables
        FILE-CONTROL.
-      *>     SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
+           SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
       *> This one is my folder of test files
       *>     SELECT INPUT-FILE ASSIGN TO "Tests/epic3-1.in"
       *>     SELECT INPUT-FILE ASSIGN TO "create-acc-profile.in"
-           SELECT INPUT-FILE ASSIGN TO "search-people.in"
+      *>     SELECT INPUT-FILE ASSIGN TO "search-people.in"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
@@ -956,7 +956,7 @@
                INTO TEMP-FIRST-NAME TEMP-LAST-NAME
            END-UNSTRING
 
-           DISPLAY "*"TEMP-FIRST-NAME"*"TEMP-LAST-NAME"*"
+      *> DISPLAY "DEBUG******************"TEMP-FIRST-NAME"*"TEMP-LAST-NAME"*"
            MOVE "N" TO FOUND-PROFILE-FLAG
            OPEN INPUT PROFILE-FILE
            PERFORM UNTIL WS-EOF-FLAG = "Y" OR FOUND-PROFILE-FLAG = "Y"
