@@ -1,9 +1,15 @@
-Main menu
-DISPLAY "1. Log In"
-DISPLAY "2. Create New Account"
+======================================
+*MAIN-MENU
+
+DISPLAY "1. Log In" -> LOGIN-PROCESS
+DISPLAY "2. Create New Account" -> REGISTRATION
 DISPLAY "Enter your choice:"
 ======================================
-REGISTRATION (From main menu: 2. Create New Account)
+
+
+======================================
+MAIN-MENU -> *REGISTRATION (main menu: 2. Create New Account)
+
 IF count >= 5
 DISPLAY "All permitted accounts have been created, Max 5 accounts."
 EXIT PARAGRAPH
@@ -15,25 +21,66 @@ WHILE VALID-PASS = FALSE
 VALIDATE IF INVALID WILL DISPLAY "Error: Password must be 8-12 characters long."
 END-WHILE
 IF VALID
-DISPLAY "Account successfully created!"
+DISPLAY "Account successfully created!" -> *MAIN-MENU
 ======================================
-LOGIN-PROCESS (From main menu: 1. Log in)
 
-           DISPLAY "Please enter your username:"
-           DISPLAY "Please enter your password:"
-           VALIDATE
-           IF VALID
-           DISPLAY "WELCOME"
-           ELSE
-                   DISPLAY "Incorrect username/password, try again."
-           END-IF
+
 ======================================
-       POST-LOGIN-MENU (From LOGIN-PROCESS: IF VALID)
-           DISPLAY "1. Create/Edit My Profile"
-           DISPLAY "2. View My Profile"
-           DISPLAY "3. Search for a job"
-           DISPLAY "4. Find someone you know"
-           DISPLAY "5. Learn a new skill"
-           DISPLAY "9. Logout"
-           DISPLAY "Enter your choice:"
-UNFINISHED WILL FINISH WHEN WILL ADD TITLE, COMPANY NAME, ETC FUNCTIONALITY
+MAIN-MENU -> *LOGIN-PROCESS (1. Log in)
+
+DISPLAY "Please enter your username:"
+DISPLAY "Please enter your password:"
+VALIDATE
+IF VALID
+DISPLAY "WELCOME" -> *POST-LOGIN-MENU
+ELSE
+   DISPLAY "Incorrect username/password, try again."
+END-IF
+======================================
+
+
+======================================
+LOGIN -> *POST-LOGIN-MENU (LOGIN-PROCESS: IF VALID)
+
+DISPLAY "1. Create/Edit My Profile" -> *CREATE-EDIT-PROFILE
+DISPLAY "2. View My Profile" -> *PROFILE-VIEW
+DISPLAY "3. Search for a job" -> NOTHING
+DISPLAY "4. Find someone you know" -> *SEARCH-USER
+DISPLAY "5. Learn a new skill" -> *LEARN-SKILL-MENU
+DISPLAY "9. Logout" -> *MAIN-MENU
+DISPLAY "Enter your choice:"
+======================================
+
+
+======================================
+POST-LOGIN-MENU -> *CREATE-EDIT-PROFILE
+
+ACCEPT "First Name"
+ACCEPT "Last Name"
+ACCEPT "Enter University"
+ACCEPT "Enter Major:"
+ACCEPT "Enter Graduation Year"
+ACCEPT "About Me"
+
+###EXPERIENCE DONE WHEN ASKED TITLE TO COMPLETE
+ACCEPT "Title"
+ACCEPT "Company/Organization"
+ACCEPT "Dates (e.g., Summer 2024)"
+ACCEPT "Description"
+
+###EDUCATION DONE WHEN ASKED DEGREE TO COMPLETE
+ACCEPT "Deg"
+ACCEPT "Uni"
+ACCEPT "Years"
+-> *POST-LOGIN-MENU
+======================================
+
+======================================
+POST-LOGIN-MENU -> *SEARCH-USER
+
+DISPLAY "Enter the full name of the person you are looking for:"
+IF FOUND
+DISPLAY USER
+ELSE
+DISPLAY "No one by that name could be found."
+-> *POST-LOGIN-MENU
