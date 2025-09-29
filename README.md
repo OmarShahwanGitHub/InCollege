@@ -5,7 +5,7 @@ Cobol Program for a LinkedIn-like app for college students
 
 ### Compile the program:
 ```bash
-cobc -x -free InCollege.cob
+cobc -x -free InCollege-Epic3.cob -o InCollege
 ```
 
 ### Execute the program:
@@ -29,3 +29,7 @@ The program reads all user inputs from `InCollege-Input.txt`. For testing, you c
 - Post-login menu with job search, find someone, and learn skills options
 - Account limit enforcement (maximum 5 accounts)
 - Under construction notices for undeveloped features
+- Search for classmates, view their profiles, and send connection requests with
+   duplicate-request and self-request validation
+- Persistent storage of pending connection requests plus a menu to review
+   incoming requests

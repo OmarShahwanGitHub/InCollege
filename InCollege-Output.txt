@@ -5,71 +5,47 @@ Welcome to InCollege!
 Enter your choice:
 Please enter your username:
 Please enter your password:
-Welcome testuser!
+Welcome TestUser!
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
 3. Search for a job
 4. Find someone you know
 5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+You have no pending connection requests at this time.
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
 9. Logout
 Enter your choice:
 Enter the full name of the person you are looking for:
 --- Found User Profile ---
-Name: John Doe
-University: University of Florida
-Major: Computer Science
-Graduation Year: 2025
-About Me: I am passionate about software development and love working on innovative projec
-Experience:
-  Title: Software Engineer Intern
-  Company: Google
-  Dates: Summer 2024
-  Description: Worked on front-end development using React and JavaScript
-Education:
-  Degree: Bachelor of Science
-  University: University of Florida
-  Years: 2021-2025
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-9. Logout
+Name: New Student
+University: West Coast Uni
+Major: Business
+Graduation Year: 2027
+Experience: None
+Education: None
+1. Send Connection Request
+2. Back to Main Menu
 Enter your choice:
-==== YOUR PROFILE ====
-Name: John Doe
-University: University of Florida
-Major: Computer Science
-Graduation Year: 2025
-About Me: I am passionate about software development and love working on innovative projec
-Experience:
-  Title: Software Engineer Intern
-  Company: Google
-  Dates: Summer 2024
-  Description: Worked on front-end development using React and JavaScript
-Education:
-  Degree: Bachelor of Science
-  University: University of Florida
-  Years: 2021-2025
---- END OF PROFILE VIEW ---
+Connection request sent to New Student.
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
 3. Search for a job
 4. Find someone you know
 5. Learn a new skill
-9. Logout
-Enter your choice:
-Enter the full name of the person you are looking for:
-No one by that name could be found.
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
+6. View My Pending Connection Requests
 9. Logout
 Enter your choice:
 Logging out.

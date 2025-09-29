@@ -23,6 +23,12 @@
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS PR-USERNAME
                FILE STATUS IS WS-FILE-STATUS.
+           SELECT CONNECTION-REQUESTS-FILE ASSIGN TO "connection_requests.doc"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-CONN-REQ-STATUS.
+           SELECT CONNECTIONS-FILE ASSIGN TO "connections.doc"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-CONNECTION-STATUS.
        
        DATA DIVISION.
        FILE SECTION.
@@ -62,6 +68,16 @@
                10 PR-EDU-SCHOOL PIC X(30).
                10 PR-EDU-YEARS PIC X(10).
 
+       FD CONNECTION-REQUESTS-FILE.
+       01 CONNECTION-REQUEST-RECORD.
+           05 CR-SENDER   PIC X(20).
+           05 CR-RECEIVER PIC X(20).
+
+       FD CONNECTIONS-FILE.
+       01 CONNECTION-RECORD.
+           05 CN-USER-ONE PIC X(20).
+           05 CN-USER-TWO PIC X(20).
+
        WORKING-STORAGE SECTION.
       *> FLAG FOR THE INPUT-FILE END OF FILE
        01 WS-EOF-FLAG PIC X VALUE 'N'.
@@ -79,6 +95,8 @@
        77  WS-ACCOUNT-COUNT PIC 9 VALUE 0.
        77  WS-COUNTER       PIC 9 VALUE 0.
        77  WS-FILE-STATUS   PIC XX.
+       77  WS-CONN-REQ-STATUS PIC XX.
+       77  WS-CONNECTION-STATUS PIC XX.
        77  WS-VALID-PASS    PIC X VALUE "N".
        77  WS-HAS-UPPER     PIC X VALUE "N".
        77  WS-HAS-DIGIT     PIC X VALUE "N".
@@ -87,6 +105,13 @@
        77  WS-TRAIL-SP      PIC 99.
        77  WS-LEAD-SP       PIC 99.
        77  PASS-IDX         PIC 99.
+       77  WS-PENDING-EOF     PIC X VALUE "N".
+       77  WS-CONNECTIONS-EOF PIC X VALUE "N".
+       77  WS-OUTGOING-PENDING PIC X VALUE "N".
+       77  WS-INCOMING-PENDING PIC X VALUE "N".
+       77  WS-ALREADY-CONNECTED PIC X VALUE "N".
+       77  WS-PENDING-FOUND   PIC X VALUE "N".
+       77  WS-REQUEST-CHOICE  PIC 9 VALUE 0.
 
        01  WS-EXISTING-RECORD.
            05 EX-USERNAME   PIC X(20).
@@ -112,7 +137,8 @@
            10  TEMP-EDU-SCHOOL PIC X(30).
            10  TEMP-EDU-YEARS  PIC X(10).
 
-       01  CURRENT-USERNAME   PIC X(20).
+             01  CURRENT-USERNAME   PIC X(20).
+             01  WS-TARGET-USERNAME PIC X(20).
        01  FOUND-PROFILE-FLAG PIC X VALUE "N".
        77  WS-VALID-GRAD-YEAR PIC X VALUE "N".
        77  WS-VALID-REQUIRED  PIC X VALUE "N".
@@ -162,6 +188,22 @@
               OPEN I-O PROFILE-FILE
            END-IF
            CLOSE PROFILE-FILE
+
+              OPEN I-O CONNECTION-REQUESTS-FILE
+              IF WS-CONN-REQ-STATUS NOT = "00"
+                  OPEN OUTPUT CONNECTION-REQUESTS-FILE
+                  CLOSE CONNECTION-REQUESTS-FILE
+                  OPEN I-O CONNECTION-REQUESTS-FILE
+              END-IF
+              CLOSE CONNECTION-REQUESTS-FILE
+
+              OPEN I-O CONNECTIONS-FILE
+              IF WS-CONNECTION-STATUS NOT = "00"
+                  OPEN OUTPUT CONNECTIONS-FILE
+                  CLOSE CONNECTIONS-FILE
+                  OPEN I-O CONNECTIONS-FILE
+              END-IF
+              CLOSE CONNECTIONS-FILE
            .
        
        MAIN-MENU.
@@ -390,6 +432,10 @@
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
+           MOVE "6. View My Pending Connection Requests" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            MOVE "9. Logout" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
@@ -416,6 +462,8 @@
                            PERFORM SEARCH-USER
                        WHEN 5
                            PERFORM LEARN-SKILL-MENU
+                       WHEN 6
+                           PERFORM VIEW-PENDING-REQUESTS
                        WHEN 9
                            MOVE "Logging out." TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
@@ -1083,11 +1131,173 @@
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
+
+               MOVE "1. Send Connection Request" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE "2. Back to Main Menu" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE "Enter your choice:" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE 0 TO WS-REQUEST-CHOICE
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO WS-TEMP-INPUT
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                       NOT AT END
+                           MOVE WS-TEMP-INPUT(1:1) TO WS-REQUEST-CHOICE
+                           EVALUATE WS-REQUEST-CHOICE
+                               WHEN 1
+                                   PERFORM SEND-CONNECTION-REQUEST
+                               WHEN 2
+                                   CONTINUE
+                               WHEN OTHER
+                                   MOVE "Invalid choice, returning to main menu." TO OUTPUT-RECORD
+                                   DISPLAY OUTPUT-RECORD
+                                   WRITE OUTPUT-RECORD
+                           END-EVALUATE
+                   END-READ
+               END-IF
            ELSE
                MOVE "No one by that name could be found." TO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            END-IF.
+
+       SEND-CONNECTION-REQUEST.
+           MOVE PR-USERNAME TO WS-TARGET-USERNAME
+           IF WS-TARGET-USERNAME = CURRENT-USERNAME
+               MOVE "You cannot send a connection request to yourself." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           MOVE "N" TO WS-ALREADY-CONNECTED
+           MOVE "N" TO WS-CONNECTIONS-EOF
+           OPEN INPUT CONNECTIONS-FILE
+           IF WS-CONNECTION-STATUS = "35"
+               MOVE "Y" TO WS-CONNECTIONS-EOF
+           END-IF
+           PERFORM UNTIL WS-CONNECTIONS-EOF = "Y" OR WS-ALREADY-CONNECTED = "Y"
+               READ CONNECTIONS-FILE INTO CONNECTION-RECORD
+                   AT END MOVE "Y" TO WS-CONNECTIONS-EOF
+                   NOT AT END
+                       IF (CN-USER-ONE = CURRENT-USERNAME AND CN-USER-TWO = WS-TARGET-USERNAME)
+                           OR (CN-USER-ONE = WS-TARGET-USERNAME AND CN-USER-TWO = CURRENT-USERNAME)
+                           MOVE "Y" TO WS-ALREADY-CONNECTED
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE CONNECTIONS-FILE
+
+           IF WS-ALREADY-CONNECTED = "Y"
+               MOVE "You are already connected with this user." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           MOVE "N" TO WS-OUTGOING-PENDING
+           MOVE "N" TO WS-INCOMING-PENDING
+           MOVE "N" TO WS-PENDING-EOF
+           OPEN INPUT CONNECTION-REQUESTS-FILE
+           IF WS-CONN-REQ-STATUS = "35"
+               MOVE "Y" TO WS-PENDING-EOF
+           END-IF
+           PERFORM UNTIL WS-PENDING-EOF = "Y"
+               READ CONNECTION-REQUESTS-FILE INTO CONNECTION-REQUEST-RECORD
+                   AT END MOVE "Y" TO WS-PENDING-EOF
+                   NOT AT END
+                       IF CR-SENDER = CURRENT-USERNAME AND CR-RECEIVER = WS-TARGET-USERNAME
+                           MOVE "Y" TO WS-OUTGOING-PENDING
+                       END-IF
+                       IF CR-SENDER = WS-TARGET-USERNAME AND CR-RECEIVER = CURRENT-USERNAME
+                           MOVE "Y" TO WS-INCOMING-PENDING
+                       END-IF
+                       IF WS-OUTGOING-PENDING = "Y" AND WS-INCOMING-PENDING = "Y"
+                           MOVE "Y" TO WS-PENDING-EOF
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE CONNECTION-REQUESTS-FILE
+
+           IF WS-OUTGOING-PENDING = "Y"
+               MOVE "You already sent a connection request to this user." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           IF WS-INCOMING-PENDING = "Y"
+               MOVE "This user has already sent you a connection request." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           OPEN EXTEND CONNECTION-REQUESTS-FILE
+           MOVE CURRENT-USERNAME TO CR-SENDER
+           MOVE WS-TARGET-USERNAME TO CR-RECEIVER
+           WRITE CONNECTION-REQUEST-RECORD
+           CLOSE CONNECTION-REQUESTS-FILE
+
+           MOVE SPACES TO WS-MESSAGE
+           STRING "Connection request sent to " DELIMITED BY SIZE
+                  PR-FIRST-NAME DELIMITED BY SPACE
+                  " " DELIMITED BY SIZE
+                  PR-LAST-NAME DELIMITED BY SPACE
+                  "." DELIMITED BY SIZE
+                  INTO WS-MESSAGE
+           END-STRING
+           DISPLAY WS-MESSAGE
+           MOVE WS-MESSAGE TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
+
+       VIEW-PENDING-REQUESTS.
+           MOVE "--- Pending Connection Requests ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "N" TO WS-PENDING-FOUND
+           MOVE "N" TO WS-PENDING-EOF
+           OPEN INPUT CONNECTION-REQUESTS-FILE
+           IF WS-CONN-REQ-STATUS = "35"
+               MOVE "Y" TO WS-PENDING-EOF
+           END-IF
+           PERFORM UNTIL WS-PENDING-EOF = "Y"
+               READ CONNECTION-REQUESTS-FILE INTO CONNECTION-REQUEST-RECORD
+                   AT END MOVE "Y" TO WS-PENDING-EOF
+                   NOT AT END
+                       IF CR-RECEIVER = CURRENT-USERNAME
+                           MOVE "Y" TO WS-PENDING-FOUND
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Request from: " DELIMITED BY SIZE
+                                  CR-SENDER DELIMITED BY SPACE
+                                  INTO OUTPUT-RECORD
+                           END-STRING
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE CONNECTION-REQUESTS-FILE
+
+           IF WS-PENDING-FOUND = "N"
+               MOVE "You have no pending connection requests at this time." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+
+           MOVE "-----------------------------------" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
 
        LEARN-SKILL-MENU.
            DISPLAY "Learn a New Skill"
