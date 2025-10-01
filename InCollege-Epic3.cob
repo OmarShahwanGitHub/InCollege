@@ -5,12 +5,12 @@
        INPUT-OUTPUT SECTION.
       *> Creating file variables
        FILE-CONTROL.
-      *>     SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
+           SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
       *> This one is Aibek's folder of test files
       *>     SELECT INPUT-FILE ASSIGN TO "Tests/epic3-1.in"
       *>     SELECT INPUT-FILE ASSIGN TO "create-acc-profile.in"
       *>     SELECT INPUT-FILE ASSIGN TO "search-people.in"
-           SELECT INPUT-FILE ASSIGN TO "connect-test.in"
+      *>     SELECT INPUT-FILE ASSIGN TO "connect-test.in"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
