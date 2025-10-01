@@ -1,0 +1,588 @@
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome test!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+You have no pending connection requests at this time.
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Full User
+University: UCF test
+Major: MBA test
+Graduation Year: 2028
+About Me: Hi my profile info is full
+Experience:
+  Title: Full-time test
+  Company: University of Central Florida
+  Dates: 2022fl-2026
+  Description: Some description test
+  Title: Full-time hobo
+  Company: Somewhere
+  Dates: 1999fl-2026
+  Description: Second description test
+  Title: Full-time test
+  Company: UNIVERSE
+  Dates: 2022fl-2026
+  Description: Thirddescription test
+Education:
+  Degree: Computer and Information Scien
+  University: USF test
+  Years: 2022-2026
+  Degree: Information Science test
+  University: test
+  Years: -2026 test
+  Degree: Science test
+  University: testing
+  Years: 2026
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Full User.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Aibek Shadybekov
+University: USF
+Major: BSCS
+Graduation Year: 2026
+About Me: Something about me
+Experience:
+  Title: Full-time student
+  Company: University of South Florida
+  Dates: 2022-2026
+  Description: Nice university
+Education:
+  Degree: Computer and Information Scien
+  University: USF
+  Years: 2022-2026
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Aibek Shadybekov.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Tomato User
+University: Farm
+Major: Veg
+Graduation Year: 2027
+About Me: I'm red
+Experience:
+  Title: Veg
+  Company: Publix at USF
+  Dates: 2022-2027
+  Description: Nice place store
+Education:
+  Degree: Agriculture
+  University: Pub at USF
+  Years: 2022-2027e
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Tomato User.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Potato User
+University: Earth
+Major: Food
+Graduation Year: 1999
+About Me: HI
+Experience:
+  Title: Something
+  Company: Earth crust
+  Dates: 2022-1337
+  Description: It's moist out here
+Education:
+  Degree: Agriculture
+  University: Nature
+  Years: 2022-2027e
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Potato User.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+You have no pending connection requests at this time.
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome tomato!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+Request from: test
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Full User
+University: UCF test
+Major: MBA test
+Graduation Year: 2028
+About Me: Hi my profile info is full
+Experience:
+  Title: Full-time test
+  Company: University of Central Florida
+  Dates: 2022fl-2026
+  Description: Some description test
+  Title: Full-time hobo
+  Company: Somewhere
+  Dates: 1999fl-2026
+  Description: Second description test
+  Title: Full-time test
+  Company: UNIVERSE
+  Dates: 2022fl-2026
+  Description: Thirddescription test
+Education:
+  Degree: Computer and Information Scien
+  University: USF test
+  Years: 2022-2026
+  Degree: Information Science test
+  University: test
+  Years: -2026 test
+  Degree: Science test
+  University: testing
+  Years: 2026
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Full User.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Aibek Shadybekov
+University: USF
+Major: BSCS
+Graduation Year: 2026
+About Me: Something about me
+Experience:
+  Title: Full-time student
+  Company: University of South Florida
+  Dates: 2022-2026
+  Description: Nice university
+Education:
+  Degree: Computer and Information Scien
+  University: USF
+  Years: 2022-2026
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Aibek Shadybekov.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Potato User
+University: Earth
+Major: Food
+Graduation Year: 1999
+About Me: HI
+Experience:
+  Title: Something
+  Company: Earth crust
+  Dates: 2022-1337
+  Description: It's moist out here
+Education:
+  Degree: Agriculture
+  University: Nature
+  Years: 2022-2027e
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Potato User.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+Request from: test
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome potato!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+Request from: test
+Request from: tomato
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Full User
+University: UCF test
+Major: MBA test
+Graduation Year: 2028
+About Me: Hi my profile info is full
+Experience:
+  Title: Full-time test
+  Company: University of Central Florida
+  Dates: 2022fl-2026
+  Description: Some description test
+  Title: Full-time hobo
+  Company: Somewhere
+  Dates: 1999fl-2026
+  Description: Second description test
+  Title: Full-time test
+  Company: UNIVERSE
+  Dates: 2022fl-2026
+  Description: Thirddescription test
+Education:
+  Degree: Computer and Information Scien
+  University: USF test
+  Years: 2022-2026
+  Degree: Information Science test
+  University: test
+  Years: -2026 test
+  Degree: Science test
+  University: testing
+  Years: 2026
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Full User.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Aibek Shadybekov
+University: USF
+Major: BSCS
+Graduation Year: 2026
+About Me: Something about me
+Experience:
+  Title: Full-time student
+  Company: University of South Florida
+  Dates: 2022-2026
+  Description: Nice university
+Education:
+  Degree: Computer and Information Scien
+  University: USF
+  Years: 2022-2026
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Aibek Shadybekov.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+Request from: test
+Request from: tomato
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome aibek!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+Request from: test
+Request from: tomato
+Request from: potato
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Full User
+University: UCF test
+Major: MBA test
+Graduation Year: 2028
+About Me: Hi my profile info is full
+Experience:
+  Title: Full-time test
+  Company: University of Central Florida
+  Dates: 2022fl-2026
+  Description: Some description test
+  Title: Full-time hobo
+  Company: Somewhere
+  Dates: 1999fl-2026
+  Description: Second description test
+  Title: Full-time test
+  Company: UNIVERSE
+  Dates: 2022fl-2026
+  Description: Thirddescription test
+Education:
+  Degree: Computer and Information Scien
+  University: USF test
+  Years: 2022-2026
+  Degree: Information Science test
+  University: test
+  Years: -2026 test
+  Degree: Science test
+  University: testing
+  Years: 2026
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Full User.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+Request from: test
+Request from: tomato
+Request from: potato
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome fullprof!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+Request from: test
+Request from: tomato
+Request from: potato
+Request from: aibek
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome test!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+--- Pending Connection Requests ---
+You have no pending connection requests at this time.
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:

@@ -1,0 +1,168 @@
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome test!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+No one by that name could be found.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Test User
+University: USMC
+Major: Grunt
+Graduation Year: 2027
+About Me: NO STEP BACK!!!
+Experience:
+  Title: Cadet
+  Company: USMC
+  Dates: 2022-2027
+  Description: Nice place
+Education:
+  Degree: Marine
+  University: USMC
+  Years: 2022-2027e
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+You cannot send a connection request to yourself.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Potato User
+University: Earth
+Major: Food
+Graduation Year: 1999
+About Me: HI
+Experience:
+  Title: Something
+  Company: Earth crust
+  Dates: 2022-1337
+  Description: It's moist out here
+Education:
+  Degree: Agriculture
+  University: Nature
+  Years: 2022-2027e
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Potato User.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Potato User
+University: Earth
+Major: Food
+Graduation Year: 1999
+About Me: HI
+Experience:
+  Title: Something
+  Company: Earth crust
+  Dates: 2022-1337
+  Description: It's moist out here
+Education:
+  Degree: Agriculture
+  University: Nature
+  Years: 2022-2027e
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+You already sent a connection request to this user.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome potato!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Test User
+University: USMC
+Major: Grunt
+Graduation Year: 2027
+About Me: NO STEP BACK!!!
+Experience:
+  Title: Cadet
+  Company: USMC
+  Dates: 2022-2027
+  Description: Nice place
+Education:
+  Degree: Marine
+  University: USMC
+  Years: 2022-2027e
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+This user has already sent you a connection request.
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+9. Logout
+Enter your choice:
+Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
