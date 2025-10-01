@@ -5,11 +5,12 @@
        INPUT-OUTPUT SECTION.
       *> Creating file variables
        FILE-CONTROL.
-           SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
+      *>     SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
       *> This one is Aibek's folder of test files
       *>     SELECT INPUT-FILE ASSIGN TO "Tests/epic3-1.in"
       *>     SELECT INPUT-FILE ASSIGN TO "create-acc-profile.in"
       *>     SELECT INPUT-FILE ASSIGN TO "search-people.in"
+           SELECT INPUT-FILE ASSIGN TO "connect-test.in"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
@@ -189,19 +190,19 @@
            END-IF
            CLOSE PROFILE-FILE
 
-              OPEN I-O CONNECTION-REQUESTS-FILE
+              OPEN INPUT CONNECTION-REQUESTS-FILE
               IF WS-CONN-REQ-STATUS NOT = "00"
                   OPEN OUTPUT CONNECTION-REQUESTS-FILE
                   CLOSE CONNECTION-REQUESTS-FILE
-                  OPEN I-O CONNECTION-REQUESTS-FILE
+                  OPEN INPUT CONNECTION-REQUESTS-FILE
               END-IF
               CLOSE CONNECTION-REQUESTS-FILE
 
-              OPEN I-O CONNECTIONS-FILE
+              OPEN INPUT CONNECTIONS-FILE
               IF WS-CONNECTION-STATUS NOT = "00"
                   OPEN OUTPUT CONNECTIONS-FILE
                   CLOSE CONNECTIONS-FILE
-                  OPEN I-O CONNECTIONS-FILE
+                  OPEN INPUT CONNECTIONS-FILE
               END-IF
               CLOSE CONNECTIONS-FILE
            .

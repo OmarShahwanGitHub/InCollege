@@ -16,36 +16,39 @@ Welcome test!
 9. Logout
 Enter your choice:
 Enter the full name of the person you are looking for:
-No one by that name could be found.
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-9. Logout
-Enter your choice:
-Enter the full name of the person you are looking for:
 --- Found User Profile ---
-Name: Test User
-University: USMC
-Major: Grunt
-Graduation Year: 2027
-About Me: NO STEP BACK!!!
+Name: Full User
+University: UCF test
+Major: MBA test
+Graduation Year: 2028
+About Me: Hi my profile info is full
 Experience:
-  Title: Cadet
-  Company: USMC
-  Dates: 2022-2027
-  Description: Nice place
+  Title: Full-time test
+  Company: University of Central Florida
+  Dates: 2022fl-2026
+  Description: Some description test
+  Title: Full-time hobo
+  Company: Somewhere
+  Dates: 1999fl-2026
+  Description: Second description test
+  Title: Full-time test
+  Company: UNIVERSE
+  Dates: 2022fl-2026
+  Description: Thirddescription test
 Education:
-  Degree: Marine
-  University: USMC
-  Years: 2022-2027e
+  Degree: Computer and Information Scien
+  University: USF test
+  Years: 2022-2026
+  Degree: Information Science test
+  University: test
+  Years: -2026 test
+  Degree: Science test
+  University: testing
+  Years: 2026
 1. Send Connection Request
 2. Back to Main Menu
 Enter your choice:
-You cannot send a connection request to yourself.
+Connection request sent to Full User.
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
@@ -57,49 +60,34 @@ You cannot send a connection request to yourself.
 Enter your choice:
 Enter the full name of the person you are looking for:
 --- Found User Profile ---
-Name: Potato User
-University: Earth
-Major: Food
-Graduation Year: 1999
-About Me: HI
+Name: Full User
+University: UCF test
+Major: MBA test
+Graduation Year: 2028
+About Me: Hi my profile info is full
 Experience:
-  Title: Something
-  Company: Earth crust
-  Dates: 2022-1337
-  Description: It's moist out here
+  Title: Full-time test
+  Company: University of Central Florida
+  Dates: 2022fl-2026
+  Description: Some description test
+  Title: Full-time hobo
+  Company: Somewhere
+  Dates: 1999fl-2026
+  Description: Second description test
+  Title: Full-time test
+  Company: UNIVERSE
+  Dates: 2022fl-2026
+  Description: Thirddescription test
 Education:
-  Degree: Agriculture
-  University: Nature
-  Years: 2022-2027e
-1. Send Connection Request
-2. Back to Main Menu
-Enter your choice:
-Connection request sent to Potato User.
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-9. Logout
-Enter your choice:
-Enter the full name of the person you are looking for:
---- Found User Profile ---
-Name: Potato User
-University: Earth
-Major: Food
-Graduation Year: 1999
-About Me: HI
-Experience:
-  Title: Something
-  Company: Earth crust
-  Dates: 2022-1337
-  Description: It's moist out here
-Education:
-  Degree: Agriculture
-  University: Nature
-  Years: 2022-2027e
+  Degree: Computer and Information Scien
+  University: USF test
+  Years: 2022-2026
+  Degree: Information Science test
+  University: test
+  Years: -2026 test
+  Degree: Science test
+  University: testing
+  Years: 2026
 1. Send Connection Request
 2. Back to Main Menu
 Enter your choice:
@@ -121,7 +109,7 @@ Welcome to InCollege!
 Enter your choice:
 Please enter your username:
 Please enter your password:
-Welcome potato!
+Welcome fullprof!
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
@@ -159,10 +147,4 @@ This user has already sent you a connection request.
 5. Learn a new skill
 6. View My Pending Connection Requests
 9. Logout
-Enter your choice:
-Logging out.
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
 Enter your choice:

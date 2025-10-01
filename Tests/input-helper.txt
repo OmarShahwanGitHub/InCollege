@@ -7,6 +7,7 @@ DISPLAY "Enter your choice:"
 ======================================
 
 
+
 ======================================
 MAIN-MENU -> *REGISTRATION (main menu: 2. Create New Account)
 
@@ -21,8 +22,11 @@ WHILE VALID-PASS = FALSE
 VALIDATE IF INVALID WILL DISPLAY "Error: Password must be 8-12 characters long."
 END-WHILE
 IF VALID
-DISPLAY "Account successfully created!" -> *MAIN-MENU
+DISPLAY "Account successfully created!"
+
+-> *MAIN-MENU
 ======================================
+
 
 
 ======================================
@@ -36,7 +40,10 @@ DISPLAY "WELCOME" -> *POST-LOGIN-MENU
 ELSE
    DISPLAY "Incorrect username/password, try again."
 END-IF
+
+-> *MAIN-MENU
 ======================================
+
 
 
 ======================================
@@ -47,8 +54,43 @@ DISPLAY "2. View My Profile" -> *PROFILE-VIEW
 DISPLAY "3. Search for a job" -> NOTHING
 DISPLAY "4. Find someone you know" -> *SEARCH-USER
 DISPLAY "5. Learn a new skill" -> *LEARN-SKILL-MENU
+DISPLAY "6. View My Pending Connection Requests" -> *VIEW-PENDING-REQUESTS
 DISPLAY "9. Logout" -> *MAIN-MENU
 DISPLAY "Enter your choice:"
+======================================
+
+
+
+======================================
+POST-LOGIN-MENU -> *VIEW-PENDING-REQUESTS
+
+
+DISPLAY "--- Pending Connection Requests ---"
+DISPLAY "Request from: " XXX
+OR
+DISPLAY "You have no pending connection requests at this time."
+
+-> *POST-LOGIN-MENU
+======================================
+
+
+
+======================================
+POST-LOGIN-MENU -> *SEND-CONNECTION-REQUEST
+
+IF NOT SUCCESS
+  DISPLAY "You cannot send a connection request to yourself."
+  OR
+  DISPLAY "You are already connected with this user."
+  OR
+  DISPLAY "You already sent a connection request to this user."
+  OR
+  DISPLAY "This user has already sent you a connection request."
+
+IF SUCCESS
+  DISPLAY "Connection request sent to " XXX XXX
+
+-> *POST-LOGIN-MENU
 ======================================
 
 
@@ -75,12 +117,23 @@ ACCEPT "Years"
 -> *POST-LOGIN-MENU
 ======================================
 
+
+
 ======================================
 POST-LOGIN-MENU -> *SEARCH-USER
 
 DISPLAY "Enter the full name of the person you are looking for:"
 IF FOUND
-DISPLAY USER
+  DISPLAY USER
+
+  DISPLAY "1. Send Connection Request"
+  DISPLAY "2. Back to Main Menu"
+  DISPLAY "Enter your choice:"
+  IF VALID -> *SEND-CONNECTION-REQUEST
+  ELSE
+    DISPLAY "Invalid choice, returning to main menu."
 ELSE
-DISPLAY "No one by that name could be found."
+  DISPLAY "No one by that name could be found."
+
 -> *POST-LOGIN-MENU
+======================================
