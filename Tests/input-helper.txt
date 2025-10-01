@@ -1,8 +1,8 @@
 ======================================
-*MAIN-MENU
+START -> *MAIN-MENU
 
-DISPLAY "1. Log In" -> LOGIN-PROCESS
-DISPLAY "2. Create New Account" -> REGISTRATION
+DISPLAY "1. Log In" -> *LOGIN-PROCESS
+DISPLAY "2. Create New Account" -> *REGISTRATION
 DISPLAY "Enter your choice:"
 ======================================
 
