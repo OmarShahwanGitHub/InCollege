@@ -6,8 +6,11 @@
       *> Creating file variables
        FILE-CONTROL.
            SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
-      *> This one is my folder of test files
-      *>     SELECT INPUT-FILE ASSIGN TO "Tests/test-w-o-pr-file.txt"
+      *> This one is Aibek's folder of test files
+      *>     SELECT INPUT-FILE ASSIGN TO "Tests/epic3-1.in"
+      *>     SELECT INPUT-FILE ASSIGN TO "create-acc-profile.in"
+      *>     SELECT INPUT-FILE ASSIGN TO "search-people.in"
+      *>     SELECT INPUT-FILE ASSIGN TO "connect-test.in"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
@@ -21,6 +24,12 @@
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS PR-USERNAME
                FILE STATUS IS WS-FILE-STATUS.
+           SELECT CONNECTION-REQUESTS-FILE ASSIGN TO "connection_requests.doc"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-CONN-REQ-STATUS.
+           SELECT CONNECTIONS-FILE ASSIGN TO "connections.doc"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-CONNECTION-STATUS.
        
        DATA DIVISION.
        FILE SECTION.
@@ -28,7 +37,7 @@
        01 INPUT-RECORD PIC X(80).
        
        FD OUTPUT-FILE.
-       01 OUTPUT-RECORD PIC X(80).
+       01 OUTPUT-RECORD PIC X(100).
        
        FD ACCOUNTS-FILE.
        01 ACCOUNT-RECORD.
@@ -60,6 +69,16 @@
                10 PR-EDU-SCHOOL PIC X(30).
                10 PR-EDU-YEARS PIC X(10).
 
+       FD CONNECTION-REQUESTS-FILE.
+       01 CONNECTION-REQUEST-RECORD.
+           05 CR-SENDER   PIC X(20).
+           05 CR-RECEIVER PIC X(20).
+
+       FD CONNECTIONS-FILE.
+       01 CONNECTION-RECORD.
+           05 CN-USER-ONE PIC X(20).
+           05 CN-USER-TWO PIC X(20).
+
        WORKING-STORAGE SECTION.
       *> FLAG FOR THE INPUT-FILE END OF FILE
        01 WS-EOF-FLAG PIC X VALUE 'N'.
@@ -77,6 +96,8 @@
        77  WS-ACCOUNT-COUNT PIC 9 VALUE 0.
        77  WS-COUNTER       PIC 9 VALUE 0.
        77  WS-FILE-STATUS   PIC XX.
+       77  WS-CONN-REQ-STATUS PIC XX.
+       77  WS-CONNECTION-STATUS PIC XX.
        77  WS-VALID-PASS    PIC X VALUE "N".
        77  WS-HAS-UPPER     PIC X VALUE "N".
        77  WS-HAS-DIGIT     PIC X VALUE "N".
@@ -85,6 +106,13 @@
        77  WS-TRAIL-SP      PIC 99.
        77  WS-LEAD-SP       PIC 99.
        77  PASS-IDX         PIC 99.
+       77  WS-PENDING-EOF     PIC X VALUE "N".
+       77  WS-CONNECTIONS-EOF PIC X VALUE "N".
+       77  WS-OUTGOING-PENDING PIC X VALUE "N".
+       77  WS-INCOMING-PENDING PIC X VALUE "N".
+       77  WS-ALREADY-CONNECTED PIC X VALUE "N".
+       77  WS-PENDING-FOUND   PIC X VALUE "N".
+       77  WS-REQUEST-CHOICE  PIC 9 VALUE 0.
 
        01  WS-EXISTING-RECORD.
            05 EX-USERNAME   PIC X(20).
@@ -110,7 +138,8 @@
            10  TEMP-EDU-SCHOOL PIC X(30).
            10  TEMP-EDU-YEARS  PIC X(10).
 
-       01  CURRENT-USERNAME   PIC X(20).
+             01  CURRENT-USERNAME   PIC X(20).
+             01  WS-TARGET-USERNAME PIC X(20).
        01  FOUND-PROFILE-FLAG PIC X VALUE "N".
        77  WS-VALID-GRAD-YEAR PIC X VALUE "N".
        77  WS-VALID-REQUIRED  PIC X VALUE "N".
@@ -160,6 +189,22 @@
               OPEN I-O PROFILE-FILE
            END-IF
            CLOSE PROFILE-FILE
+
+              OPEN INPUT CONNECTION-REQUESTS-FILE
+              IF WS-CONN-REQ-STATUS NOT = "00"
+                  OPEN OUTPUT CONNECTION-REQUESTS-FILE
+                  CLOSE CONNECTION-REQUESTS-FILE
+                  OPEN INPUT CONNECTION-REQUESTS-FILE
+              END-IF
+              CLOSE CONNECTION-REQUESTS-FILE
+
+              OPEN INPUT CONNECTIONS-FILE
+              IF WS-CONNECTION-STATUS NOT = "00"
+                  OPEN OUTPUT CONNECTIONS-FILE
+                  CLOSE CONNECTIONS-FILE
+                  OPEN INPUT CONNECTIONS-FILE
+              END-IF
+              CLOSE CONNECTIONS-FILE
            .
        
        MAIN-MENU.
@@ -224,7 +269,7 @@
      
       *> PASS VALIDATION
            MOVE "N" TO WS-VALID-PASS
-           PERFORM UNTIL WS-VALID-PASS = "Y"
+           PERFORM UNTIL WS-VALID-PASS = "Y" OR WS-EOF-FLAG = "Y"
                DISPLAY "Enter Password:"
                MOVE "Enter Password:" TO OUTPUT-RECORD
                WRITE OUTPUT-RECORD
@@ -240,6 +285,14 @@
       *> ACCOUNT-RECORD is LINKED WITH ACCOUNTS.DOC
       *> SO, WRITE ACCOUNT-RECORD JUST APPENDS NEW ACCCOUNT TO THE END
       *> OF THE ACCOUNTS.DOC
+           IF WS-VALID-PASS = "N"
+             MOVE "Failed to create an account." TO OUTPUT-RECORD
+             DISPLAY OUTPUT-RECORD
+             WRITE OUTPUT-RECORD
+     
+             CLOSE ACCOUNTS-FILE
+             EXIT PARAGRAPH
+           END-IF
            MOVE WS-USERNAME TO ACCOUNT-USERNAME
            MOVE WS-PASSWORD TO ACCOUNT-PASSWORD
            WRITE ACCOUNT-RECORD
@@ -388,6 +441,10 @@
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
+           MOVE "6. View My Pending Connection Requests" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            MOVE "9. Logout" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
@@ -411,11 +468,11 @@
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        WHEN 4
-                           MOVE "Find someone is under construction." TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM SEARCH-USER
                        WHEN 5
                            PERFORM LEARN-SKILL-MENU
+                       WHEN 6
+                           PERFORM VIEW-PENDING-REQUESTS
                        WHEN 9
                            MOVE "Logging out." TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
@@ -463,14 +520,12 @@
       *> EX: OUTPUT-RECORD VALUE = "HI**********" NOT "HI          " (OR "HI")
       *> SO WE NEED TO FILL OUTPUT-RECORD WITH SPACES FOR NICE OUTPUT
            MOVE SPACES TO OUTPUT-RECORD
-           STRING "First Name: " PR-FIRST-NAME
-               DELIMITED BY SIZE INTO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-
-           MOVE SPACES TO OUTPUT-RECORD
-           STRING "Last Name: " PR-LAST-NAME
-               DELIMITED BY SIZE INTO OUTPUT-RECORD
+           STRING "Name: " DELIMITED BY SIZE
+                   PR-FIRST-NAME DELIMITED BY SPACE
+                   " " DELIMITED BY SIZE
+                   PR-LAST-NAME DELIMITED BY SPACE
+                   INTO OUTPUT-RECORD
+           END-STRING
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
@@ -596,10 +651,16 @@
       *>without this if when redirected from profile-view paragraph it
       *>would duplicate Profile not found. Create a new profile. in the
       *>output
-           IF FOUND-PROFILE-FLAG = "N" AND WS-USER-CHOICE = 1
-               DISPLAY "Profile not found. Create a new profile."
-               MOVE "Profile not found. Create a new profile." TO OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+           IF FOUND-PROFILE-FLAG = "N"
+               IF WS-USER-CHOICE = 2
+                   DISPLAY "You don't have a profile. Create a profile."
+                   MOVE "You don't have a profile. Create a profile." TO OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               ELSE
+                   DISPLAY "Welcome to Create a Profile Page."
+                   MOVE "Welcome to Create a Profile Page." TO OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
            END-IF
       *> FILLED WITH SPACES JUST IN CASE
            MOVE SPACES TO TEMP-FIRST-NAME
@@ -935,6 +996,316 @@
            MOVE "Profile saved successfully." TO OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            CLOSE PROFILE-FILE
+           .
+
+       SEARCH-USER.
+           DISPLAY "Enter the full name of the person you are looking for:"
+           MOVE "Enter the full name of the person you are looking for:" TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO WS-TEMP-INPUT
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+
+           UNSTRING WS-TEMP-INPUT DELIMITED BY SPACE
+               INTO TEMP-FIRST-NAME TEMP-LAST-NAME
+           END-UNSTRING
+
+      *> DISPLAY "DEBUG******************"TEMP-FIRST-NAME"*"TEMP-LAST-NAME"*"
+           MOVE "N" TO FOUND-PROFILE-FLAG
+           OPEN INPUT PROFILE-FILE
+           PERFORM UNTIL WS-EOF-FLAG = "Y" OR FOUND-PROFILE-FLAG = "Y"
+               READ PROFILE-FILE NEXT RECORD
+                   AT END EXIT PERFORM
+                   NOT AT END
+                       IF PR-FIRST-NAME = TEMP-FIRST-NAME
+                          AND PR-LAST-NAME = TEMP-LAST-NAME
+                          MOVE "Y" TO FOUND-PROFILE-FLAG
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE PROFILE-FILE
+
+           IF FOUND-PROFILE-FLAG = "Y"
+               MOVE "--- Found User Profile ---" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE SPACES TO OUTPUT-RECORD
+               STRING "Name: " DELIMITED BY SIZE
+                       PR-FIRST-NAME DELIMITED BY SPACE
+                       " " DELIMITED BY SIZE
+                       PR-LAST-NAME DELIMITED BY SPACE
+                       INTO OUTPUT-RECORD
+               END-STRING
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE SPACES TO OUTPUT-RECORD
+               STRING "University: " PR-UNIVERSITY
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE SPACES TO OUTPUT-RECORD
+               STRING "Major: " PR-MAJOR
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE SPACES TO OUTPUT-RECORD
+               STRING "Graduation Year: " PR-GRAD-YEAR
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               IF PR-ABOUT-ME NOT = SPACES
+                   MOVE SPACES TO OUTPUT-RECORD
+                   STRING "About Me: " PR-ABOUT-ME
+                       DELIMITED BY SIZE INTO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+
+               IF PR-EXP-COUNT > 0
+                   MOVE "Experience:" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   MOVE 1 TO TEMP-EXP-COUNT
+                   PERFORM UNTIL TEMP-EXP-COUNT > PR-EXP-COUNT
+                       MOVE SPACES TO OUTPUT-RECORD
+                       STRING "  Title: " PR-EXP-TITLE(TEMP-EXP-COUNT)
+                           DELIMITED BY SIZE INTO OUTPUT-RECORD
+                       DISPLAY OUTPUT-RECORD
+                       WRITE OUTPUT-RECORD
+
+                       MOVE SPACES TO OUTPUT-RECORD
+                       STRING "  Company: " PR-EXP-COMPANY(TEMP-EXP-COUNT)
+                           DELIMITED BY SIZE INTO OUTPUT-RECORD
+                       DISPLAY OUTPUT-RECORD
+                       WRITE OUTPUT-RECORD
+
+                       MOVE SPACES TO OUTPUT-RECORD
+                       STRING "  Dates: " PR-EXP-DATES(TEMP-EXP-COUNT)
+                           DELIMITED BY SIZE INTO OUTPUT-RECORD
+                       DISPLAY OUTPUT-RECORD
+                       WRITE OUTPUT-RECORD
+
+                       IF PR-EXP-DESC(TEMP-EXP-COUNT) NOT = SPACES
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "  Description: " PR-EXP-DESC(TEMP-EXP-COUNT)
+                               DELIMITED BY SIZE INTO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                       END-IF
+                       ADD 1 TO TEMP-EXP-COUNT
+                   END-PERFORM
+               ELSE
+                   MOVE "Experience: None" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+
+               IF PR-EDU-COUNT > 0
+                   MOVE "Education:" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+
+                   MOVE 1 TO TEMP-EDU-COUNT
+                   PERFORM UNTIL TEMP-EDU-COUNT > PR-EDU-COUNT
+                       MOVE SPACES TO OUTPUT-RECORD
+                       STRING "  Degree: " PR-EDU-DEGREE(TEMP-EDU-COUNT)
+                           DELIMITED BY SIZE INTO OUTPUT-RECORD
+                       DISPLAY OUTPUT-RECORD
+                       WRITE OUTPUT-RECORD
+
+                       MOVE SPACES TO OUTPUT-RECORD
+                       STRING "  University: " PR-EDU-SCHOOL(TEMP-EDU-COUNT)
+                           DELIMITED BY SIZE INTO OUTPUT-RECORD
+                       DISPLAY OUTPUT-RECORD
+                       WRITE OUTPUT-RECORD
+
+                       MOVE SPACES TO OUTPUT-RECORD
+                       STRING "  Years: " PR-EDU-YEARS(TEMP-EDU-COUNT)
+                           DELIMITED BY SIZE INTO OUTPUT-RECORD
+                       DISPLAY OUTPUT-RECORD
+                       WRITE OUTPUT-RECORD
+
+                       ADD 1 TO TEMP-EDU-COUNT
+                   END-PERFORM
+               ELSE
+                   MOVE "Education: None" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+
+               MOVE "1. Send Connection Request" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE "2. Back to Main Menu" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE "Enter your choice:" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE 0 TO WS-REQUEST-CHOICE
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO WS-TEMP-INPUT
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                       NOT AT END
+                           MOVE WS-TEMP-INPUT(1:1) TO WS-REQUEST-CHOICE
+                           EVALUATE WS-REQUEST-CHOICE
+                               WHEN 1
+                                   PERFORM SEND-CONNECTION-REQUEST
+                               WHEN 2
+                                   CONTINUE
+                               WHEN OTHER
+                                   MOVE "Invalid choice, returning to main menu." TO OUTPUT-RECORD
+                                   DISPLAY OUTPUT-RECORD
+                                   WRITE OUTPUT-RECORD
+                           END-EVALUATE
+                   END-READ
+               END-IF
+           ELSE
+               MOVE "No one by that name could be found." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF.
+
+       SEND-CONNECTION-REQUEST.
+           MOVE PR-USERNAME TO WS-TARGET-USERNAME
+           IF WS-TARGET-USERNAME = CURRENT-USERNAME
+               MOVE "You cannot send a connection request to yourself." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           MOVE "N" TO WS-ALREADY-CONNECTED
+           MOVE "N" TO WS-CONNECTIONS-EOF
+           OPEN INPUT CONNECTIONS-FILE
+           IF WS-CONNECTION-STATUS = "35"
+               MOVE "Y" TO WS-CONNECTIONS-EOF
+           END-IF
+           PERFORM UNTIL WS-CONNECTIONS-EOF = "Y" OR WS-ALREADY-CONNECTED = "Y"
+               READ CONNECTIONS-FILE INTO CONNECTION-RECORD
+                   AT END MOVE "Y" TO WS-CONNECTIONS-EOF
+                   NOT AT END
+                       IF (CN-USER-ONE = CURRENT-USERNAME AND CN-USER-TWO = WS-TARGET-USERNAME)
+                           OR (CN-USER-ONE = WS-TARGET-USERNAME AND CN-USER-TWO = CURRENT-USERNAME)
+                           MOVE "Y" TO WS-ALREADY-CONNECTED
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE CONNECTIONS-FILE
+
+           IF WS-ALREADY-CONNECTED = "Y"
+               MOVE "You are already connected with this user." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           MOVE "N" TO WS-OUTGOING-PENDING
+           MOVE "N" TO WS-INCOMING-PENDING
+           MOVE "N" TO WS-PENDING-EOF
+           OPEN INPUT CONNECTION-REQUESTS-FILE
+           IF WS-CONN-REQ-STATUS = "35"
+               MOVE "Y" TO WS-PENDING-EOF
+           END-IF
+           PERFORM UNTIL WS-PENDING-EOF = "Y"
+               READ CONNECTION-REQUESTS-FILE INTO CONNECTION-REQUEST-RECORD
+                   AT END MOVE "Y" TO WS-PENDING-EOF
+                   NOT AT END
+                       IF CR-SENDER = CURRENT-USERNAME AND CR-RECEIVER = WS-TARGET-USERNAME
+                           MOVE "Y" TO WS-OUTGOING-PENDING
+                       END-IF
+                       IF CR-SENDER = WS-TARGET-USERNAME AND CR-RECEIVER = CURRENT-USERNAME
+                           MOVE "Y" TO WS-INCOMING-PENDING
+                       END-IF
+                       IF WS-OUTGOING-PENDING = "Y" AND WS-INCOMING-PENDING = "Y"
+                           MOVE "Y" TO WS-PENDING-EOF
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE CONNECTION-REQUESTS-FILE
+
+           IF WS-OUTGOING-PENDING = "Y"
+               MOVE "You already sent a connection request to this user." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           IF WS-INCOMING-PENDING = "Y"
+               MOVE "This user has already sent you a connection request." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           OPEN EXTEND CONNECTION-REQUESTS-FILE
+           MOVE CURRENT-USERNAME TO CR-SENDER
+           MOVE WS-TARGET-USERNAME TO CR-RECEIVER
+           WRITE CONNECTION-REQUEST-RECORD
+           CLOSE CONNECTION-REQUESTS-FILE
+
+           MOVE SPACES TO WS-MESSAGE
+           STRING "Connection request sent to " DELIMITED BY SIZE
+                  PR-FIRST-NAME DELIMITED BY SPACE
+                  " " DELIMITED BY SIZE
+                  PR-LAST-NAME DELIMITED BY SPACE
+                  "." DELIMITED BY SIZE
+                  INTO WS-MESSAGE
+           END-STRING
+           DISPLAY WS-MESSAGE
+           MOVE WS-MESSAGE TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
+
+       VIEW-PENDING-REQUESTS.
+           MOVE "--- Pending Connection Requests ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "N" TO WS-PENDING-FOUND
+           MOVE "N" TO WS-PENDING-EOF
+           OPEN INPUT CONNECTION-REQUESTS-FILE
+           IF WS-CONN-REQ-STATUS = "35"
+               MOVE "Y" TO WS-PENDING-EOF
+           END-IF
+           PERFORM UNTIL WS-PENDING-EOF = "Y"
+               READ CONNECTION-REQUESTS-FILE INTO CONNECTION-REQUEST-RECORD
+                   AT END MOVE "Y" TO WS-PENDING-EOF
+                   NOT AT END
+                       IF CR-RECEIVER = CURRENT-USERNAME
+                           MOVE "Y" TO WS-PENDING-FOUND
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Request from: " DELIMITED BY SIZE
+                                  CR-SENDER DELIMITED BY SPACE
+                                  INTO OUTPUT-RECORD
+                           END-STRING
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE CONNECTION-REQUESTS-FILE
+
+           IF WS-PENDING-FOUND = "N"
+               MOVE "You have no pending connection requests at this time." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+
+           MOVE "-----------------------------------" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
            .
 
        LEARN-SKILL-MENU.

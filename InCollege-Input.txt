@@ -1,15 +1,2 @@
-1
+2
 testuser
-Password123!
-4
-John Doe
-1
-4
-Parker Shamblin
-1
-9
-1
-Parkertestacc
-MyPass123
-6
-9

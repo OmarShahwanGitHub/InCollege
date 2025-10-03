@@ -269,7 +269,7 @@
      
       *> PASS VALIDATION
            MOVE "N" TO WS-VALID-PASS
-           PERFORM UNTIL WS-VALID-PASS = "Y"
+           PERFORM UNTIL WS-VALID-PASS = "Y" OR WS-EOF-FLAG = "Y"
                DISPLAY "Enter Password:"
                MOVE "Enter Password:" TO OUTPUT-RECORD
                WRITE OUTPUT-RECORD
@@ -285,6 +285,14 @@
       *> ACCOUNT-RECORD is LINKED WITH ACCOUNTS.DOC
       *> SO, WRITE ACCOUNT-RECORD JUST APPENDS NEW ACCCOUNT TO THE END
       *> OF THE ACCOUNTS.DOC
+           IF WS-VALID-PASS = "N"
+             MOVE "Failed to create an account." TO OUTPUT-RECORD
+             DISPLAY OUTPUT-RECORD
+             WRITE OUTPUT-RECORD
+     
+             CLOSE ACCOUNTS-FILE
+             EXIT PARAGRAPH
+           END-IF
            MOVE WS-USERNAME TO ACCOUNT-USERNAME
            MOVE WS-PASSWORD TO ACCOUNT-PASSWORD
            WRITE ACCOUNT-RECORD

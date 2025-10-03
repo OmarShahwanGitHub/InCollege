@@ -1,39 +1,9 @@
---- SAMPLE_OUTPUT_WEEK4.TXT ---
+==== INCOLLEGE MAIN MENU ====
 Welcome to InCollege!
 1. Log In
 2. Create New Account
 Enter your choice:
-Please enter your username:
-Please enter your password:
-You have successfully logged in.
-Welcome, TestUser!
-1. View My Profile
-2. Search for User
-3. Learn a New Skill
-4. View My Pending Connection Requests
-Enter your choice:
---- Pending Connection Requests ---
-You have no pending connection requests at this time.
------------------------------------
-1. View My Profile
-2. Search for User
-3. Learn a New Skill
-4. View My Pending Connection Requests
-Enter your choice:
-Enter the full name of the person you are looking for:
---- Found User Profile ---
-Name: New Student
-University: West Coast Uni
-Major: Business
-Graduation Year: 2027
--------------------------
-1. Send Connection Request
-2. Back to Main Menu
-Enter your choice:
-Connection request sent to New Student.
-1. View My Profile
-2. Search for User
-3. Learn a New Skill
-4. View My Pending Connection Requests
-Enter your choice:
---- END_OF_PROGRAM_EXECUTION ---
+Enter Username:
+Enter Password:
+Error: Password must include at least 1 uppercase, 1 digit, and 1 special character.
+Failed to create an account.
