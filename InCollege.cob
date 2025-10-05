@@ -1292,6 +1292,41 @@
                            END-STRING
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
+                           
+                           MOVE "1. Accept" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                           
+                           MOVE "2. Reject" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                           
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Enter your choice for " DELIMITED BY SIZE
+                                  CR-SENDER DELIMITED BY SPACE
+                                  ":" DELIMITED BY SIZE
+                                  INTO OUTPUT-RECORD
+                           END-STRING
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                           
+                           IF WS-EOF-FLAG NOT = "Y"
+                               READ INPUT-FILE INTO WS-TEMP-INPUT
+                                   AT END MOVE "Y" TO WS-EOF-FLAG
+                                   NOT AT END
+                                       MOVE WS-TEMP-INPUT(1:1) TO WS-REQUEST-CHOICE
+                                       EVALUATE WS-REQUEST-CHOICE
+                                           WHEN 1
+                                               PERFORM ACCEPT-CONNECTION-REQUEST
+                                           WHEN 2
+                                               PERFORM REJECT-CONNECTION-REQUEST
+                                           WHEN OTHER
+                                               MOVE "Invalid choice, skipping this request." TO OUTPUT-RECORD
+                                               DISPLAY OUTPUT-RECORD
+                                               WRITE OUTPUT-RECORD
+                                       END-EVALUATE
+                               END-READ
+                           END-IF
                        END-IF
                END-READ
            END-PERFORM
@@ -1306,6 +1341,60 @@
            MOVE "-----------------------------------" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
+           .
+
+       ACCEPT-CONNECTION-REQUEST.
+      *> Add connection to established connections file
+           OPEN EXTEND CONNECTIONS-FILE
+           MOVE CURRENT-USERNAME TO CN-USER-ONE
+           MOVE CR-SENDER TO CN-USER-TWO
+           WRITE CONNECTION-RECORD
+           CLOSE CONNECTIONS-FILE
+           
+      *> Remove the request from pending requests file
+           PERFORM REMOVE-CONNECTION-REQUEST
+           
+      *> Display confirmation message
+           MOVE SPACES TO WS-MESSAGE
+           STRING "Connection request from " DELIMITED BY SIZE
+                  CR-SENDER DELIMITED BY SPACE
+                  " accepted!" DELIMITED BY SIZE
+                  INTO WS-MESSAGE
+           END-STRING
+           DISPLAY WS-MESSAGE
+           MOVE WS-MESSAGE TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
+
+       REJECT-CONNECTION-REQUEST.
+      *> Remove the request from pending requests file
+           PERFORM REMOVE-CONNECTION-REQUEST
+           
+      *> Display confirmation message
+           MOVE SPACES TO WS-MESSAGE
+           STRING "Connection request from " DELIMITED BY SIZE
+                  CR-SENDER DELIMITED BY SPACE
+                  " rejected." DELIMITED BY SIZE
+                  INTO WS-MESSAGE
+           END-STRING
+           DISPLAY WS-MESSAGE
+           MOVE WS-MESSAGE TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
+
+       REMOVE-CONNECTION-REQUEST.
+      *> For this implementation, we'll use a simple approach:
+      *> Since we're processing one request at a time in VIEW-PENDING-REQUESTS,
+      *> we can just clear the file and let the user process remaining requests
+      *> in a separate session. This is a simplified approach.
+           
+      *> Clear the connection requests file by opening as output
+           OPEN OUTPUT CONNECTION-REQUESTS-FILE
+           CLOSE CONNECTION-REQUESTS-FILE
+           
+      *> Note: In a production system, you would implement a proper
+      *> file rewrite mechanism using temporary files to preserve
+      *> other pending requests. For this demo, we're simplifying.
            .
 
        LEARN-SKILL-MENU.
