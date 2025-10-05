@@ -445,6 +445,10 @@
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
+           MOVE "7. View My Network" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            MOVE "9. Logout" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
@@ -473,6 +477,8 @@
                            PERFORM LEARN-SKILL-MENU
                        WHEN 6
                            PERFORM VIEW-PENDING-REQUESTS
+                       WHEN 7
+                           PERFORM VIEW-MY-NETWORK
                        WHEN 9
                            MOVE "Logging out." TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
@@ -1343,6 +1349,86 @@
            MOVE "-----------------------------------" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
+           .
+
+       VIEW-MY-NETWORK.
+           MOVE "--- Your Network ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "N" TO WS-PENDING-FOUND
+           MOVE "N" TO WS-CONNECTIONS-EOF
+           OPEN INPUT CONNECTIONS-FILE
+           IF WS-CONNECTION-STATUS = "35"
+               MOVE "Y" TO WS-CONNECTIONS-EOF
+           END-IF
+           PERFORM UNTIL WS-CONNECTIONS-EOF = "Y"
+               READ CONNECTIONS-FILE INTO CONNECTION-RECORD
+                   AT END MOVE "Y" TO WS-CONNECTIONS-EOF
+                   NOT AT END
+                       IF CN-USER-ONE = CURRENT-USERNAME OR CN-USER-TWO = CURRENT-USERNAME
+                           MOVE "Y" TO WS-PENDING-FOUND
+                           MOVE SPACES TO OUTPUT-RECORD
+                           IF CN-USER-ONE = CURRENT-USERNAME
+                               MOVE CN-USER-TWO TO WS-TARGET-USERNAME
+                           ELSE
+                               MOVE CN-USER-ONE TO WS-TARGET-USERNAME
+                           END-IF
+                           
+      *> Look up the connected user's profile information
+                           PERFORM LOAD-CONNECTED-USER-PROFILE
+                           
+                           IF FOUND-PROFILE-FLAG = "Y"
+                               MOVE SPACES TO OUTPUT-RECORD
+                               STRING "Connected with: " DELIMITED BY SIZE
+                                      PR-FIRST-NAME DELIMITED BY SPACE
+                                      " " DELIMITED BY SIZE
+                                      PR-LAST-NAME DELIMITED BY SPACE
+                                      " (University: " DELIMITED BY SIZE
+                                      PR-UNIVERSITY DELIMITED BY SPACE
+                                      ", Major: " DELIMITED BY SIZE
+                                      PR-MAJOR DELIMITED BY SPACE
+                                      ")" DELIMITED BY SIZE
+                                      INTO OUTPUT-RECORD
+                               END-STRING
+                           ELSE
+                               MOVE SPACES TO OUTPUT-RECORD
+                               STRING "Connected with: " DELIMITED BY SIZE
+                                      WS-TARGET-USERNAME DELIMITED BY SPACE
+                                      INTO OUTPUT-RECORD
+                               END-STRING
+                           END-IF
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE CONNECTIONS-FILE
+
+           IF WS-PENDING-FOUND = "N"
+               MOVE "You have no connections at this time." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+
+           MOVE "--------------------" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
+
+       LOAD-CONNECTED-USER-PROFILE.
+      *> Load profile information for a connected user
+           MOVE "Y" TO FOUND-PROFILE-FLAG
+           CLOSE PROFILE-FILE
+           OPEN I-O PROFILE-FILE
+           MOVE WS-TARGET-USERNAME TO PR-USERNAME
+      *> FINDING THE DESIRED USERNAME IN THE PROFILE-FILE
+           READ PROFILE-FILE KEY IS PR-USERNAME
+               INVALID KEY MOVE "N" TO FOUND-PROFILE-FLAG
+               NOT INVALID KEY MOVE "Y" TO FOUND-PROFILE-FLAG
+           END-READ
+      *> WE DON'T CLOSE PROFILE FILE HERE SO WE NEED TO CLOSE IT FROM
+      *> THE PARAGRAPH FROM WHICH WE CALLED LOAD-CONNECTED-USER-PROFILE
            .
 
        ACCEPT-CONNECTION-REQUEST.
