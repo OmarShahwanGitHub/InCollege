@@ -1327,6 +1327,8 @@
                                        END-EVALUATE
                                END-READ
                            END-IF
+      *> Exit after processing one request
+                           MOVE "Y" TO WS-PENDING-EOF
                        END-IF
                END-READ
            END-PERFORM
@@ -1383,18 +1385,17 @@
            .
 
        REMOVE-CONNECTION-REQUEST.
-      *> For this implementation, we'll use a simple approach:
-      *> Since we're processing one request at a time in VIEW-PENDING-REQUESTS,
-      *> we can just clear the file and let the user process remaining requests
-      *> in a separate session. This is a simplified approach.
+      *> This implementation clears the entire connection requests file
+      *> since we're processing one request at a time in VIEW-PENDING-REQUESTS.
+      *> In a production system, you would implement a proper file rewrite
+      *> mechanism using temporary files to preserve other pending requests.
            
       *> Clear the connection requests file by opening as output
            OPEN OUTPUT CONNECTION-REQUESTS-FILE
            CLOSE CONNECTION-REQUESTS-FILE
            
-      *> Note: In a production system, you would implement a proper
-      *> file rewrite mechanism using temporary files to preserve
-      *> other pending requests. For this demo, we're simplifying.
+      *> Note: This simplified approach works for single-request processing
+      *> but would need enhancement for multiple concurrent requests.
            .
 
        LEARN-SKILL-MENU.
