@@ -17,7 +17,7 @@ Welcome test!
 9. Logout
 Enter your choice:
 --- Your Network ---
-Connected with: Tomato User (University: Farm, Major: Veg)
+You have no connections at this time.
 --------------------
 ==== PROFILE MENU ====
 1. Create/Edit My Profile

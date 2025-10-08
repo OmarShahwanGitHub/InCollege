@@ -16,6 +16,23 @@ Welcome test!
 7. View My Network
 9. Logout
 Enter your choice:
+--- Pending Connection Requests ---
+Request from: tomato
+1. Accept
+2. Reject
+Enter your choice for tomato:
+Connection request from tomato accepted!
+-----------------------------------
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+7. View My Network
+9. Logout
+Enter your choice:
 --- Your Network ---
 Connected with: Tomato User (University: Farm, Major: Veg)
 --------------------

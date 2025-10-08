@@ -27,6 +27,9 @@
            SELECT CONNECTION-REQUESTS-FILE ASSIGN TO "connection_requests.doc"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-CONN-REQ-STATUS.
+           SELECT CONNECTION-REQUESTS-TEMP-FILE ASSIGN TO "connection_requests.tmp"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-CONN-REQ-TEMP-STATUS.
            SELECT CONNECTIONS-FILE ASSIGN TO "connections.doc"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-CONNECTION-STATUS.
@@ -74,6 +77,11 @@
            05 CR-SENDER   PIC X(20).
            05 CR-RECEIVER PIC X(20).
 
+       FD CONNECTION-REQUESTS-TEMP-FILE.
+       01 CONNECTION-REQUEST-TEMP-RECORD.
+           05 CRT-SENDER   PIC X(20).
+           05 CRT-RECEIVER PIC X(20).
+
        FD CONNECTIONS-FILE.
        01 CONNECTION-RECORD.
            05 CN-USER-ONE PIC X(20).
@@ -96,7 +104,8 @@
        77  WS-ACCOUNT-COUNT PIC 9 VALUE 0.
        77  WS-COUNTER       PIC 9 VALUE 0.
        77  WS-FILE-STATUS   PIC XX.
-       77  WS-CONN-REQ-STATUS PIC XX.
+        77  WS-CONN-REQ-STATUS PIC XX.
+        77  WS-CONN-REQ-TEMP-STATUS PIC XX.
        77  WS-CONNECTION-STATUS PIC XX.
        77  WS-VALID-PASS    PIC X VALUE "N".
        77  WS-HAS-UPPER     PIC X VALUE "N".
@@ -113,6 +122,7 @@
        77  WS-ALREADY-CONNECTED PIC X VALUE "N".
        77  WS-PENDING-FOUND   PIC X VALUE "N".
        77  WS-REQUEST-CHOICE  PIC 9 VALUE 0.
+       77  WS-CONN-REQ-OPEN   PIC X VALUE "N".
 
        01  WS-EXISTING-RECORD.
            05 EX-USERNAME   PIC X(20).
@@ -140,9 +150,16 @@
 
              01  CURRENT-USERNAME   PIC X(20).
              01  WS-TARGET-USERNAME PIC X(20).
+           01  WS-CURRENT-REQUEST.
+               05 WS-CURRENT-REQUEST-SENDER   PIC X(20).
+               05 WS-CURRENT-REQUEST-RECEIVER PIC X(20).
+           01  WS-REMOVE-REQUEST.
+               05 WS-REMOVE-SENDER   PIC X(20).
+               05 WS-REMOVE-RECEIVER PIC X(20).
        01  FOUND-PROFILE-FLAG PIC X VALUE "N".
        77  WS-VALID-GRAD-YEAR PIC X VALUE "N".
        77  WS-VALID-REQUIRED  PIC X VALUE "N".
+           77  WS-TEMP-EOF        PIC X VALUE "N".
 
        PROCEDURE DIVISION.
        MAIN-LOGIC.
@@ -1284,6 +1301,9 @@
            OPEN INPUT CONNECTION-REQUESTS-FILE
            IF WS-CONN-REQ-STATUS = "35"
                MOVE "Y" TO WS-PENDING-EOF
+               MOVE "N" TO WS-CONN-REQ-OPEN
+           ELSE
+               MOVE "Y" TO WS-CONN-REQ-OPEN
            END-IF
            PERFORM UNTIL WS-PENDING-EOF = "Y"
                READ CONNECTION-REQUESTS-FILE INTO CONNECTION-REQUEST-RECORD
@@ -1291,6 +1311,8 @@
                    NOT AT END
                        IF CR-RECEIVER = CURRENT-USERNAME
                            MOVE "Y" TO WS-PENDING-FOUND
+                           MOVE CR-SENDER TO WS-CURRENT-REQUEST-SENDER
+                           MOVE CR-RECEIVER TO WS-CURRENT-REQUEST-RECEIVER
                            MOVE SPACES TO OUTPUT-RECORD
                            STRING "Request from: " DELIMITED BY SIZE
                                   CR-SENDER DELIMITED BY SPACE
@@ -1323,8 +1345,10 @@
                                        MOVE WS-TEMP-INPUT(1:1) TO WS-REQUEST-CHOICE
                                        EVALUATE WS-REQUEST-CHOICE
                                            WHEN 1
+                                               PERFORM CLOSE-PENDING-REQUEST-FILE
                                                PERFORM ACCEPT-CONNECTION-REQUEST
                                            WHEN 2
+                                               PERFORM CLOSE-PENDING-REQUEST-FILE
                                                PERFORM REJECT-CONNECTION-REQUEST
                                            WHEN OTHER
                                                MOVE "Invalid choice, skipping this request." TO OUTPUT-RECORD
@@ -1338,7 +1362,7 @@
                        END-IF
                END-READ
            END-PERFORM
-           CLOSE CONNECTION-REQUESTS-FILE
+           PERFORM CLOSE-PENDING-REQUEST-FILE
 
            IF WS-PENDING-FOUND = "N"
                MOVE "You have no pending connection requests at this time." TO OUTPUT-RECORD
@@ -1349,6 +1373,13 @@
            MOVE "-----------------------------------" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
+           .
+
+       CLOSE-PENDING-REQUEST-FILE.
+           IF WS-CONN-REQ-OPEN = "Y"
+               CLOSE CONNECTION-REQUESTS-FILE
+               MOVE "N" TO WS-CONN-REQ-OPEN
+           END-IF
            .
 
        VIEW-MY-NETWORK.
@@ -1435,7 +1466,7 @@
       *> Add connection to established connections file
            OPEN EXTEND CONNECTIONS-FILE
            MOVE CURRENT-USERNAME TO CN-USER-ONE
-           MOVE CR-SENDER TO CN-USER-TWO
+           MOVE WS-CURRENT-REQUEST-SENDER TO CN-USER-TWO
            WRITE CONNECTION-RECORD
            CLOSE CONNECTIONS-FILE
            
@@ -1445,7 +1476,7 @@
       *> Display confirmation message
            MOVE SPACES TO WS-MESSAGE
            STRING "Connection request from " DELIMITED BY SIZE
-                  CR-SENDER DELIMITED BY SPACE
+                  WS-CURRENT-REQUEST-SENDER DELIMITED BY SPACE
                   " accepted!" DELIMITED BY SIZE
                   INTO WS-MESSAGE
            END-STRING
@@ -1461,7 +1492,7 @@
       *> Display confirmation message
            MOVE SPACES TO WS-MESSAGE
            STRING "Connection request from " DELIMITED BY SIZE
-                  CR-SENDER DELIMITED BY SPACE
+                  WS-CURRENT-REQUEST-SENDER DELIMITED BY SPACE
                   " rejected." DELIMITED BY SIZE
                   INTO WS-MESSAGE
            END-STRING
@@ -1471,17 +1502,51 @@
            .
 
        REMOVE-CONNECTION-REQUEST.
-      *> This implementation clears the entire connection requests file
-      *> since we're processing one request at a time in VIEW-PENDING-REQUESTS.
-      *> In a production system, you would implement a proper file rewrite
-      *> mechanism using temporary files to preserve other pending requests.
-           
-      *> Clear the connection requests file by opening as output
-           OPEN OUTPUT CONNECTION-REQUESTS-FILE
+           MOVE WS-CURRENT-REQUEST-SENDER TO WS-REMOVE-SENDER
+           MOVE WS-CURRENT-REQUEST-RECEIVER TO WS-REMOVE-RECEIVER
+
+      *> Copy all requests except the processed one into a temp file
+           OPEN INPUT CONNECTION-REQUESTS-FILE
+           IF WS-CONN-REQ-STATUS = "35"
+               CLOSE CONNECTION-REQUESTS-FILE
+               EXIT PARAGRAPH
+           END-IF
+
+           OPEN OUTPUT CONNECTION-REQUESTS-TEMP-FILE
+           MOVE "N" TO WS-TEMP-EOF
+           PERFORM UNTIL WS-TEMP-EOF = "Y"
+               READ CONNECTION-REQUESTS-FILE INTO CONNECTION-REQUEST-RECORD
+                   AT END MOVE "Y" TO WS-TEMP-EOF
+                   NOT AT END
+                       IF CR-SENDER = WS-REMOVE-SENDER AND CR-RECEIVER = WS-REMOVE-RECEIVER
+                           CONTINUE
+                       ELSE
+                           MOVE CONNECTION-REQUEST-RECORD TO CONNECTION-REQUEST-TEMP-RECORD
+                           WRITE CONNECTION-REQUEST-TEMP-RECORD
+                       END-IF
+               END-READ
+           END-PERFORM
            CLOSE CONNECTION-REQUESTS-FILE
-           
-      *> Note: This simplified approach works for single-request processing
-      *> but would need enhancement for multiple concurrent requests.
+           CLOSE CONNECTION-REQUESTS-TEMP-FILE
+
+      *> Rewrite the original file with the filtered contents
+           OPEN OUTPUT CONNECTION-REQUESTS-FILE
+           OPEN INPUT CONNECTION-REQUESTS-TEMP-FILE
+           MOVE "N" TO WS-TEMP-EOF
+           PERFORM UNTIL WS-TEMP-EOF = "Y"
+               READ CONNECTION-REQUESTS-TEMP-FILE INTO CONNECTION-REQUEST-TEMP-RECORD
+                   AT END MOVE "Y" TO WS-TEMP-EOF
+                   NOT AT END
+                       MOVE CONNECTION-REQUEST-TEMP-RECORD TO CONNECTION-REQUEST-RECORD
+                       WRITE CONNECTION-REQUEST-RECORD
+               END-READ
+           END-PERFORM
+           CLOSE CONNECTION-REQUESTS-FILE
+           CLOSE CONNECTION-REQUESTS-TEMP-FILE
+
+      *> Clear the temporary file so it does not retain stale data
+           OPEN OUTPUT CONNECTION-REQUESTS-TEMP-FILE
+           CLOSE CONNECTION-REQUESTS-TEMP-FILE
            .
 
        LEARN-SKILL-MENU.

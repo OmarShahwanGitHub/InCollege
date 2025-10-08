@@ -18,6 +18,8 @@ Welcome test!
 Enter your choice:
 --- Your Network ---
 Connected with: Tomato User (University: Farm, Major: Veg)
+Connected with: Potato User (University: Earth, Major: Food)
+Connected with: Full User (University: UCF, Major: MBA)
 --------------------
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
