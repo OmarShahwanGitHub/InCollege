@@ -5,11 +5,11 @@
        INPUT-OUTPUT SECTION.
       *> Creating file variables
        FILE-CONTROL.
-      *>     SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
+           SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
       *> This one is Aibek's folder of test files
       *>     SELECT INPUT-FILE ASSIGN TO "create-acc-profile.in"
       *>     SELECT INPUT-FILE ASSIGN TO "search-people.in"
-           SELECT INPUT-FILE ASSIGN TO "job-listing.in"
+      *> SELECT INPUT-FILE ASSIGN TO "job-listing.in"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
@@ -93,7 +93,7 @@
        01 JOBS-FILE-RECORD.
            05 JR-ID              PIC 9(4) VALUE 0.
            05 JR-TITLE           PIC X(20).
-           05 JR-DESC            PIC X(20).
+           05 JR-DESC            PIC X(200).
            05 JR-EMPLOYER        PIC X(20).
            05 JR-LOCATION        PIC X(20).
            05 JR-SALARY          PIC X(20).
