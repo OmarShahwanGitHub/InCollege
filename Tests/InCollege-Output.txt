@@ -2,6 +2,315 @@
 Welcome to InCollege!
 1. Log In
 2. Create New Account
+0. DEVELOPER MODE FOR DEGUBBING
+Enter your choice:
+JOBS DEBUG OUTPUT BEGIN
+======
+JOB ID:
+0001
+Titie:
+SDE
+Description:
+Software Developer
+Employer:
+Your Boss
+Location:
+Tampa
+Salary:
+Slave Labor
+AUTHOR:
+test
+======
+JOB ID:
+0002
+Titie:
+Tester
+Description:
+Supa Tester
+Employer:
+Your Boss (Again)
+Location:
+Tampa, USF
+Salary:
+10
+AUTHOR:
+test
+======
+JOB ID:
+0003
+Titie:
+Farmer
+Description:
+Potato Farming
+Employer:
+Jenkins
+Location:
+Belarus
+Salary:
+100000
+AUTHOR:
+potato
+======
+JOB ID:
+0004
+Titie:
+Another Farmer
+Description:
+Bulk Potato Farming
+Employer:
+The Emperor
+Location:
+Belarus
+Salary:
+100000
+AUTHOR:
+potato
+======
+JOB ID:
+0005
+Titie:
+Another One
+Description:
+Big Bulk Potato Farm
+Employer:
+The Great Emperor
+Location:
+Belarus
+Salary:
+100000
+AUTHOR:
+potato
+======
+JOB ID:
+0006
+Titie:
+Another One?
+Description:
+Mass Big Bulk Potato
+Employer:
+The Greatest Emperor
+Location:
+Belarus
+Salary:
+999999
+AUTHOR:
+potato
+======
+JOB ID:
+0007
+Titie:
+Potato Harvester
+Description:
+Mass Big Bulk Potato
+Employer:
+The Greatest Emperor
+Location:
+Belarus
+Salary:
+999999
+AUTHOR:
+potato
+======
+JOB ID:
+0008
+Titie:
+Full title
+Description:
+Full desc
+Employer:
+Full
+Location:
+Full Location
+Salary:
+Full Salary
+AUTHOR:
+fullprof
+======
+JOB ID:
+0009
+Titie:
+another test
+Description:
+just testing
+Employer:
+test
+Location:
+linux
+Salary:
+3
+AUTHOR:
+test
+======
+JOB ID:
+0010
+Titie:
+Full title2
+Description:
+Full desc2
+Employer:
+Full2
+Location:
+Full Location2
+Salary:
+Full Salary2
+AUTHOR:
+fullprof
+======
+JOB ID:
+0011
+Titie:
+Student
+Description:
+Study
+Employer:
+Aibek
+Location:
+USF
+Salary:
+0
+AUTHOR:
+aibek
+======
+JOB ID:
+0012
+Titie:
+another test2
+Description:
+just testing2
+Employer:
+test2
+Location:
+linux2
+Salary:
+3
+AUTHOR:
+test
+======
+JOB ID:
+0013
+Titie:
+Full title3
+Description:
+Full desc3
+Employer:
+Full3
+Location:
+Full Location3
+Salary:
+Full Salary3
+AUTHOR:
+fullprof
+======
+JOB ID:
+0014
+Titie:
+Student2
+Description:
+Study2
+Employer:
+Aibek2
+Location:
+USF2
+Salary:
+0
+AUTHOR:
+aibek
+======
+JOB ID:
+0015
+Titie:
+another test3
+Description:
+just testing3
+Employer:
+test3
+Location:
+linux3
+Salary:
+
+AUTHOR:
+test
+JOBS DEBUG OUTPUT ENDED
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+0. DEVELOPER MODE FOR DEGUBBING
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome fullprof!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+7. View My Network
+9. Logout
+Enter your choice:
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+Browsing jobs is under construction
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+Posting a job...
+Job Titile:
+Description:
+Employer:
+Location:
+Salary (optional):
+Job posted successfully!
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+Returning back to MAIN MENU...
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+0. DEVELOPER MODE FOR DEGUBBING
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome aibek!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+7. View My Network
+9. Logout
+Enter your choice:
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+Posting a job...
+Job Titile:
+Description:
+Employer:
+Location:
+Salary (optional):
+Job posted successfully!
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+Returning back to MAIN MENU...
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+0. DEVELOPER MODE FOR DEGUBBING
 Enter your choice:
 Please enter your username:
 Please enter your password:
@@ -13,156 +322,306 @@ Welcome test!
 4. Find someone you know
 5. Learn a new skill
 6. View My Pending Connection Requests
+7. View My Network
 9. Logout
 Enter your choice:
-Enter the full name of the person you are looking for:
-No one by that name could be found.
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-9. Logout
-Enter your choice:
-Enter the full name of the person you are looking for:
---- Found User Profile ---
-Name: Test User
-University: USMC
-Major: Grunt
-Graduation Year: 2027
-About Me: NO STEP BACK!!!
-Experience:
-  Title: Cadet
-  Company: USMC
-  Dates: 2022-2027
-  Description: Nice place
-Education:
-  Degree: Marine
-  University: USMC
-  Years: 2022-2027e
-1. Send Connection Request
-2. Back to Main Menu
-Enter your choice:
-You cannot send a connection request to yourself.
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-9. Logout
-Enter your choice:
-Enter the full name of the person you are looking for:
---- Found User Profile ---
-Name: Potato User
-University: Earth
-Major: Food
-Graduation Year: 1999
-About Me: HI
-Experience:
-  Title: Something
-  Company: Earth crust
-  Dates: 2022-1337
-  Description: It's moist out here
-Education:
-  Degree: Agriculture
-  University: Nature
-  Years: 2022-2027e
-1. Send Connection Request
-2. Back to Main Menu
-Enter your choice:
-Connection request sent to Potato User.
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-9. Logout
-Enter your choice:
-Enter the full name of the person you are looking for:
---- Found User Profile ---
-Name: Potato User
-University: Earth
-Major: Food
-Graduation Year: 1999
-About Me: HI
-Experience:
-  Title: Something
-  Company: Earth crust
-  Dates: 2022-1337
-  Description: It's moist out here
-Education:
-  Degree: Agriculture
-  University: Nature
-  Years: 2022-2027e
-1. Send Connection Request
-2. Back to Main Menu
-Enter your choice:
-You already sent a connection request to this user.
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-9. Logout
-Enter your choice:
-Logging out.
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+Posting a job...
+Job Titile:
+Description:
+Employer:
+Location:
+Salary (optional):
+Job posted successfully!
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+Returning back to MAIN MENU...
 ==== INCOLLEGE MAIN MENU ====
 Welcome to InCollege!
 1. Log In
 2. Create New Account
+0. DEVELOPER MODE FOR DEGUBBING
 Enter your choice:
-Please enter your username:
-Please enter your password:
-Welcome potato!
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-9. Logout
-Enter your choice:
-Enter the full name of the person you are looking for:
---- Found User Profile ---
-Name: Test User
-University: USMC
-Major: Grunt
-Graduation Year: 2027
-About Me: NO STEP BACK!!!
-Experience:
-  Title: Cadet
-  Company: USMC
-  Dates: 2022-2027
-  Description: Nice place
-Education:
-  Degree: Marine
-  University: USMC
-  Years: 2022-2027e
-1. Send Connection Request
-2. Back to Main Menu
-Enter your choice:
-This user has already sent you a connection request.
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-9. Logout
-Enter your choice:
-Logging out.
+JOBS DEBUG OUTPUT BEGIN
+======
+JOB ID:
+0001
+Titie:
+SDE
+Description:
+Software Developer
+Employer:
+Your Boss
+Location:
+Tampa
+Salary:
+Slave Labor
+AUTHOR:
+test
+======
+JOB ID:
+0002
+Titie:
+Tester
+Description:
+Supa Tester
+Employer:
+Your Boss (Again)
+Location:
+Tampa, USF
+Salary:
+10
+AUTHOR:
+test
+======
+JOB ID:
+0003
+Titie:
+Farmer
+Description:
+Potato Farming
+Employer:
+Jenkins
+Location:
+Belarus
+Salary:
+100000
+AUTHOR:
+potato
+======
+JOB ID:
+0004
+Titie:
+Another Farmer
+Description:
+Bulk Potato Farming
+Employer:
+The Emperor
+Location:
+Belarus
+Salary:
+100000
+AUTHOR:
+potato
+======
+JOB ID:
+0005
+Titie:
+Another One
+Description:
+Big Bulk Potato Farm
+Employer:
+The Great Emperor
+Location:
+Belarus
+Salary:
+100000
+AUTHOR:
+potato
+======
+JOB ID:
+0006
+Titie:
+Another One?
+Description:
+Mass Big Bulk Potato
+Employer:
+The Greatest Emperor
+Location:
+Belarus
+Salary:
+999999
+AUTHOR:
+potato
+======
+JOB ID:
+0007
+Titie:
+Potato Harvester
+Description:
+Mass Big Bulk Potato
+Employer:
+The Greatest Emperor
+Location:
+Belarus
+Salary:
+999999
+AUTHOR:
+potato
+======
+JOB ID:
+0008
+Titie:
+Full title
+Description:
+Full desc
+Employer:
+Full
+Location:
+Full Location
+Salary:
+Full Salary
+AUTHOR:
+fullprof
+======
+JOB ID:
+0009
+Titie:
+another test
+Description:
+just testing
+Employer:
+test
+Location:
+linux
+Salary:
+3
+AUTHOR:
+test
+======
+JOB ID:
+0010
+Titie:
+Full title2
+Description:
+Full desc2
+Employer:
+Full2
+Location:
+Full Location2
+Salary:
+Full Salary2
+AUTHOR:
+fullprof
+======
+JOB ID:
+0011
+Titie:
+Student
+Description:
+Study
+Employer:
+Aibek
+Location:
+USF
+Salary:
+0
+AUTHOR:
+aibek
+======
+JOB ID:
+0012
+Titie:
+another test2
+Description:
+just testing2
+Employer:
+test2
+Location:
+linux2
+Salary:
+3
+AUTHOR:
+test
+======
+JOB ID:
+0013
+Titie:
+Full title3
+Description:
+Full desc3
+Employer:
+Full3
+Location:
+Full Location3
+Salary:
+Full Salary3
+AUTHOR:
+fullprof
+======
+JOB ID:
+0014
+Titie:
+Student2
+Description:
+Study2
+Employer:
+Aibek2
+Location:
+USF2
+Salary:
+0
+AUTHOR:
+aibek
+======
+JOB ID:
+0015
+Titie:
+another test3
+Description:
+just testing3
+Employer:
+test3
+Location:
+linux3
+Salary:
+
+AUTHOR:
+test
+======
+JOB ID:
+0016
+Titie:
+Full title34
+Description:
+Full desc34
+Employer:
+Full34
+Location:
+Full Location34
+Salary:
+Full Salary34
+AUTHOR:
+fullprof
+======
+JOB ID:
+0017
+Titie:
+Student24
+Description:
+Study24
+Employer:
+Aibek24
+Location:
+USF24
+Salary:
+0
+AUTHOR:
+aibek
+======
+JOB ID:
+0018
+Titie:
+another test34
+Description:
+just testing34
+Employer:
+test34
+Location:
+linux34
+Salary:
+
+AUTHOR:
+test
+JOBS DEBUG OUTPUT ENDED
 ==== INCOLLEGE MAIN MENU ====
 Welcome to InCollege!
 1. Log In
 2. Create New Account
+0. DEVELOPER MODE FOR DEGUBBING
 Enter your choice:

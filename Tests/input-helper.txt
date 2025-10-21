@@ -51,7 +51,7 @@ LOGIN -> *POST-LOGIN-MENU (LOGIN-PROCESS: IF VALID)
 
 DISPLAY "1. Create/Edit My Profile" -> *CREATE-EDIT-PROFILE
 DISPLAY "2. View My Profile" -> *PROFILE-VIEW
-DISPLAY "3. Search for a job" -> NOTHING
+DISPLAY "3. Search for a job" -> *JOB-SECTION
 DISPLAY "4. Find someone you know" -> *SEARCH-USER
 DISPLAY "5. Learn a new skill" -> *LEARN-SKILL-MENU
 DISPLAY "6. View My Pending Connection Requests" -> *VIEW-PENDING-REQUESTS
@@ -115,6 +115,14 @@ ACCEPT "Deg"
 ACCEPT "Uni"
 ACCEPT "Years"
 -> *POST-LOGIN-MENU
+======================================
+
+
+
+======================================
+POST-LOGIN-MENU -> *JOB-SECTION
+
+
 ======================================
 
 

@@ -5,12 +5,11 @@
        INPUT-OUTPUT SECTION.
       *> Creating file variables
        FILE-CONTROL.
-           SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
+      *>     SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
       *> This one is Aibek's folder of test files
-      *>     SELECT INPUT-FILE ASSIGN TO "Tests/epic3-1.in"
       *>     SELECT INPUT-FILE ASSIGN TO "create-acc-profile.in"
       *>     SELECT INPUT-FILE ASSIGN TO "search-people.in"
-      *>     SELECT INPUT-FILE ASSIGN TO "connect-test.in"
+           SELECT INPUT-FILE ASSIGN TO "job-listing.in"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
@@ -33,6 +32,9 @@
            SELECT CONNECTIONS-FILE ASSIGN TO "connections.doc"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-CONNECTION-STATUS.
+           SELECT JOBS-FILE ASSIGN TO "jobs.doc"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-JOBS-FILE-STATUS.
        
        DATA DIVISION.
        FILE SECTION.
@@ -87,8 +89,22 @@
            05 CN-USER-ONE PIC X(20).
            05 CN-USER-TWO PIC X(20).
 
+       FD JOBS-FILE.
+       01 JOBS-FILE-RECORD.
+           05 JR-ID              PIC 9(4) VALUE 0.
+           05 JR-TITLE           PIC X(20).
+           05 JR-DESC            PIC X(20).
+           05 JR-EMPLOYER        PIC X(20).
+           05 JR-LOCATION        PIC X(20).
+           05 JR-SALARY          PIC X(20).
+           05 JR-AUTHOR-USERNAME PIC X(20).
+
        WORKING-STORAGE SECTION.
       *> FLAG FOR THE INPUT-FILE END OF FILE
+       01 TEMP-LAST-JOB-ID     PIC 9(4) VALUE 0.
+       01 WS-JOBS-FILE-EOF     PIC X VALUE 'N'.
+       01 WS-JOBS-FILE-STATUS  PIC XX.
+
        01 WS-EOF-FLAG PIC X VALUE 'N'.
        01 WS-ACCOUNTS-EOF PIC X VALUE 'N'.
       *> MENU OPTION USER CHOICE
@@ -104,8 +120,8 @@
        77  WS-ACCOUNT-COUNT PIC 9 VALUE 0.
        77  WS-COUNTER       PIC 9 VALUE 0.
        77  WS-FILE-STATUS   PIC XX.
-        77  WS-CONN-REQ-STATUS PIC XX.
-        77  WS-CONN-REQ-TEMP-STATUS PIC XX.
+       77  WS-CONN-REQ-STATUS PIC XX.
+       77  WS-CONN-REQ-TEMP-STATUS PIC XX.
        77  WS-CONNECTION-STATUS PIC XX.
        77  WS-VALID-PASS    PIC X VALUE "N".
        77  WS-HAS-UPPER     PIC X VALUE "N".
@@ -207,42 +223,55 @@
            END-IF
            CLOSE PROFILE-FILE
 
-              OPEN INPUT CONNECTION-REQUESTS-FILE
-              IF WS-CONN-REQ-STATUS NOT = "00"
-                  OPEN OUTPUT CONNECTION-REQUESTS-FILE
-                  CLOSE CONNECTION-REQUESTS-FILE
-                  OPEN INPUT CONNECTION-REQUESTS-FILE
-              END-IF
-              CLOSE CONNECTION-REQUESTS-FILE
+           OPEN INPUT CONNECTION-REQUESTS-FILE
+           IF WS-CONN-REQ-STATUS NOT = "00"
+             OPEN OUTPUT CONNECTION-REQUESTS-FILE
+             CLOSE CONNECTION-REQUESTS-FILE
+             OPEN INPUT CONNECTION-REQUESTS-FILE
+           END-IF
+           CLOSE CONNECTION-REQUESTS-FILE
 
-              OPEN INPUT CONNECTIONS-FILE
-              IF WS-CONNECTION-STATUS NOT = "00"
-                  OPEN OUTPUT CONNECTIONS-FILE
-                  CLOSE CONNECTIONS-FILE
-                  OPEN INPUT CONNECTIONS-FILE
-              END-IF
-              CLOSE CONNECTIONS-FILE
-           .
+           OPEN INPUT CONNECTIONS-FILE
+           IF WS-CONNECTION-STATUS NOT = "00"
+             OPEN OUTPUT CONNECTIONS-FILE
+             CLOSE CONNECTIONS-FILE
+             OPEN INPUT CONNECTIONS-FILE
+           END-IF
+           CLOSE CONNECTIONS-FILE
+
+           OPEN INPUT JOBS-FILE
+           IF WS-JOBS-FILE-STATUS NOT = "00"
+             OPEN OUTPUT JOBS-FILE 
+             CLOSE JOBS-FILE
+             OPEN INPUT JOBS-FILE
+           END-IF
+           CLOSE JOBS-FILE
+       .
        
        MAIN-MENU.
-           DISPLAY "==== INCOLLEGE MAIN MENU ===="
            MOVE "==== INCOLLEGE MAIN MENU ====" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "Welcome to InCollege!"
            MOVE "Welcome to InCollege!" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "1. Log In"
            MOVE "1. Log In" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "2. Create New Account"
            MOVE "2. Create New Account" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "Enter your choice:"
+      *> COMMENT THIS BEFORE DEPLOYMENT!
+           MOVE "0. DEVELOPER MODE FOR DEGUBBING" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            MOVE "Enter your choice:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
@@ -256,9 +285,12 @@
                            PERFORM LOGIN-PROCESS
                        WHEN 2
                            PERFORM REGISTRATION
+      *> COMMENT THIS BEFORE DEPLOYMENT!
+                       WHEN 0
+                           PERFORM DEBUG-JOBS
                        WHEN OTHER
-                           DISPLAY "Invalid choice, please try again"
                            MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                    END-EVALUATE
            END-READ.
@@ -269,14 +301,14 @@
            OPEN EXTEND ACCOUNTS-FILE
 
            IF WS-ACCOUNT-COUNT >= 5
-              DISPLAY "All permitted accounts have been created, Max 5 accounts."
               MOVE "All permitted accounts have been created, Max 5 accounts." TO OUTPUT-RECORD
+              DISPLAY OUTPUT-RECORD
               WRITE OUTPUT-RECORD
               EXIT PARAGRAPH
            END-IF
 
-           DISPLAY "Enter Username:"
            MOVE "Enter Username:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            IF WS-EOF-FLAG NOT = "Y"
              READ INPUT-FILE INTO WS-USERNAME
@@ -287,8 +319,8 @@
       *> PASS VALIDATION
            MOVE "N" TO WS-VALID-PASS
            PERFORM UNTIL WS-VALID-PASS = "Y" OR WS-EOF-FLAG = "Y"
-               DISPLAY "Enter Password:"
                MOVE "Enter Password:" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
                IF WS-EOF-FLAG NOT = "Y"
                  READ INPUT-FILE INTO WS-PASSWORD
@@ -316,8 +348,8 @@
 
       *> KEEP TRACK OF THE NUMBER ACCOUNTS TO ENFORE 5 MAX RULE
            ADD 1 TO WS-ACCOUNT-COUNT
-           DISPLAY "Account successfully created!"
            MOVE "Account successfully created!" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
            CLOSE ACCOUNTS-FILE
@@ -345,8 +377,8 @@
            SUBTRACT WS-LEAD-SP FROM WS-LEN GIVING WS-LEN
       *> IF THE LENGTH REQUIREMENT NOT MET, PASSWORD IS NOT OK
            IF WS-LEN < 8 OR WS-LEN > 12
-              DISPLAY "Error: Password must be 8-12 characters long."
               MOVE "Error: Password must be 8-12 characters long." TO OUTPUT-RECORD
+              DISPLAY OUTPUT-RECORD
               WRITE OUTPUT-RECORD
               EXIT PARAGRAPH
            END-IF
@@ -375,8 +407,8 @@
                AND WS-HAS-SPECIAL = "Y"
                MOVE "Y" TO WS-VALID-PASS
            ELSE
-               DISPLAY "Error: Password must include at least 1 uppercase, 1 digit, and 1 special character."
                MOVE "Error: Password must include at least 1 uppercase, 1 digit, and 1 special character." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            END-IF
            .
@@ -384,8 +416,8 @@
        LOGIN-PROCESS.
            MOVE "N" TO WS-LOGIN-SUCCESS
            
-           DISPLAY "Please enter your username:"
            MOVE "Please enter your username:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
            IF WS-EOF-FLAG NOT = "Y"
@@ -394,8 +426,8 @@
              END-READ
            END-IF
 
-           DISPLAY "Please enter your password:"
            MOVE "Please enter your password:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
            IF WS-EOF-FLAG NOT = "Y"
@@ -426,8 +458,8 @@
       *> 9 = Log Out in POST-LOGIN-MENU 
                    PERFORM POST-LOGIN-MENU UNTIL WS-USER-CHOICE = 9 OR WS-EOF-FLAG = "Y"
                ELSE
-                   DISPLAY "Incorrect username/password, try again."
                    MOVE "Incorrect username/password, try again." TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
            END-IF
@@ -485,9 +517,7 @@
                        WHEN 2
                            PERFORM PROFILE-VIEW
                        WHEN 3
-                           MOVE "Job search is under construction." TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM JOB-MENU UNTIL WS-EOF-FLAG = "Y" OR WS-USER-CHOICE = 9
                        WHEN 4
                            PERFORM SEARCH-USER
                        WHEN 5
@@ -500,6 +530,7 @@
                            MOVE "Logging out." TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
+
                            EXIT PARAGRAPH
                        WHEN OTHER
                            MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
@@ -665,8 +696,8 @@
            PERFORM LOAD-PROFILE
       *> LOAD PROFILE FOUND DESIRED USERNAME IN DATA FILE
            IF FOUND-PROFILE-FLAG = "Y"
-               DISPLAY "Profile found. Editing existing records"
                MOVE "Profile found. Editing existing records" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            END-IF
       *> If we didn't file user's profile and we wanted to create an
@@ -676,12 +707,12 @@
       *>output
            IF FOUND-PROFILE-FLAG = "N"
                IF WS-USER-CHOICE = 2
-                   DISPLAY "You don't have a profile. Create a profile."
                    MOVE "You don't have a profile. Create a profile." TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                ELSE
-                   DISPLAY "Welcome to Create a Profile Page."
                    MOVE "Welcome to Create a Profile Page." TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
            END-IF
@@ -702,16 +733,16 @@
            MOVE SPACES TO TEMP-EDU (3)
 
       *>REQUIRED
-           DISPLAY "Enter First Name: "
            MOVE "Enter First Name: " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
       *>added IF BLOCK to add skip functionality if required field is
       *>nonempty
            IF FOUND-PROFILE-FLAG = "Y" AND
              PR-FIRST-NAME NOT = SPACES AND
              PR-FIRST-NAME NOT = LOW-VALUE
-               DISPLAY "(Leave empty to keep the old record)"
                MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
@@ -731,22 +762,22 @@
                IF TEMP-FIRST-NAME NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   DISPLAY "This is a required field. Please enter non-empty value"
                    MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
            END-PERFORM
            MOVE TEMP-FIRST-NAME TO PR-FIRST-NAME
 
       *>REQUIRED
-           DISPLAY "Enter Last Name: "
            MOVE "Enter Last Name: " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            IF FOUND-PROFILE-FLAG = "Y" AND
              PR-LAST-NAME NOT EQUAL SPACES AND
              PR-LAST-NAME NOT = LOW-VALUE
-               DISPLAY "(Leave empty to keep the old record)"
                MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
@@ -766,22 +797,22 @@
                IF TEMP-LAST-NAME NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   DISPLAY "This is a required field. Please enter non-empty value"
                    MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
            END-PERFORM
            MOVE TEMP-LAST-NAME TO PR-LAST-NAME
 
       *>REQUIRED
-           DISPLAY "Enter University: "
            MOVE "Enter University: " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            IF FOUND-PROFILE-FLAG = "Y" AND
              PR-UNIVERSITY NOT EQUAL SPACES AND
              PR-UNIVERSITY NOT = LOW-VALUE
-               DISPLAY "(Leave empty to keep the old record)"
                MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
@@ -801,22 +832,22 @@
                IF TEMP-UNIVERSITY NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   DISPLAY "This is a required field. Please enter non-empty value"
                    MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
            END-PERFORM
            MOVE TEMP-UNIVERSITY TO PR-UNIVERSITY
 
       *>REQUIRED
-           DISPLAY "Enter Major: "
            MOVE "Enter Major: " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            IF FOUND-PROFILE-FLAG = "Y" AND
              PR-MAJOR NOT EQUAL SPACES AND
              PR-MAJOR NOT = LOW-VALUE
-               DISPLAY "(Leave empty to keep the old record)"
                MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
@@ -835,22 +866,22 @@
                IF TEMP-MAJOR NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   DISPLAY "This is a required field. Please enter non-empty value"
                    MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
            END-PERFORM
            MOVE TEMP-MAJOR TO PR-MAJOR
 
       *>REQUIRED
-           DISPLAY "Enter Graduation Year: "
            MOVE "Enter Graduation Year: " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            IF FOUND-PROFILE-FLAG = "Y" AND
              PR-GRAD-YEAR NOT EQUAL SPACES AND
              PR-GRAD-YEAR NOT = LOW-VALUE
-               DISPLAY "(Leave empty to keep the old record)"
                MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            END-IF
       *>Graduation year validation
@@ -875,8 +906,8 @@
                    FUNCTION NUMVAL(TEMP-GRAD-YEAR) <= 2035
                    MOVE "Y" TO WS-VALID-GRAD-YEAR
                ELSE
-                   DISPLAY "Please enter a valid graduation year. (1925-2035)"
                    MOVE "Please enter a valid graduation year. (1925-2035)" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
            END-PERFORM
@@ -886,8 +917,8 @@
       *> INTIGERS OR TO MOVE STRING INTO INTEGER VARIABLE, LIKE HERE
            MOVE FUNCTION NUMVAL(TEMP-GRAD-YEAR) TO PR-GRAD-YEAR
 
-           DISPLAY "About Me (optional, blank = skip/keep): "
            MOVE "About Me (optional, blank = skip/keep): " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            IF WS-EOF-FLAG NOT = "Y"
                READ INPUT-FILE INTO TEMP-ABOUT-ME
@@ -1006,24 +1037,25 @@
            MOVE CURRENT-USERNAME TO PR-USERNAME
            IF FOUND-PROFILE-FLAG = "Y"
                REWRITE PROFILE-RECORD
-               DISPLAY "Profile updated successfully."
                MOVE "Profile updated successfully." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            ELSE
                WRITE PROFILE-RECORD
-               DISPLAY "Profile created successfully."
                MOVE "Profile created successfully." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
            END-IF
-           DISPLAY "Profile saved successfully."
            MOVE "Profile saved successfully." TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
+
            CLOSE PROFILE-FILE
            .
 
        SEARCH-USER.
-           DISPLAY "Enter the full name of the person you are looking for:"
            MOVE "Enter the full name of the person you are looking for:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
            IF WS-EOF-FLAG NOT = "Y"
@@ -1206,6 +1238,7 @@
                MOVE "You cannot send a connection request to yourself." TO OUTPUT-RECORD
                DISPLAY OUTPUT-RECORD
                WRITE OUTPUT-RECORD
+
                EXIT PARAGRAPH
            END-IF
 
@@ -1550,36 +1583,36 @@
            .
 
        LEARN-SKILL-MENU.
-           DISPLAY "Learn a New Skill"
            MOVE "Learn a New Skill" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "1. Programming"
            MOVE "1. Programming" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "2. Data Analysis"
            MOVE "2. Data Analysis" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "3. Digital Marketing"
            MOVE "3. Digital Marketing" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "4. Project Management"
            MOVE "4. Project Management" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "5. Communication"
            MOVE "5. Communication" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "6. Go Back"
            MOVE "6. Go Back" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           DISPLAY "Enter your choice:"
            MOVE "Enter your choice:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            
            IF WS-EOF-FLAG NOT = "Y"
@@ -1589,40 +1622,32 @@
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
-                           DISPLAY "Programming is under construction."
                            MOVE "Programming is under construction." TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        WHEN 2
-                           DISPLAY "Data Analysis under construction."
-                           MOVE "Data Analysis under construction." TO OUTPUT-RECORD
+                           MOVE "Data Analysis is under construction." TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        WHEN 3
-                           DISPLAY "Digital Marketing "
-                           MOVE "Digital Marketing " TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
-
-                           DISPLAY "under construction."
-                           MOVE "under construction." TO OUTPUT-RECORD
+                           MOVE "Digital Marketing is under construction." TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        WHEN 4
-                           DISPLAY "Project Management "
-                           MOVE "Project Management " TO OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
-
-                           DISPLAY "under construction."
-                           MOVE "under construction." TO OUTPUT-RECORD
+                           MOVE "Project Management under construction." TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        WHEN 5
-                           DISPLAY "Communication under construction."
-                           MOVE "Communication under construction." TO OUTPUT-RECORD
+                           MOVE "Communication is under construction." TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        WHEN 6
-                           DISPLAY "Returning to main menu..."
                            MOVE "Returning to main menu..." TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        WHEN OTHER
-                           DISPLAY "Invalid choice, please try again"
-                           MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
+                           MOVE "Invalid choice, please try again." TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                    END-EVALUATE
            END-READ
@@ -1655,15 +1680,301 @@
            
            CLOSE ACCOUNTS-FILE.
        
+       JOB-MENU.
+           MOVE "==== Job Search/Internship Menu ====" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "1. Post a Job/Internship" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "2. Browse Jobs/Internships" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "3. Back to Main Menu" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           READ INPUT-FILE INTO WS-USER-CHOICE
+             AT END MOVE "Y" TO WS-EOF-FLAG
+             NOT AT END
+               EVALUATE WS-USER-CHOICE
+                 WHEN 1
+                   MOVE "Posting a job..." TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+
+                   PERFORM POST-A-JOB
+                 WHEN 2
+                   MOVE "Browsing jobs is under construction" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+      *> PERFORM BROWSE-JOBS (FUTURE FEATURE)
+                 WHEN 3
+                   MOVE "Returning back to MAIN MENU..." TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+
+      *> NEED TO ASSIGN USER CHOICE TO 9 TO EXIT THE LOOP TOWARDS MAIN
+      *> MENU
+      *> WHEN 3 should return back to main menu (1. login, 2. register)
+      *> it returns to main menu for me, pls report if it doesn't for u
+                   MOVE 9 TO WS-USER-CHOICE
+                   EXIT PARAGRAPH
+                 WHEN OTHER
+                   MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-EVALUATE
+           END-READ
+       .
+
+       POST-A-JOB.
+      *> MAKE SURE JOBS-FILE IS CLOSED BEFORE JOBS-FILE OPENS AS INPUT
+      *> CLOSE JOBS-FILE
+           OPEN INPUT JOBS-FILE
+           MOVE 'N' TO WS-JOBS-FILE-EOF
+           PERFORM UNTIL WS-JOBS-FILE-EOF = 'Y'
+             READ JOBS-FILE
+               AT END 
+                 MOVE 'Y' TO WS-JOBS-FILE-EOF
+               NOT AT END
+                 MOVE JR-ID OF JOBS-FILE-RECORD TO TEMP-LAST-JOB-ID
+             END-READ
+           END-PERFORM
+           CLOSE JOBS-FILE
+
+           OPEN EXTEND JOBS-FILE
+           ADD 1 TO TEMP-LAST-JOB-ID
+           MOVE TEMP-LAST-JOB-ID TO JR-ID
+
+           MOVE "Job Titile: " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "N" TO WS-VALID-REQUIRED
+      *>CHECKING IF THE VALUE ENTERED NON-EMPTY
+           PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO JR-TITLE
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
+               IF WS-EOF-FLAG = "Y"
+                   MOVE "Failed to post a job. EOF during Title" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   EXIT PARAGRAPH
+               END-IF
+               IF JR-TITLE NOT = SPACES
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               ELSE
+                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+           END-PERFORM
+
+           MOVE "Description: " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "N" TO WS-VALID-REQUIRED
+      *>CHECKING IF THE VALUE ENTERED NON-EMPTY
+           PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO JR-DESC
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
+               IF WS-EOF-FLAG = "Y"
+                   MOVE "Failed to post a job. EOF during Description" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   EXIT PARAGRAPH
+               END-IF
+               IF JR-DESC NOT = SPACES
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               ELSE
+                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+           END-PERFORM
+
+           MOVE "Employer: " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "N" TO WS-VALID-REQUIRED
+      *>CHECKING IF THE VALUE ENTERED NON-EMPTY
+           PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO JR-EMPLOYER
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
+               IF WS-EOF-FLAG = "Y"
+                   MOVE "Failed to post a job. EOF during Employer" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   EXIT PARAGRAPH
+               END-IF
+               IF JR-EMPLOYER NOT = SPACES
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               ELSE
+                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+           END-PERFORM
+
+           MOVE "Location: " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "N" TO WS-VALID-REQUIRED
+      *>CHECKING IF THE VALUE ENTERED NON-EMPTY
+           PERFORM UNTIL WS-VALID-REQUIRED = "Y"
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO JR-LOCATION
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                   END-READ
+               END-IF
+               IF WS-EOF-FLAG = "Y"
+                   MOVE "Failed to post a job. EOF during Location" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   EXIT PARAGRAPH
+               END-IF
+               IF JR-LOCATION NOT = SPACES
+                   MOVE "Y" TO WS-VALID-REQUIRED 
+               ELSE
+                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+               END-IF
+           END-PERFORM
+
+           MOVE "Salary (optional): " TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           IF WS-EOF-FLAG NOT = "Y"
+             READ INPUT-FILE INTO JR-SALARY
+                 AT END MOVE "Y" TO WS-EOF-FLAG
+             END-READ
+           END-IF
+
+      *> IF WS-USERNAME CHANGES DURING EXECUTION
+      *> TRY USING CURRENT-USERNAME
+           MOVE WS-USERNAME TO JR-AUTHOR-USERNAME
+
+           WRITE JOBS-FILE-RECORD
+
+           MOVE "Job posted successfully!" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           CLOSE JOBS-FILE
+       .
+
+       DEBUG-JOBS.
+      *> THIS PARAGRAPH CAN LATER BE USED AS A BLUEPRINT FOR JOB LISTINGS DISPLAY
+           MOVE "JOBS DEBUG OUTPUT BEGIN" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           OPEN INPUT JOBS-FILE
+           MOVE 'N' TO WS-JOBS-FILE-EOF
+           PERFORM UNTIL WS-JOBS-FILE-EOF = 'Y'
+             READ JOBS-FILE
+               AT END 
+                 MOVE 'Y' TO WS-JOBS-FILE-EOF
+               NOT AT END
+                 MOVE "======" TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE "JOB ID: " TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE JR-ID TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE "Titie: " TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE JR-TITLE TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE "Description: " TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE JR-DESC TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE "Employer: " TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE JR-EMPLOYER TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE "Location: " TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE JR-LOCATION TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE "Salary: " TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE JR-SALARY TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE "AUTHOR: " TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+
+                 MOVE JR-AUTHOR-USERNAME TO OUTPUT-RECORD
+                 DISPLAY OUTPUT-RECORD
+                 WRITE OUTPUT-RECORD
+             END-READ
+           END-PERFORM
+           CLOSE JOBS-FILE
+
+           MOVE "JOBS DEBUG OUTPUT ENDED" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+       .
+
        WRITE-TO-OUTPUT.
            MOVE FUNCTION TRIM(FUNCTION REVERSE(
                FUNCTION TRIM(FUNCTION REVERSE(
                WS-TEMP-INPUT)))) TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD.
+               WRITE OUTPUT-RECORD
+       .
        
        CLEANUP.
            CLOSE INPUT-FILE
            CLOSE OUTPUT-FILE
            CLOSE ACCOUNTS-FILE
            CLOSE PROFILE-FILE
-           .
+           CLOSE JOBS-FILE
+           CLOSE CONNECTION-REQUESTS-FILE 
+           CLOSE CONNECTION-REQUESTS-TEMP-FILE 
+           CLOSE CONNECTIONS-FILE 
+       .
