@@ -1,0 +1,29 @@
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+0. DEVELOPER MODE FOR DEGUBBING
+Enter your choice:
+JOBS DEBUG OUTPUT BEGIN
+======
+JOB ID: 
+0001
+Titie: 
+QA Engineer
+Description: 
+Ensure quality across releases
+Employer: 
+QualityWorks
+Location: 
+Remote
+Salary: 
+$60,000/year
+AUTHOR: 
+tomato
+JOBS DEBUG OUTPUT ENDED
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+0. DEVELOPER MODE FOR DEGUBBING
+Enter your choice:

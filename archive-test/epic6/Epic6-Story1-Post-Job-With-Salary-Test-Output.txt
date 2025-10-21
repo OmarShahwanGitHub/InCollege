@@ -1,0 +1,43 @@
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+0. DEVELOPER MODE FOR DEGUBBING
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome test!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+7. View My Network
+9. Logout
+Enter your choice:
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+Enter your choice:
+Posting a job...
+Job Titile: 
+Description: 
+Employer: 
+Location: 
+Salary (optional): 
+Job posted successfully!
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+Enter your choice:
+Returning back to MAIN MENU...
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+0. DEVELOPER MODE FOR DEGUBBING
+Enter your choice:
