@@ -266,9 +266,9 @@
            WRITE OUTPUT-RECORD
 
       *> COMMENT THIS BEFORE DEPLOYMENT!
-           MOVE "0. DEVELOPER MODE FOR DEGUBBING" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           *> MOVE "0. DEVELOPER MODE FOR DEGUBBING" TO OUTPUT-RECORD
+           *> DISPLAY OUTPUT-RECORD
+           *> WRITE OUTPUT-RECORD
 
            MOVE "Enter your choice:" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
@@ -286,8 +286,8 @@
                        WHEN 2
                            PERFORM REGISTRATION
       *> COMMENT THIS BEFORE DEPLOYMENT!
-                       WHEN 0
-                           PERFORM DEBUG-JOBS
+                       *> WHEN 0
+                           *> PERFORM DEBUG-JOBS
                        WHEN OTHER
                            MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
