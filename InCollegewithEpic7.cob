@@ -9,6 +9,7 @@ IDENTIFICATION DIVISION.
       *> This one is Aibek's folder of test files
       *>     SELECT INPUT-FILE ASSIGN TO "create-acc-profile.in"
       *>     SELECT INPUT-FILE ASSIGN TO "search-people.in"
+      *> SELECT INPUT-FILE ASSIGN TO "debug.txt"
       *> SELECT INPUT-FILE ASSIGN TO "job-listing.in"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
@@ -35,8 +36,8 @@ IDENTIFICATION DIVISION.
            SELECT JOBS-FILE ASSIGN TO "jobs.doc"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-JOBS-FILE-STATUS.
-           *> === EPIC 7 NEW FILE ===
-           *> For saving job applications (username + job ID)
+      *> === EPIC 7 NEW FILE ===
+      *> For saving job applications (username + job ID)
            SELECT APPLICATIONS-FILE ASSIGN TO "applications.doc"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-APPLICATIONS-STATUS.
@@ -103,20 +104,22 @@ IDENTIFICATION DIVISION.
            05 JR-LOCATION        PIC X(20).
            05 JR-SALARY          PIC X(20).
            05 JR-AUTHOR-USERNAME PIC X(20).
-           *> === EPIC 7 NEW FILE SECTION ===
+      *> === EPIC 7 NEW FILE SECTION ===
        FD APPLICATIONS-FILE.
        01 APPLICATION-RECORD.
-           05 APP-USERNAME PIC X(20).
-           05 APP-JOB-ID    PIC 9(4).
+           05 APP-USERNAME   PIC X(20).
+           05 APP-JOB-ID     PIC 9(4).
 
        WORKING-STORAGE SECTION.
       *> FLAG FOR THE INPUT-FILE END OF FILE
-       01 TEMP-LAST-JOB-ID     PIC 9(4) VALUE 0.
-       01 WS-JOBS-FILE-EOF     PIC X VALUE 'N'.
-       01 WS-JOBS-FILE-STATUS  PIC XX.
-       01 WS-APPLICATIONS-STATUS PIC XX.
-       01 WS-APPLICATIONS-EOF  PIC X VALUE "N".
-       01 WS-TARGET-JOB-ID     PIC 9(4) VALUE 0.
+       01 TEMP-LAST-JOB-ID           PIC 9(4) VALUE 0.
+       01 WS-JOBS-FILE-EOF           PIC X VALUE 'N'.
+       01 WS-JOBS-FILE-STATUS        PIC XX.
+       01 WS-APPLICATIONS-STATUS     PIC XX.
+       01 WS-APPLICATIONS-EOF        PIC X VALUE "N".
+       01 WS-TARGET-JOB-ID           PIC 9(4) VALUE 0.
+       01 WS-TARGET-JOB-ID-FOUND     PIC X VALUE 'N'.
+       01 WS-TARGET-JOB-ID-APPLIED   PIC X VALUE 'N'.
 
        01 WS-EOF-FLAG PIC X VALUE 'N'.
        01 WS-ACCOUNTS-EOF PIC X VALUE 'N'.
@@ -288,9 +291,9 @@ IDENTIFICATION DIVISION.
            WRITE OUTPUT-RECORD
 
       *> COMMENT THIS BEFORE DEPLOYMENT!
-           *> MOVE "0. DEVELOPER MODE FOR DEGUBBING" TO OUTPUT-RECORD
-           *> DISPLAY OUTPUT-RECORD
-           *> WRITE OUTPUT-RECORD
+      *> MOVE "0. DEVELOPER MODE FOR DEGUBBING" TO OUTPUT-RECORD
+      *> DISPLAY OUTPUT-RECORD
+      *> WRITE OUTPUT-RECORD
 
            MOVE "Enter your choice:" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
@@ -308,8 +311,8 @@ IDENTIFICATION DIVISION.
                        WHEN 2
                            PERFORM REGISTRATION
       *> COMMENT THIS BEFORE DEPLOYMENT!
-                       *> WHEN 0
-                           *> PERFORM DEBUG-JOBS
+      *> WHEN 0
+      *> PERFORM DEBUG-JOBS
                        WHEN OTHER
                            MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
@@ -1090,7 +1093,6 @@ IDENTIFICATION DIVISION.
                INTO TEMP-FIRST-NAME TEMP-LAST-NAME
            END-UNSTRING
 
-      *> DISPLAY "DEBUG******************"TEMP-FIRST-NAME"*"TEMP-LAST-NAME"*"
            MOVE "N" TO FOUND-PROFILE-FLAG
            OPEN INPUT PROFILE-FILE
            PERFORM UNTIL WS-EOF-FLAG = "Y" OR FOUND-PROFILE-FLAG = "Y"
@@ -1906,7 +1908,7 @@ IDENTIFICATION DIVISION.
 
            CLOSE JOBS-FILE
        .
-              BROWSE-JOBS.
+       BROWSE-JOBS.
            MOVE "--- Available Job Listings ---" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
@@ -1919,8 +1921,10 @@ IDENTIFICATION DIVISION.
                    AT END MOVE 'Y' TO WS-JOBS-FILE-EOF
                    NOT AT END
                        MOVE SPACES TO OUTPUT-RECORD
-                       STRING TEMP-LAST-JOB-ID ". " JR-TITLE " at " JR-EMPLOYER
-                              " (" JR-LOCATION ")" INTO OUTPUT-RECORD
+      *>FUNCTION TRIM(JR-TITLE TRAILING) rightmost whitespaces
+                       STRING TEMP-LAST-JOB-ID ". " FUNCTION TRIM(JR-TITLE TRAILING)
+                       " at " FUNCTION TRIM(JR-EMPLOYER TRAILING)
+                       " (" FUNCTION TRIM(JR-LOCATION TRAILING) ")" INTO OUTPUT-RECORD
                        END-STRING
                        DISPLAY OUTPUT-RECORD
                        WRITE OUTPUT-RECORD
@@ -1943,32 +1947,45 @@ IDENTIFICATION DIVISION.
            END-READ
            .
 
-              VIEW-JOB-DETAILS.
+       VIEW-JOB-DETAILS.
            OPEN INPUT JOBS-FILE
            MOVE 1 TO TEMP-LAST-JOB-ID
            MOVE 'N' TO WS-JOBS-FILE-EOF
-           PERFORM UNTIL WS-JOBS-FILE-EOF = 'Y'
+           MOVE 'N' TO WS-TARGET-JOB-ID-FOUND
+      *> added OR TEMP-LAST-JOB-ID = WS-TARGET-JOB-ID
+           PERFORM UNTIL WS-JOBS-FILE-EOF = 'Y' OR TEMP-LAST-JOB-ID > WS-TARGET-JOB-ID
                READ JOBS-FILE INTO JOBS-FILE-RECORD
                    AT END MOVE 'Y' TO WS-JOBS-FILE-EOF
                    NOT AT END
                        IF TEMP-LAST-JOB-ID = WS-TARGET-JOB-ID
+                           MOVE 'Y' TO WS-TARGET-JOB-ID-FOUND
+
                            MOVE "=== Job Details ===" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
 
+                           MOVE SPACES TO OUTPUT-RECORD
                            STRING "Title: " JR-TITLE INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
                            STRING "Description: " JR-DESC INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
                            STRING "Employer: " JR-EMPLOYER INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
                            STRING "Location: " JR-LOCATION INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
+
                            IF JR-SALARY NOT = SPACES
+                               MOVE SPACES TO OUTPUT-RECORD
                                STRING "Salary: " JR-SALARY INTO OUTPUT-RECORD
                                DISPLAY OUTPUT-RECORD
                                WRITE OUTPUT-RECORD
@@ -1992,26 +2009,57 @@ IDENTIFICATION DIVISION.
                        ADD 1 TO TEMP-LAST-JOB-ID
                END-READ
            END-PERFORM
+           IF WS-TARGET-JOB-ID-FOUND = 'N'
+             MOVE "Error. No job by provided number found! (see below)" TO OUTPUT-RECORD
+             DISPLAY OUTPUT-RECORD
+             WRITE OUTPUT-RECORD
+             MOVE WS-TARGET-JOB-ID TO OUTPUT-RECORD
+             DISPLAY OUTPUT-RECORD
+             WRITE OUTPUT-RECORD
+           END-IF
            CLOSE JOBS-FILE
            .
 
-              APPLY-FOR-JOB.
-           OPEN EXTEND APPLICATIONS-FILE
-           MOVE CURRENT-USERNAME TO APP-USERNAME
-           MOVE WS-TARGET-JOB-ID TO APP-JOB-ID
-           WRITE APPLICATION-RECORD
+       APPLY-FOR-JOB.
+           OPEN INPUT APPLICATIONS-FILE
+           MOVE 'N' TO WS-TARGET-JOB-ID-APPLIED
+           MOVE 'N' TO WS-APPLICATIONS-EOF
+           PERFORM UNTIL WS-APPLICATIONS-EOF = 'Y' OR WS-TARGET-JOB-ID-APPLIED = 'Y'
+               READ APPLICATIONS-FILE INTO APPLICATION-RECORD
+                   AT END MOVE 'Y' TO WS-APPLICATIONS-EOF
+                   NOT AT END
+                       IF APP-USERNAME = CURRENT-USERNAME
+                           IF APP-JOB-ID = WS-TARGET-JOB-ID
+                               MOVE 'Y' TO WS-TARGET-JOB-ID-APPLIED
+                           END-IF
+                       END-IF
+               END-READ
+           END-PERFORM
            CLOSE APPLICATIONS-FILE
 
-           MOVE SPACES TO WS-MESSAGE
-           STRING "Application submitted for " JR-TITLE
-                  " at " JR-EMPLOYER INTO WS-MESSAGE
-           END-STRING
-           DISPLAY WS-MESSAGE
-           MOVE WS-MESSAGE TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           IF WS-TARGET-JOB-ID-APPLIED = 'N'
+             OPEN EXTEND APPLICATIONS-FILE
+             MOVE CURRENT-USERNAME TO APP-USERNAME
+             MOVE WS-TARGET-JOB-ID TO APP-JOB-ID
+             WRITE APPLICATION-RECORD
+             CLOSE APPLICATIONS-FILE
+
+      *> this can be changed to MOVE SPACES TO OUTPUT-RECORD
+             MOVE SPACES TO WS-MESSAGE
+             STRING "Application submitted for " FUNCTION TRIM(JR-TITLE TRAILING)
+                    " at " FUNCTION TRIM(JR-EMPLOYER TRAILING) INTO WS-MESSAGE
+             END-STRING
+             DISPLAY WS-MESSAGE
+             MOVE WS-MESSAGE TO OUTPUT-RECORD
+             WRITE OUTPUT-RECORD
+           ELSE
+             MOVE "Sorry, you've already applied for this job" TO OUTPUT-RECORD
+             DISPLAY OUTPUT-RECORD
+             WRITE OUTPUT-RECORD
+           END-IF
            .
 
-              VIEW-MY-APPLICATIONS.
+       VIEW-MY-APPLICATIONS.
            MOVE "--- Your Job Applications ---" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
@@ -2031,6 +2079,7 @@ IDENTIFICATION DIVISION.
            END-PERFORM
            CLOSE APPLICATIONS-FILE
 
+           MOVE SPACES TO OUTPUT-RECORD
            STRING "Total Applications: " WS-COUNTER INTO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
@@ -2044,15 +2093,21 @@ IDENTIFICATION DIVISION.
                    AT END MOVE 'Y' TO WS-JOBS-FILE-EOF
                    NOT AT END
                        IF JR-ID = APP-JOB-ID
-                           STRING "Job Title: " JR-TITLE INTO OUTPUT-RECORD
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Job Title: " FUNCTION TRIM(JR-TITLE TRAILING) INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
-                           STRING "Employer: " JR-EMPLOYER INTO OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Employer: " FUNCTION TRIM(JR-EMPLOYER TRAILING) INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
-                           STRING "Location: " JR-LOCATION INTO OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Location: " FUNCTION TRIM(JR-LOCATION TRAILING) INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
+
                            MOVE "---" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD

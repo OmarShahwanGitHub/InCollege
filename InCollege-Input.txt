@@ -1,34 +1,9 @@
+0
 1
 fullprof
 fullpasS1+
 3
 2
+4
 1
-Full title34
-Full desc34
-Full34
-Full Location34
-Full Salary34
-3
-1
-aibek
-easypasS1+
-3
-1
-Student24
-Study24
-Aibek24
-USF24
-0
-3
-1
-test
-testpasS1+
-3
-1
-another test34
-just testing34
-test34
-linux34
-
 3
