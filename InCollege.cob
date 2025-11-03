@@ -35,6 +35,9 @@
            SELECT JOBS-FILE ASSIGN TO "jobs.doc"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-JOBS-FILE-STATUS.
+           SELECT MESSAGES-FILE ASSIGN TO "messages.doc"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-MESSAGES-STATUS.
        
        DATA DIVISION.
        FILE SECTION.
@@ -99,11 +102,19 @@
            05 JR-SALARY          PIC X(20).
            05 JR-AUTHOR-USERNAME PIC X(20).
 
+       FD MESSAGES-FILE.
+       01 MESSAGE-RECORD.
+           05 MS-SENDER     PIC X(20).
+           05 MS-RECIPIENT  PIC X(20).
+           05 MS-CONTENT    PIC X(200).
+           05 MS-TIMESTAMP  PIC X(20).
+
        WORKING-STORAGE SECTION.
       *> FLAG FOR THE INPUT-FILE END OF FILE
        01 TEMP-LAST-JOB-ID     PIC 9(4) VALUE 0.
        01 WS-JOBS-FILE-EOF     PIC X VALUE 'N'.
        01 WS-JOBS-FILE-STATUS  PIC XX.
+    01 WS-MESSAGES-STATUS   PIC XX.
 
        01 WS-EOF-FLAG PIC X VALUE 'N'.
        01 WS-ACCOUNTS-EOF PIC X VALUE 'N'.
@@ -116,6 +127,11 @@
        01 WS-STORED-USERNAME PIC X(20).
        01 WS-STORED-PASSWORD PIC X(12).
        01 WS-MESSAGE PIC X(90).
+    01 WS-MSG-CHOICE PIC 9 VALUE 0.
+    01 WS-RECIPIENT PIC X(20).
+    01 WS-MSG-CONTENT PIC X(200).
+    01 WS-IS-CONNECTED PIC X VALUE 'N'.
+    01 WS-TIMESTAMP-FULL PIC X(21).
        
        77  WS-ACCOUNT-COUNT PIC 9 VALUE 0.
        77  WS-COUNTER       PIC 9 VALUE 0.
@@ -246,6 +262,14 @@
              OPEN INPUT JOBS-FILE
            END-IF
            CLOSE JOBS-FILE
+
+                     OPEN INPUT MESSAGES-FILE
+                     IF WS-MESSAGES-STATUS NOT = "00"
+                         OPEN OUTPUT MESSAGES-FILE
+                         CLOSE MESSAGES-FILE
+                         OPEN INPUT MESSAGES-FILE
+                     END-IF
+                     CLOSE MESSAGES-FILE
        .
        
        MAIN-MENU.
@@ -498,6 +522,10 @@
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
+           MOVE "8. Messages" TO OUTPUT-RECORD
+            DISPLAY OUTPUT-RECORD
+            WRITE OUTPUT-RECORD
+
            MOVE "9. Logout" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
@@ -526,6 +554,8 @@
                            PERFORM VIEW-PENDING-REQUESTS
                        WHEN 7
                            PERFORM VIEW-MY-NETWORK
+                       WHEN 8
+                           PERFORM MESSAGES-MENU
                        WHEN 9
                            MOVE "Logging out." TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
@@ -539,6 +569,130 @@
                    END-EVALUATE
            END-READ
            END-IF.
+
+      *> ================== MESSAGING FEATURE (WEEK 8) ==================
+       MESSAGES-MENU.
+           MOVE "--- Messages Menu ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE 0 TO WS-MSG-CHOICE
+           PERFORM UNTIL WS-MSG-CHOICE = 3 OR WS-EOF-FLAG = "Y"
+               MOVE "1. Send a New Message" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE "2. View My Messages" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE "3. Back to Main Menu" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               MOVE "Enter your choice:" TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+
+               IF WS-EOF-FLAG NOT = "Y"
+                   READ INPUT-FILE INTO WS-TEMP-INPUT
+                       AT END MOVE "Y" TO WS-EOF-FLAG
+                       NOT AT END
+                           MOVE WS-TEMP-INPUT(1:1) TO WS-MSG-CHOICE
+                           EVALUATE WS-MSG-CHOICE
+                               WHEN 1
+                                   PERFORM SEND-NEW-MESSAGE
+                               WHEN 2
+                                   MOVE "View My Messages is under construction." TO OUTPUT-RECORD
+                                   DISPLAY OUTPUT-RECORD
+                                   WRITE OUTPUT-RECORD
+                               WHEN 3
+                                   CONTINUE
+                               WHEN OTHER
+                                   MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
+                                   DISPLAY OUTPUT-RECORD
+                                   WRITE OUTPUT-RECORD
+                           END-EVALUATE
+                   END-READ
+               END-IF
+           END-PERFORM
+           .
+
+       SEND-NEW-MESSAGE.
+           MOVE "Enter recipient's username (must be a connection):" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO WS-RECIPIENT
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+
+           IF WS-EOF-FLAG = "Y"
+               EXIT PARAGRAPH
+           END-IF
+
+      *> Validate connection
+           MOVE "N" TO WS-IS-CONNECTED
+           MOVE "N" TO WS-CONNECTIONS-EOF
+           OPEN INPUT CONNECTIONS-FILE
+           IF WS-CONNECTION-STATUS = "35"
+               MOVE "Y" TO WS-CONNECTIONS-EOF
+           END-IF
+           PERFORM UNTIL WS-CONNECTIONS-EOF = "Y" OR WS-IS-CONNECTED = "Y"
+               READ CONNECTIONS-FILE INTO CONNECTION-RECORD
+                   AT END MOVE "Y" TO WS-CONNECTIONS-EOF
+                   NOT AT END
+                       IF (CN-USER-ONE = CURRENT-USERNAME AND CN-USER-TWO = WS-RECIPIENT)
+                           OR (CN-USER-ONE = WS-RECIPIENT AND CN-USER-TWO = CURRENT-USERNAME)
+                           MOVE "Y" TO WS-IS-CONNECTED
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE CONNECTIONS-FILE
+
+           IF WS-IS-CONNECTED NOT = "Y"
+               MOVE "You can only message users you are connected with." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           MOVE "Enter your message (max 200 chars):" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO WS-MSG-CONTENT
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+
+           IF WS-EOF-FLAG = "Y"
+               EXIT PARAGRAPH
+           END-IF
+
+      *> Write message to persistent storage
+           OPEN EXTEND MESSAGES-FILE
+           MOVE CURRENT-USERNAME TO MS-SENDER
+           MOVE WS-RECIPIENT TO MS-RECIPIENT
+           MOVE WS-MSG-CONTENT TO MS-CONTENT
+           MOVE FUNCTION CURRENT-DATE TO WS-TIMESTAMP-FULL
+           MOVE WS-TIMESTAMP-FULL(1:14) TO MS-TIMESTAMP
+           WRITE MESSAGE-RECORD
+           CLOSE MESSAGES-FILE
+
+           MOVE SPACES TO WS-MESSAGE
+           STRING "Message sent to " DELIMITED BY SIZE
+                  WS-RECIPIENT DELIMITED BY SPACE
+                  " successfully!" DELIMITED BY SIZE
+                  INTO WS-MESSAGE
+           END-STRING
+           DISPLAY WS-MESSAGE
+           MOVE WS-MESSAGE TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
 
        PROFILE-VIEW.
            PERFORM LOAD-PROFILE
@@ -1977,4 +2131,5 @@
            CLOSE CONNECTION-REQUESTS-FILE 
            CLOSE CONNECTION-REQUESTS-TEMP-FILE 
            CLOSE CONNECTIONS-FILE 
+           CLOSE MESSAGES-FILE
        .
