@@ -1,4 +1,4 @@
-       IDENTIFICATION DIVISION.
+IDENTIFICATION DIVISION.
        PROGRAM-ID. INCOLLEGE.
        
        ENVIRONMENT DIVISION.
@@ -9,6 +9,7 @@
       *> This one is Aibek's folder of test files
       *>     SELECT INPUT-FILE ASSIGN TO "create-acc-profile.in"
       *>     SELECT INPUT-FILE ASSIGN TO "search-people.in"
+      *> SELECT INPUT-FILE ASSIGN TO "debug.txt"
       *> SELECT INPUT-FILE ASSIGN TO "job-listing.in"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
@@ -35,10 +36,16 @@
            SELECT JOBS-FILE ASSIGN TO "jobs.doc"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-JOBS-FILE-STATUS.
+      *> === EPIC 7 NEW FILE ===
+      *> For saving job applications (username + job ID)
+           SELECT APPLICATIONS-FILE ASSIGN TO "applications.doc"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-APPLICATIONS-STATUS.
+              
            SELECT MESSAGES-FILE ASSIGN TO "messages.doc"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-MESSAGES-STATUS.
-       
+
        DATA DIVISION.
        FILE SECTION.
        FD INPUT-FILE.
@@ -101,21 +108,37 @@
            05 JR-LOCATION        PIC X(20).
            05 JR-SALARY          PIC X(20).
            05 JR-AUTHOR-USERNAME PIC X(20).
+      *> === EPIC 7 NEW FILE SECTION ===
+       FD APPLICATIONS-FILE.
+       01 APPLICATION-RECORD.
+           05 APP-USERNAME   PIC X(20).
+           05 APP-JOB-ID     PIC 9(4).
 
        FD MESSAGES-FILE.
        01 MESSAGE-RECORD.
-           05 MS-SENDER     PIC X(20).
-           05 MS-RECIPIENT  PIC X(20).
-           05 MS-CONTENT    PIC X(200).
-           05 MS-TIMESTAMP  PIC X(20).
-
+           05 MS-SENDER      PIC X(20).
+           05 MS-RECIPIENT   PIC X(20).
+           05 MS-CONTENT     PIC X(200).
+           05 MS-TIMESTAMP   PIC X(20).
+           05 MS-READ-FLAG   PIC X VALUE "N".
+       
        WORKING-STORAGE SECTION.
       *> FLAG FOR THE INPUT-FILE END OF FILE
-       01 TEMP-LAST-JOB-ID     PIC 9(4) VALUE 0.
-       01 WS-JOBS-FILE-EOF     PIC X VALUE 'N'.
-       01 WS-JOBS-FILE-STATUS  PIC XX.
-    01 WS-MESSAGES-STATUS   PIC XX.
-
+       01 TEMP-LAST-JOB-ID           PIC 9(4) VALUE 0.
+       01 WS-JOBS-FILE-EOF           PIC X VALUE 'N'.
+       01 WS-JOBS-FILE-STATUS        PIC XX.
+       01 WS-APPLICATIONS-STATUS     PIC XX.
+       01 WS-APPLICATIONS-EOF        PIC X VALUE "N".
+       01 WS-TARGET-JOB-ID           PIC 9(4) VALUE 0.
+       01 WS-TARGET-JOB-ID-FOUND     PIC X VALUE 'N'.
+       01 WS-TARGET-JOB-ID-APPLIED   PIC X VALUE 'N'.
+       01 WS-MESSAGES-STATUS      PIC XX.
+       01 WS-UNREAD-COUNT         PIC 9(3) VALUE 0.
+       01 WS-MSG-USER             PIC X(20).
+       01 WS-MSG-CONTENT          PIC X(200).
+       01 WS-TIMESTAMP            PIC X(20).
+       01 WS-MSG-CHOICE           PIC 9 VALUE 0.
+       01 WS-CONNECTED-FLAG       PIC 9 VALUE 0.
        01 WS-EOF-FLAG PIC X VALUE 'N'.
        01 WS-ACCOUNTS-EOF PIC X VALUE 'N'.
       *> MENU OPTION USER CHOICE
@@ -127,11 +150,6 @@
        01 WS-STORED-USERNAME PIC X(20).
        01 WS-STORED-PASSWORD PIC X(12).
        01 WS-MESSAGE PIC X(90).
-    01 WS-MSG-CHOICE PIC 9 VALUE 0.
-    01 WS-RECIPIENT PIC X(20).
-    01 WS-MSG-CONTENT PIC X(200).
-    01 WS-IS-CONNECTED PIC X VALUE 'N'.
-    01 WS-TIMESTAMP-FULL PIC X(21).
        
        77  WS-ACCOUNT-COUNT PIC 9 VALUE 0.
        77  WS-COUNTER       PIC 9 VALUE 0.
@@ -263,14 +281,21 @@
            END-IF
            CLOSE JOBS-FILE
 
-                     OPEN INPUT MESSAGES-FILE
-                     IF WS-MESSAGES-STATUS NOT = "00"
-                         OPEN OUTPUT MESSAGES-FILE
-                         CLOSE MESSAGES-FILE
-                         OPEN INPUT MESSAGES-FILE
-                     END-IF
-                     CLOSE MESSAGES-FILE
-       .
+           OPEN INPUT APPLICATIONS-FILE
+           IF WS-APPLICATIONS-STATUS NOT = "00"
+             OPEN OUTPUT APPLICATIONS-FILE
+             CLOSE APPLICATIONS-FILE
+             OPEN INPUT APPLICATIONS-FILE
+           END-IF
+           CLOSE APPLICATIONS-FILE
+
+       .   OPEN INPUT MESSAGES-FILE
+           IF WS-MESSAGES-STATUS NOT = "00"
+               OPEN OUTPUT MESSAGES-FILE
+               CLOSE MESSAGES-FILE
+               OPEN INPUT MESSAGES-FILE
+           END-IF
+           CLOSE MESSAGES-FILE
        
        MAIN-MENU.
            MOVE "==== INCOLLEGE MAIN MENU ====" TO OUTPUT-RECORD
@@ -290,9 +315,9 @@
            WRITE OUTPUT-RECORD
 
       *> COMMENT THIS BEFORE DEPLOYMENT!
-           *> MOVE "0. DEVELOPER MODE FOR DEGUBBING" TO OUTPUT-RECORD
-           *> DISPLAY OUTPUT-RECORD
-           *> WRITE OUTPUT-RECORD
+      *> MOVE "0. DEVELOPER MODE FOR DEGUBBING" TO OUTPUT-RECORD
+      *> DISPLAY OUTPUT-RECORD
+      *> WRITE OUTPUT-RECORD
 
            MOVE "Enter your choice:" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
@@ -310,8 +335,8 @@
                        WHEN 2
                            PERFORM REGISTRATION
       *> COMMENT THIS BEFORE DEPLOYMENT!
-                       *> WHEN 0
-                           *> PERFORM DEBUG-JOBS
+      *> WHEN 0
+      *> PERFORM DEBUG-JOBS
                        WHEN OTHER
                            MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
@@ -478,6 +503,7 @@
                    DISPLAY WS-MESSAGE
                    MOVE WS-MESSAGE TO OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
+                   PERFORM SHOW-UNREAD-MESSAGES
 
       *> 9 = Log Out in POST-LOGIN-MENU 
                    PERFORM POST-LOGIN-MENU UNTIL WS-USER-CHOICE = 9 OR WS-EOF-FLAG = "Y"
@@ -523,8 +549,8 @@
            WRITE OUTPUT-RECORD
 
            MOVE "8. Messages" TO OUTPUT-RECORD
-            DISPLAY OUTPUT-RECORD
-            WRITE OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
 
            MOVE "9. Logout" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
@@ -569,130 +595,6 @@
                    END-EVALUATE
            END-READ
            END-IF.
-
-      *> ================== MESSAGING FEATURE (WEEK 8) ==================
-       MESSAGES-MENU.
-           MOVE "--- Messages Menu ---" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-
-           MOVE 0 TO WS-MSG-CHOICE
-           PERFORM UNTIL WS-MSG-CHOICE = 3 OR WS-EOF-FLAG = "Y"
-               MOVE "1. Send a New Message" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
-
-               MOVE "2. View My Messages" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
-
-               MOVE "3. Back to Main Menu" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
-
-               MOVE "Enter your choice:" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
-
-               IF WS-EOF-FLAG NOT = "Y"
-                   READ INPUT-FILE INTO WS-TEMP-INPUT
-                       AT END MOVE "Y" TO WS-EOF-FLAG
-                       NOT AT END
-                           MOVE WS-TEMP-INPUT(1:1) TO WS-MSG-CHOICE
-                           EVALUATE WS-MSG-CHOICE
-                               WHEN 1
-                                   PERFORM SEND-NEW-MESSAGE
-                               WHEN 2
-                                   MOVE "View My Messages is under construction." TO OUTPUT-RECORD
-                                   DISPLAY OUTPUT-RECORD
-                                   WRITE OUTPUT-RECORD
-                               WHEN 3
-                                   CONTINUE
-                               WHEN OTHER
-                                   MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
-                                   DISPLAY OUTPUT-RECORD
-                                   WRITE OUTPUT-RECORD
-                           END-EVALUATE
-                   END-READ
-               END-IF
-           END-PERFORM
-           .
-
-       SEND-NEW-MESSAGE.
-           MOVE "Enter recipient's username (must be a connection):" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-
-           IF WS-EOF-FLAG NOT = "Y"
-               READ INPUT-FILE INTO WS-RECIPIENT
-                   AT END MOVE "Y" TO WS-EOF-FLAG
-               END-READ
-           END-IF
-
-           IF WS-EOF-FLAG = "Y"
-               EXIT PARAGRAPH
-           END-IF
-
-      *> Validate connection
-           MOVE "N" TO WS-IS-CONNECTED
-           MOVE "N" TO WS-CONNECTIONS-EOF
-           OPEN INPUT CONNECTIONS-FILE
-           IF WS-CONNECTION-STATUS = "35"
-               MOVE "Y" TO WS-CONNECTIONS-EOF
-           END-IF
-           PERFORM UNTIL WS-CONNECTIONS-EOF = "Y" OR WS-IS-CONNECTED = "Y"
-               READ CONNECTIONS-FILE INTO CONNECTION-RECORD
-                   AT END MOVE "Y" TO WS-CONNECTIONS-EOF
-                   NOT AT END
-                       IF (CN-USER-ONE = CURRENT-USERNAME AND CN-USER-TWO = WS-RECIPIENT)
-                           OR (CN-USER-ONE = WS-RECIPIENT AND CN-USER-TWO = CURRENT-USERNAME)
-                           MOVE "Y" TO WS-IS-CONNECTED
-                       END-IF
-               END-READ
-           END-PERFORM
-           CLOSE CONNECTIONS-FILE
-
-           IF WS-IS-CONNECTED NOT = "Y"
-               MOVE "You can only message users you are connected with." TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
-               EXIT PARAGRAPH
-           END-IF
-
-           MOVE "Enter your message (max 200 chars):" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-
-           IF WS-EOF-FLAG NOT = "Y"
-               READ INPUT-FILE INTO WS-MSG-CONTENT
-                   AT END MOVE "Y" TO WS-EOF-FLAG
-               END-READ
-           END-IF
-
-           IF WS-EOF-FLAG = "Y"
-               EXIT PARAGRAPH
-           END-IF
-
-      *> Write message to persistent storage
-           OPEN EXTEND MESSAGES-FILE
-           MOVE CURRENT-USERNAME TO MS-SENDER
-           MOVE WS-RECIPIENT TO MS-RECIPIENT
-           MOVE WS-MSG-CONTENT TO MS-CONTENT
-           MOVE FUNCTION CURRENT-DATE TO WS-TIMESTAMP-FULL
-           MOVE WS-TIMESTAMP-FULL(1:14) TO MS-TIMESTAMP
-           WRITE MESSAGE-RECORD
-           CLOSE MESSAGES-FILE
-
-           MOVE SPACES TO WS-MESSAGE
-           STRING "Message sent to " DELIMITED BY SIZE
-                  WS-RECIPIENT DELIMITED BY SPACE
-                  " successfully!" DELIMITED BY SIZE
-                  INTO WS-MESSAGE
-           END-STRING
-           DISPLAY WS-MESSAGE
-           MOVE WS-MESSAGE TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-           .
 
        PROFILE-VIEW.
            PERFORM LOAD-PROFILE
@@ -1222,7 +1124,6 @@
                INTO TEMP-FIRST-NAME TEMP-LAST-NAME
            END-UNSTRING
 
-      *> DISPLAY "DEBUG******************"TEMP-FIRST-NAME"*"TEMP-LAST-NAME"*"
            MOVE "N" TO FOUND-PROFILE-FLAG
            OPEN INPUT PROFILE-FILE
            PERFORM UNTIL WS-EOF-FLAG = "Y" OR FOUND-PROFILE-FLAG = "Y"
@@ -1847,7 +1748,12 @@
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           MOVE "3. Back to Main Menu" TO OUTPUT-RECORD
+      *> === EPIC 7 NEW MENU OPTION ===
+           MOVE "3. View My Applications" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "4. Back to Main Menu" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
@@ -1862,11 +1768,11 @@
 
                    PERFORM POST-A-JOB
                  WHEN 2
-                   MOVE "Browsing jobs is under construction" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   PERFORM BROWSE-JOBS
       *> PERFORM BROWSE-JOBS (FUTURE FEATURE)
                  WHEN 3
+                   PERFORM VIEW-MY-APPLICATIONS
+                 WHEN 4
                    MOVE "Returning back to MAIN MENU..." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
@@ -1884,7 +1790,7 @@
                END-EVALUATE
            END-READ
        .
-
+       
        POST-A-JOB.
       *> MAKE SURE JOBS-FILE IS CLOSED BEFORE JOBS-FILE OPENS AS INPUT
       *> CLOSE JOBS-FILE
@@ -2033,6 +1939,214 @@
 
            CLOSE JOBS-FILE
        .
+       BROWSE-JOBS.
+           MOVE "--- Available Job Listings ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           OPEN INPUT JOBS-FILE
+           MOVE 1 TO TEMP-LAST-JOB-ID
+           MOVE 'N' TO WS-JOBS-FILE-EOF
+           PERFORM UNTIL WS-JOBS-FILE-EOF = 'Y'
+               READ JOBS-FILE INTO JOBS-FILE-RECORD
+                   AT END MOVE 'Y' TO WS-JOBS-FILE-EOF
+                   NOT AT END
+                       MOVE SPACES TO OUTPUT-RECORD
+      *>FUNCTION TRIM(JR-TITLE TRAILING) rightmost whitespaces
+                       STRING TEMP-LAST-JOB-ID ". " FUNCTION TRIM(JR-TITLE TRAILING)
+                       " at " FUNCTION TRIM(JR-EMPLOYER TRAILING)
+                       " (" FUNCTION TRIM(JR-LOCATION TRAILING) ")" INTO OUTPUT-RECORD
+                       END-STRING
+                       DISPLAY OUTPUT-RECORD
+                       WRITE OUTPUT-RECORD
+                       ADD 1 TO TEMP-LAST-JOB-ID
+               END-READ
+           END-PERFORM
+           CLOSE JOBS-FILE
+
+           MOVE "Enter job number to view details, or 0 to go back:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           READ INPUT-FILE INTO WS-TEMP-INPUT
+               AT END MOVE "Y" TO WS-EOF-FLAG
+               NOT AT END
+                   IF FUNCTION NUMVAL(WS-TEMP-INPUT) > 0
+                       MOVE FUNCTION NUMVAL(WS-TEMP-INPUT) TO WS-TARGET-JOB-ID
+                       PERFORM VIEW-JOB-DETAILS
+                   END-IF
+           END-READ
+           .
+
+       VIEW-JOB-DETAILS.
+           OPEN INPUT JOBS-FILE
+           MOVE 1 TO TEMP-LAST-JOB-ID
+           MOVE 'N' TO WS-JOBS-FILE-EOF
+           MOVE 'N' TO WS-TARGET-JOB-ID-FOUND
+      *> added OR TEMP-LAST-JOB-ID = WS-TARGET-JOB-ID
+           PERFORM UNTIL WS-JOBS-FILE-EOF = 'Y' OR TEMP-LAST-JOB-ID > WS-TARGET-JOB-ID
+               READ JOBS-FILE INTO JOBS-FILE-RECORD
+                   AT END MOVE 'Y' TO WS-JOBS-FILE-EOF
+                   NOT AT END
+                       IF TEMP-LAST-JOB-ID = WS-TARGET-JOB-ID
+                           MOVE 'Y' TO WS-TARGET-JOB-ID-FOUND
+
+                           MOVE "=== Job Details ===" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Title: " JR-TITLE INTO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Description: " JR-DESC INTO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Employer: " JR-EMPLOYER INTO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Location: " JR-LOCATION INTO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           IF JR-SALARY NOT = SPACES
+                               MOVE SPACES TO OUTPUT-RECORD
+                               STRING "Salary: " JR-SALARY INTO OUTPUT-RECORD
+                               DISPLAY OUTPUT-RECORD
+                               WRITE OUTPUT-RECORD
+                           END-IF
+
+                           MOVE "1. Apply for this Job" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                           MOVE "2. Back to Job List" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           READ INPUT-FILE INTO WS-TEMP-INPUT
+                               AT END MOVE "Y" TO WS-EOF-FLAG
+                               NOT AT END
+                                   IF WS-TEMP-INPUT(1:1) = "1"
+                                       PERFORM APPLY-FOR-JOB
+                                   END-IF
+                           END-READ
+                       END-IF
+                       ADD 1 TO TEMP-LAST-JOB-ID
+               END-READ
+           END-PERFORM
+           IF WS-TARGET-JOB-ID-FOUND = 'N'
+             MOVE "Error. No job by provided number found! (see below)" TO OUTPUT-RECORD
+             DISPLAY OUTPUT-RECORD
+             WRITE OUTPUT-RECORD
+             MOVE WS-TARGET-JOB-ID TO OUTPUT-RECORD
+             DISPLAY OUTPUT-RECORD
+             WRITE OUTPUT-RECORD
+           END-IF
+           CLOSE JOBS-FILE
+           .
+
+       APPLY-FOR-JOB.
+           OPEN INPUT APPLICATIONS-FILE
+           MOVE 'N' TO WS-TARGET-JOB-ID-APPLIED
+           MOVE 'N' TO WS-APPLICATIONS-EOF
+           PERFORM UNTIL WS-APPLICATIONS-EOF = 'Y' OR WS-TARGET-JOB-ID-APPLIED = 'Y'
+               READ APPLICATIONS-FILE INTO APPLICATION-RECORD
+                   AT END MOVE 'Y' TO WS-APPLICATIONS-EOF
+                   NOT AT END
+                       IF APP-USERNAME = CURRENT-USERNAME
+                           IF APP-JOB-ID = WS-TARGET-JOB-ID
+                               MOVE 'Y' TO WS-TARGET-JOB-ID-APPLIED
+                           END-IF
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE APPLICATIONS-FILE
+
+           IF WS-TARGET-JOB-ID-APPLIED = 'N'
+             OPEN EXTEND APPLICATIONS-FILE
+             MOVE CURRENT-USERNAME TO APP-USERNAME
+             MOVE WS-TARGET-JOB-ID TO APP-JOB-ID
+             WRITE APPLICATION-RECORD
+             CLOSE APPLICATIONS-FILE
+
+      *> this can be changed to MOVE SPACES TO OUTPUT-RECORD
+             MOVE SPACES TO WS-MESSAGE
+             STRING "Application submitted for " FUNCTION TRIM(JR-TITLE TRAILING)
+                    " at " FUNCTION TRIM(JR-EMPLOYER TRAILING) INTO WS-MESSAGE
+             END-STRING
+             DISPLAY WS-MESSAGE
+             MOVE WS-MESSAGE TO OUTPUT-RECORD
+             WRITE OUTPUT-RECORD
+           ELSE
+             MOVE "Sorry, you've already applied for this job" TO OUTPUT-RECORD
+             DISPLAY OUTPUT-RECORD
+             WRITE OUTPUT-RECORD
+           END-IF
+           .
+
+       VIEW-MY-APPLICATIONS.
+           MOVE "--- Your Job Applications ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           MOVE 0 TO WS-COUNTER
+
+           OPEN INPUT APPLICATIONS-FILE
+           MOVE 'N' TO WS-APPLICATIONS-EOF
+           PERFORM UNTIL WS-APPLICATIONS-EOF = 'Y'
+               READ APPLICATIONS-FILE INTO APPLICATION-RECORD
+                   AT END MOVE 'Y' TO WS-APPLICATIONS-EOF
+                   NOT AT END
+                       IF APP-USERNAME = CURRENT-USERNAME
+                           ADD 1 TO WS-COUNTER
+                           PERFORM SHOW-APPLICATION-DETAIL
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE APPLICATIONS-FILE
+
+           MOVE SPACES TO OUTPUT-RECORD
+           STRING "Total Applications: " WS-COUNTER INTO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
+
+       SHOW-APPLICATION-DETAIL.
+           OPEN INPUT JOBS-FILE
+           MOVE 'N' TO WS-JOBS-FILE-EOF
+           PERFORM UNTIL WS-JOBS-FILE-EOF = 'Y'
+               READ JOBS-FILE INTO JOBS-FILE-RECORD
+                   AT END MOVE 'Y' TO WS-JOBS-FILE-EOF
+                   NOT AT END
+                       IF JR-ID = APP-JOB-ID
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Job Title: " FUNCTION TRIM(JR-TITLE TRAILING) INTO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Employer: " FUNCTION TRIM(JR-EMPLOYER TRAILING) INTO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Location: " FUNCTION TRIM(JR-LOCATION TRAILING) INTO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           MOVE "---" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE JOBS-FILE
+           .
 
        DEBUG-JOBS.
       *> THIS PARAGRAPH CAN LATER BE USED AS A BLUEPRINT FOR JOB LISTINGS DISPLAY
@@ -2121,7 +2235,151 @@
                WS-TEMP-INPUT)))) TO OUTPUT-RECORD
                WRITE OUTPUT-RECORD
        .
-       
+       MESSAGES-MENU.
+           MOVE "---- Messages ----" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "1. Send Message" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "2. View My Messages" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "3. Back" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           READ INPUT-FILE INTO WS-TEMP-INPUT
+           MOVE WS-TEMP-INPUT(1:1) TO WS-MSG-CHOICE
+
+           EVALUATE WS-MSG-CHOICE
+                   WHEN 1 PERFORM SEND-MESSAGE
+                   WHEN 2 PERFORM VIEW-MY-MESSAGES
+                   WHEN 3 CONTINUE
+                   WHEN OTHER
+                       MOVE "Invalid option." TO OUTPUT-RECORD
+                       DISPLAY OUTPUT-RECORD
+                       WRITE OUTPUT-RECORD
+           END-EVALUATE.
+
+       SEND-MESSAGE.
+           MOVE "Enter username to message:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           READ INPUT-FILE INTO WS-MSG-USER
+
+           PERFORM CHECK-IF-CONNECTED
+
+           IF WS-CONNECTED-FLAG = 0
+               MOVE "You can only message users you're connected to." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           MOVE "Enter message text:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           READ INPUT-FILE INTO WS-MSG-CONTENT
+
+           STRING FUNCTION CURRENT-DATE(9:6) INTO WS-TIMESTAMP
+
+           OPEN EXTEND MESSAGES-FILE
+           MOVE CURRENT-USERNAME TO MS-SENDER
+           MOVE WS-MSG-USER TO MS-RECIPIENT
+           MOVE WS-MSG-CONTENT TO MS-CONTENT
+           MOVE WS-TIMESTAMP TO MS-TIMESTAMP
+           MOVE "N" TO MS-READ-FLAG
+           WRITE MESSAGE-RECORD
+           CLOSE MESSAGES-FILE
+
+           MOVE "Message sent!" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD.
+
+       VIEW-MY-MESSAGES.
+           MOVE "--- Inbox ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           OPEN I-O MESSAGES-FILE
+           MOVE 0 TO WS-UNREAD-COUNT
+           
+           MOVE "N" TO WS-MESSAGES-STATUS
+
+           PERFORM UNTIL WS-MESSAGES-STATUS = "10"
+               READ MESSAGES-FILE INTO MESSAGE-RECORD
+                   AT END EXIT PERFORM
+                   NOT AT END
+                       IF MS-RECIPIENT = CURRENT-USERNAME
+                           MOVE "From: " TO OUTPUT-RECORD
+                           STRING "From: " MS-SENDER " | " MS-TIMESTAMP
+                               DELIMITED BY SIZE INTO OUTPUT-RECORD
+                           END-STRING
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           MOVE "Message: " TO OUTPUT-RECORD
+                           STRING "Message: " MS-CONTENT
+                               DELIMITED BY SIZE INTO OUTPUT-RECORD
+                           END-STRING
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           IF MS-READ-FLAG = "N"
+                               MOVE "Y" TO MS-READ-FLAG
+                               REWRITE MESSAGE-RECORD
+                           END-IF
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE MESSAGES-FILE.
+
+       SHOW-UNREAD-MESSAGES.
+           MOVE 0 TO WS-UNREAD-COUNT
+           OPEN INPUT MESSAGES-FILE
+           MOVE "N" TO WS-MESSAGES-STATUS
+
+           PERFORM UNTIL WS-MESSAGES-STATUS = "10"
+               READ MESSAGES-FILE INTO MESSAGE-RECORD
+                   AT END EXIT PERFORM
+                   NOT AT END
+                       IF MS-RECIPIENT = CURRENT-USERNAME AND MS-READ-FLAG = "N"
+                           ADD 1 TO WS-UNREAD-COUNT
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE MESSAGES-FILE
+
+           IF WS-UNREAD-COUNT > 0
+               MOVE SPACES TO OUTPUT-RECORD
+               STRING "You have " WS-UNREAD-COUNT " unread messages."
+                   DELIMITED BY SIZE INTO OUTPUT-RECORD
+               END-STRING
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF.
+
+       CHECK-IF-CONNECTED.
+           MOVE 0 TO WS-CONNECTED-FLAG
+           MOVE "N" TO WS-CONNECTIONS-EOF
+
+           OPEN INPUT CONNECTIONS-FILE
+           PERFORM UNTIL WS-CONNECTIONS-EOF = "Y" OR WS-CONNECTED-FLAG = 1
+               READ CONNECTIONS-FILE INTO CONNECTION-RECORD
+                   AT END MOVE "Y" TO WS-CONNECTIONS-EOF
+                   NOT AT END
+                       IF (CN-USER-ONE = CURRENT-USERNAME AND CN-USER-TWO = WS-MSG-USER)
+                       OR (CN-USER-TWO = CURRENT-USERNAME AND CN-USER-ONE = WS-MSG-USER)
+                           MOVE 1 TO WS-CONNECTED-FLAG
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE CONNECTIONS-FILE.
+    
        CLEANUP.
            CLOSE INPUT-FILE
            CLOSE OUTPUT-FILE
@@ -2131,5 +2389,4 @@
            CLOSE CONNECTION-REQUESTS-FILE 
            CLOSE CONNECTION-REQUESTS-TEMP-FILE 
            CLOSE CONNECTIONS-FILE 
-           CLOSE MESSAGES-FILE
        .
