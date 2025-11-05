@@ -22,14 +22,8 @@ Enter your choice:
 2. View My Messages
 3. Back to Main Menu
 Enter your choice:
-Enter recipient's username (must be a connection):
-Enter your message (max 200 chars):
-Message sent to tomato successfully!
-1. Send a New Message
-2. View My Messages
-3. Back to Main Menu
-Enter your choice:
 View My Messages is under construction.
+--- Messages Menu ---
 1. Send a New Message
 2. View My Messages
 3. Back to Main Menu

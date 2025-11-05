@@ -41,6 +41,11 @@ IDENTIFICATION DIVISION.
            SELECT APPLICATIONS-FILE ASSIGN TO "applications.doc"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS WS-APPLICATIONS-STATUS.
+      *> === EPIC 8 NEW FILE ===
+      *> For saving messages (sender, recipient, content, timestamp)
+           SELECT MESSAGES-FILE ASSIGN TO "messages.doc"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS WS-MESSAGES-STATUS.
 
        DATA DIVISION.
        FILE SECTION.
@@ -109,6 +114,13 @@ IDENTIFICATION DIVISION.
        01 APPLICATION-RECORD.
            05 APP-USERNAME   PIC X(20).
            05 APP-JOB-ID     PIC 9(4).
+      *> === EPIC 8 NEW FILE SECTION ===
+       FD MESSAGES-FILE.
+       01 MESSAGE-RECORD.
+           05 MS-SENDER      PIC X(20).
+           05 MS-RECIPIENT   PIC X(20).
+           05 MS-CONTENT     PIC X(200).
+           05 MS-TIMESTAMP   PIC X(20).
 
        WORKING-STORAGE SECTION.
       *> FLAG FOR THE INPUT-FILE END OF FILE
@@ -192,6 +204,13 @@ IDENTIFICATION DIVISION.
        77  WS-VALID-GRAD-YEAR PIC X VALUE "N".
        77  WS-VALID-REQUIRED  PIC X VALUE "N".
            77  WS-TEMP-EOF        PIC X VALUE "N".
+      *> === EPIC 8 NEW WORKING STORAGE ===
+       77  WS-MESSAGES-STATUS     PIC XX.
+       77  WS-MSG-CHOICE          PIC 9.
+       77  WS-MSG-RECIPIENT      PIC X(20).
+       77  WS-MSG-CONTENT        PIC X(200).
+       77  WS-CONNECTED-FLAG      PIC X VALUE "N".
+       77  WS-TIMESTAMP          PIC X(20).
 
        PROCEDURE DIVISION.
        MAIN-LOGIC.
@@ -270,6 +289,15 @@ IDENTIFICATION DIVISION.
              OPEN INPUT APPLICATIONS-FILE
            END-IF
            CLOSE APPLICATIONS-FILE
+
+      *> === EPIC 8 INITIALIZE MESSAGES-FILE ===
+           OPEN INPUT MESSAGES-FILE
+           IF WS-MESSAGES-STATUS NOT = "00"
+             OPEN OUTPUT MESSAGES-FILE
+             CLOSE MESSAGES-FILE
+             OPEN INPUT MESSAGES-FILE
+           END-IF
+           CLOSE MESSAGES-FILE
 
        .
        
@@ -523,6 +551,11 @@ IDENTIFICATION DIVISION.
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
+      *> === EPIC 8 NEW MENU OPTION ===
+           MOVE "8. Messages" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            MOVE "9. Logout" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
@@ -551,6 +584,9 @@ IDENTIFICATION DIVISION.
                            PERFORM VIEW-PENDING-REQUESTS
                        WHEN 7
                            PERFORM VIEW-MY-NETWORK
+      *> === EPIC 8 NEW MENU OPTION ===
+                       WHEN 8
+                           PERFORM MESSAGES-MENU UNTIL WS-MSG-CHOICE = 3 OR WS-EOF-FLAG = "Y"
                        WHEN 9
                            MOVE "Logging out." TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
@@ -2205,6 +2241,141 @@ IDENTIFICATION DIVISION.
                WRITE OUTPUT-RECORD
        .
        
+      *> === EPIC 8 MESSAGING FUNCTIONS ===
+       MESSAGES-MENU.
+           MOVE "--- Messages Menu ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "1. Send a New Message" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "2. View My Messages" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "3. Back to Main Menu" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "Enter your choice:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO WS-TEMP-INPUT
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+                   NOT AT END
+                       MOVE WS-TEMP-INPUT(1:1) TO WS-MSG-CHOICE
+                       EVALUATE WS-MSG-CHOICE
+                           WHEN 1
+                               PERFORM SEND-MESSAGE
+                           WHEN 2
+                               PERFORM VIEW-MY-MESSAGES
+                           WHEN 3
+                               CONTINUE
+                           WHEN OTHER
+                               MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
+                               DISPLAY OUTPUT-RECORD
+                               WRITE OUTPUT-RECORD
+                       END-EVALUATE
+               END-READ
+           END-IF
+           .
+
+       SEND-MESSAGE.
+           MOVE "Enter recipient's username (must be a connection):" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO WS-MSG-RECIPIENT
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+
+           IF WS-EOF-FLAG = "Y"
+               EXIT PARAGRAPH
+           END-IF
+
+      *> Validate that recipient is a connection
+           PERFORM CHECK-IF-CONNECTED
+
+           IF WS-CONNECTED-FLAG = "N"
+               MOVE "You can only message users you are connected with." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+               EXIT PARAGRAPH
+           END-IF
+
+           MOVE "Enter your message (max 200 chars):" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO WS-MSG-CONTENT
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+               END-READ
+           END-IF
+
+           IF WS-EOF-FLAG = "Y"
+               EXIT PARAGRAPH
+           END-IF
+
+      *> Generate timestamp from CURRENT-DATE (format: YYYYMMDDHHMMSS)
+           MOVE FUNCTION CURRENT-DATE(1:14) TO WS-TIMESTAMP
+
+      *> Save message to file
+           OPEN EXTEND MESSAGES-FILE
+           MOVE CURRENT-USERNAME TO MS-SENDER
+           MOVE WS-MSG-RECIPIENT TO MS-RECIPIENT
+           MOVE WS-MSG-CONTENT TO MS-CONTENT
+           MOVE WS-TIMESTAMP TO MS-TIMESTAMP
+           WRITE MESSAGE-RECORD
+           CLOSE MESSAGES-FILE
+
+      *> Display success message
+           MOVE SPACES TO WS-MESSAGE
+           STRING "Message sent to " DELIMITED BY SIZE
+                  WS-MSG-RECIPIENT DELIMITED BY SPACE
+                  " successfully!" DELIMITED BY SIZE
+                  INTO WS-MESSAGE
+           END-STRING
+           DISPLAY WS-MESSAGE
+           MOVE WS-MESSAGE TO OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
+
+       VIEW-MY-MESSAGES.
+           MOVE "View My Messages is under construction." TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
+
+       CHECK-IF-CONNECTED.
+           MOVE "N" TO WS-CONNECTED-FLAG
+           MOVE "N" TO WS-CONNECTIONS-EOF
+
+           OPEN INPUT CONNECTIONS-FILE
+           IF WS-CONNECTION-STATUS = "35"
+               MOVE "Y" TO WS-CONNECTIONS-EOF
+           END-IF
+
+           PERFORM UNTIL WS-CONNECTIONS-EOF = "Y" OR WS-CONNECTED-FLAG = "Y"
+               READ CONNECTIONS-FILE INTO CONNECTION-RECORD
+                   AT END MOVE "Y" TO WS-CONNECTIONS-EOF
+                   NOT AT END
+                       IF (CN-USER-ONE = CURRENT-USERNAME AND CN-USER-TWO = WS-MSG-RECIPIENT)
+                           OR (CN-USER-TWO = CURRENT-USERNAME AND CN-USER-ONE = WS-MSG-RECIPIENT)
+                           MOVE "Y" TO WS-CONNECTED-FLAG
+                       END-IF
+               END-READ
+           END-PERFORM
+
+           CLOSE CONNECTIONS-FILE
+           .
+
        CLEANUP.
            CLOSE INPUT-FILE
            CLOSE OUTPUT-FILE
@@ -2214,4 +2385,6 @@ IDENTIFICATION DIVISION.
            CLOSE CONNECTION-REQUESTS-FILE 
            CLOSE CONNECTION-REQUESTS-TEMP-FILE 
            CLOSE CONNECTIONS-FILE 
+      *> === EPIC 8 CLEANUP ===
+           CLOSE MESSAGES-FILE
        .
