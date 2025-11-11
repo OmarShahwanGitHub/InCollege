@@ -5,7 +5,7 @@ Welcome to InCollege!
 Enter your choice:
 Please enter your username:
 Please enter your password:
-Welcome test!
+Welcome jsmith!
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
@@ -22,7 +22,14 @@ Enter your choice:
 2. View My Messages
 3. Back to Main Menu
 Enter your choice:
-View My Messages is under construction.
+--- Your Messages ---
+From: mchen
+Message: Hey! Thanks for connecting. Would love to discuss the software engineering role you posted.
+---
+From: agarcia
+Message: Great profile! Let's catch up sometime.
+---
+---------------------
 --- Messages Menu ---
 1. Send a New Message
 2. View My Messages
@@ -40,6 +47,12 @@ Enter your choice:
 9. Logout
 Enter your choice:
 Logging out.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Invalid choice, please try again
 ==== INCOLLEGE MAIN MENU ====
 Welcome to InCollege!
 1. Log In

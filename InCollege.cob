@@ -211,6 +211,9 @@ IDENTIFICATION DIVISION.
        77  WS-MSG-CONTENT        PIC X(200).
        77  WS-CONNECTED-FLAG      PIC X VALUE "N".
        77  WS-TIMESTAMP          PIC X(20).
+      *> === EPIC 9 NEW WORKING STORAGE ===
+       77  WS-MESSAGES-EOF        PIC X VALUE "N".
+       77  WS-MESSAGE-COUNT       PIC 9(4) VALUE 0.
 
        PROCEDURE DIVISION.
        MAIN-LOGIC.
@@ -2348,7 +2351,56 @@ IDENTIFICATION DIVISION.
            .
 
        VIEW-MY-MESSAGES.
-           MOVE "View My Messages is under construction." TO OUTPUT-RECORD
+           MOVE "--- Your Messages ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE 0 TO WS-MESSAGE-COUNT
+           MOVE "N" TO WS-MESSAGES-EOF
+
+           OPEN INPUT MESSAGES-FILE
+           IF WS-MESSAGES-STATUS = "35"
+               MOVE "Y" TO WS-MESSAGES-EOF
+           END-IF
+
+           PERFORM UNTIL WS-MESSAGES-EOF = "Y"
+               READ MESSAGES-FILE INTO MESSAGE-RECORD
+                   AT END MOVE "Y" TO WS-MESSAGES-EOF
+                   NOT AT END
+                       IF MS-RECIPIENT = CURRENT-USERNAME
+                           ADD 1 TO WS-MESSAGE-COUNT
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "From: " DELIMITED BY SIZE
+                                  MS-SENDER DELIMITED BY SPACE
+                                  INTO OUTPUT-RECORD
+                           END-STRING
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           MOVE SPACES TO OUTPUT-RECORD
+                           STRING "Message: " DELIMITED BY SIZE
+                                  MS-CONTENT DELIMITED BY SIZE
+                                  INTO OUTPUT-RECORD
+                           END-STRING
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           MOVE "---" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+                       END-IF
+               END-READ
+           END-PERFORM
+
+           CLOSE MESSAGES-FILE
+
+           IF WS-MESSAGE-COUNT = 0
+               MOVE "You have no messages." TO OUTPUT-RECORD
+               DISPLAY OUTPUT-RECORD
+               WRITE OUTPUT-RECORD
+           END-IF
+
+           MOVE "---------------------" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            .
