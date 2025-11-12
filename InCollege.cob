@@ -50,7 +50,7 @@ IDENTIFICATION DIVISION.
        DATA DIVISION.
        FILE SECTION.
        FD INPUT-FILE.
-       01 INPUT-RECORD PIC X(80).
+       01 INPUT-RECORD PIC X(200).
        
        FD OUTPUT-FILE.
        01 OUTPUT-RECORD PIC X(210).
@@ -572,6 +572,7 @@ IDENTIFICATION DIVISION.
                AT END MOVE "Y" TO WS-EOF-FLAG
                NOT AT END
                    MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
+      *> DISPLAY "DEBUG:" WS-USER-CHOICE "-" WS-MSG-CHOICE
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
                            PERFORM CREATE-EDIT-PROFILE
@@ -589,7 +590,9 @@ IDENTIFICATION DIVISION.
                            PERFORM VIEW-MY-NETWORK
       *> === EPIC 8 NEW MENU OPTION ===
                        WHEN 8
+      *> DISPLAY "DEBUG:" WS-MSG-CHOICE
                            PERFORM MESSAGES-MENU UNTIL WS-MSG-CHOICE = 3 OR WS-EOF-FLAG = "Y"
+                           MOVE 0 TO WS-MSG-CHOICE
                        WHEN 9
                            MOVE "Logging out." TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
@@ -2321,6 +2324,8 @@ IDENTIFICATION DIVISION.
                    AT END MOVE "Y" TO WS-EOF-FLAG
                END-READ
            END-IF
+
+      *> DISPLAY "DEBUG:" WS-MSG-CONTENT
 
            IF WS-EOF-FLAG = "Y"
                EXIT PARAGRAPH
