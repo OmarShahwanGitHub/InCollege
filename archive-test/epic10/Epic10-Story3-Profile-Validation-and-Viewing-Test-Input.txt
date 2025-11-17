@@ -1,0 +1,26 @@
+1
+test
+testpasS1+
+1
+Quality
+Guardian
+State University
+Systems QA
+1890
+abcd
+2027
+Refining inputs ahead of demo
+QA Intern
+Campus Labs
+Spring 2024
+
+DONE
+BS Software Quality
+State University
+2021-2025
+DONE
+2
+3
+Quality Guardian
+2
+9

@@ -1,0 +1,203 @@
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+You have successfully logged in.
+Welcome, potato!
+Main Menu:
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
+8. Messages
+9. Exit
+Enter your choice:
+Profile found. Editing existing records
+Enter First Name:
+(Leave empty to keep the old record)
+Enter Last Name:
+(Leave empty to keep the old record)
+Enter University:
+(Leave empty to keep the old record)
+Enter Major:
+(Leave empty to keep the old record)
+Enter Graduation Year:
+(Leave empty to keep the old record)
+About Me (optional, blank = skip/keep):
+=== Add Experience (optional, max 3 entries. Enter 'DONE' to finish) ===
+Experience #1 - Title:
+Add Education (optional, max 3 entries. Enter 'DONE' to finish):
+Education #1 - Degree:
+Profile updated successfully.
+Profile saved successfully.
+Main Menu:
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
+8. Messages
+9. Exit
+Enter your choice:
+Logging out.
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+You have successfully logged in.
+Welcome, tomato!
+Main Menu:
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
+8. Messages
+9. Exit
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Potato Friend
+University: InCollege University
+Major: Data Science
+Graduation Year: 2026
+About Me: Connection target profile
+Experience:
+  Title: Something
+  Company: Earth crust
+  Dates: 2022-1337
+  Description: It's moist out here
+Education:
+  Degree: Agriculture
+  University: Nature
+  Years: 2022-2027e
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+Connection request sent to Potato Friend.
+Main Menu:
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
+8. Messages
+9. Exit
+Enter your choice:
+Enter the full name of the person you are looking for:
+--- Found User Profile ---
+Name: Potato Friend
+University: InCollege University
+Major: Data Science
+Graduation Year: 2026
+About Me: Connection target profile
+Experience:
+  Title: Something
+  Company: Earth crust
+  Dates: 2022-1337
+  Description: It's moist out here
+Education:
+  Degree: Agriculture
+  University: Nature
+  Years: 2022-2027e
+1. Send Connection Request
+2. Back to Main Menu
+Enter your choice:
+You already sent a connection request to this user.
+Main Menu:
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
+8. Messages
+9. Exit
+Enter your choice:
+--- Pending Connection Requests ---
+You have no pending connection requests at this time.
+-----------------------------------
+Main Menu:
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
+8. Messages
+9. Exit
+Enter your choice:
+Logging out.
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+You have successfully logged in.
+Welcome, potato!
+Main Menu:
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
+8. Messages
+9. Exit
+Enter your choice:
+--- Pending Connection Requests ---
+Request from: tomato
+1. Accept
+2. Reject
+Enter your choice for tomato:
+Connection request from tomato accepted!
+-----------------------------------
+Main Menu:
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
+8. Messages
+9. Exit
+Enter your choice:
+--- Your Network ---
+Connected with: Quality Guardian (University: State, Major: Systems)
+Connected with: Tomato User (University: Farm, Major: Veg)
+--------------------
+Main Menu:
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
+8. Messages
+9. Exit
+Enter your choice:
+Logging out.
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+--- END_OF_PROGRAM_EXECUTION ---

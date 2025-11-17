@@ -1,0 +1,119 @@
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+You have successfully logged in.
+Welcome, aibek!
+Main Menu:
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
+8. Messages
+9. Exit
+Enter your choice:
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+Posting a job...
+Job Title:
+Error: This is a required field. Please enter a non-empty value.
+Description:
+Error: This is a required field. Please enter a non-empty value.
+Employer:
+Location:
+Salary (optional):
+Job posted successfully!
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+--- Available Job Listings ---
+0001. Product Tester at QualityWorks QA (Orlando, FL)
+-----------------------------
+Enter job number to view details, or 0 to go back:
+--- Job Details ---
+Title: Product Tester
+Description: Crush every regression defect
+Employer: QualityWorks QA
+Location: Orlando, FL
+Salary: $70000
+-------------------
+1. Apply for this Job
+2. Back to Job List
+Enter your choice:
+Your application for Product Tester at QualityWorks QA has been submitted.
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+--- Available Job Listings ---
+0001. Product Tester at QualityWorks QA (Orlando, FL)
+-----------------------------
+Enter job number to view details, or 0 to go back:
+Error: No job found with the provided number. Please try again.
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+--- Available Job Listings ---
+0001. Product Tester at QualityWorks QA (Orlando, FL)
+-----------------------------
+Enter job number to view details, or 0 to go back:
+--- Job Details ---
+Title: Product Tester
+Description: Crush every regression defect
+Employer: QualityWorks QA
+Location: Orlando, FL
+Salary: $70000
+-------------------
+1. Apply for this Job
+2. Back to Job List
+Enter your choice:
+Error: You have already applied for this job.
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+--- Your Job Applications ---
+Application Summary for aibek
+------------------------------
+Job Title: Product Tester
+Employer: QualityWorks QA
+Location: Orlando, FL
+------------------------------
+Total Applications: 1
+------------------------------
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+Returning back to MAIN MENU...
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Invalid choice, please try again
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+--- END_OF_PROGRAM_EXECUTION ---
