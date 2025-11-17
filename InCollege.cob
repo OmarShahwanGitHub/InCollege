@@ -213,6 +213,7 @@ IDENTIFICATION DIVISION.
        77  WS-TIMESTAMP          PIC X(20).
       *> === EPIC 9 NEW WORKING STORAGE ===
        77  WS-MESSAGES-EOF        PIC X VALUE "N".
+       77  WS-MESSAGE-DISPLAY-COUNT PIC 9(3) VALUE 0.
        77  WS-MESSAGE-COUNT       PIC 9(4) VALUE 0.
     77  WS-JOB-INDEX-DISPLAY   PIC Z(4).
 
@@ -2214,17 +2215,20 @@ IDENTIFICATION DIVISION.
        
       *> === EPIC 8 MESSAGING FUNCTIONS ===
        MESSAGES-MENU.
-           MOVE "--- Messages Menu ---" TO OUTPUT-RECORD
-           PERFORM PRINT-LINE
+      *>   Only display header and menu if not returning from VIEW-MY-MESSAGES
+           IF WS-MSG-CHOICE NOT = 2
+               MOVE "--- Messages Menu ---" TO OUTPUT-RECORD
+               PERFORM PRINT-LINE
 
-           MOVE "1. Send a New Message" TO OUTPUT-RECORD
-           PERFORM PRINT-LINE
+               MOVE "1. Send a New Message" TO OUTPUT-RECORD
+               PERFORM PRINT-LINE
 
-           MOVE "2. View My Messages" TO OUTPUT-RECORD
-           PERFORM PRINT-LINE
+               MOVE "2. View My Messages" TO OUTPUT-RECORD
+               PERFORM PRINT-LINE
 
-           MOVE "3. Back to Main Menu" TO OUTPUT-RECORD
-           PERFORM PRINT-LINE
+               MOVE "3. Back to Main Menu" TO OUTPUT-RECORD
+               PERFORM PRINT-LINE
+           END-IF
 
            MOVE "Enter your choice:" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
@@ -2321,41 +2325,64 @@ IDENTIFICATION DIVISION.
 
            MOVE 0 TO WS-MESSAGE-COUNT
            MOVE "N" TO WS-MESSAGES-EOF
+           MOVE 0 TO WS-MESSAGE-DISPLAY-COUNT
 
            OPEN INPUT MESSAGES-FILE
            IF WS-MESSAGES-STATUS = "35"
                MOVE "Y" TO WS-MESSAGES-EOF
            END-IF
 
+      *>   First pass: count total messages for this user
            PERFORM UNTIL WS-MESSAGES-EOF = "Y"
                READ MESSAGES-FILE INTO MESSAGE-RECORD
                    AT END MOVE "Y" TO WS-MESSAGES-EOF
                    NOT AT END
                        IF MS-RECIPIENT = CURRENT-USERNAME
                            ADD 1 TO WS-MESSAGE-COUNT
-                           MOVE SPACES TO OUTPUT-RECORD
-                           STRING "From: " DELIMITED BY SIZE
-                                  MS-SENDER DELIMITED BY SPACE
-                                  INTO OUTPUT-RECORD
-                           END-STRING
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
-
-                           MOVE SPACES TO OUTPUT-RECORD
-                           STRING "Message: " DELIMITED BY SIZE
-                                  MS-CONTENT DELIMITED BY SIZE
-                                  INTO OUTPUT-RECORD
-                           END-STRING
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
-
-                           MOVE "---" TO OUTPUT-RECORD
-                           PERFORM PRINT-LINE
                        END-IF
                END-READ
            END-PERFORM
 
            CLOSE MESSAGES-FILE
+
+      *>   Second pass: display messages
+           IF WS-MESSAGE-COUNT > 0
+               MOVE "N" TO WS-MESSAGES-EOF
+               OPEN INPUT MESSAGES-FILE
+
+               PERFORM UNTIL WS-MESSAGES-EOF = "Y"
+                   READ MESSAGES-FILE INTO MESSAGE-RECORD
+                       AT END MOVE "Y" TO WS-MESSAGES-EOF
+                       NOT AT END
+                           IF MS-RECIPIENT = CURRENT-USERNAME
+                               ADD 1 TO WS-MESSAGE-DISPLAY-COUNT
+                               MOVE SPACES TO OUTPUT-RECORD
+                               STRING "From: " DELIMITED BY SIZE
+                                      MS-SENDER DELIMITED BY SPACE
+                                      INTO OUTPUT-RECORD
+                               END-STRING
+                               DISPLAY OUTPUT-RECORD
+                               WRITE OUTPUT-RECORD
+
+                               MOVE SPACES TO OUTPUT-RECORD
+                               STRING "Message: " DELIMITED BY SIZE
+                                      MS-CONTENT DELIMITED BY SIZE
+                                      INTO OUTPUT-RECORD
+                               END-STRING
+                               DISPLAY OUTPUT-RECORD
+                               WRITE OUTPUT-RECORD
+
+      *>                       Only show --- if not the last message
+                               IF WS-MESSAGE-DISPLAY-COUNT < WS-MESSAGE-COUNT
+                                   MOVE "---" TO OUTPUT-RECORD
+                                   PERFORM PRINT-LINE
+                               END-IF
+                           END-IF
+                   END-READ
+               END-PERFORM
+
+               CLOSE MESSAGES-FILE
+           END-IF
 
            IF WS-MESSAGE-COUNT = 0
                MOVE "You have no messages." TO OUTPUT-RECORD
@@ -2364,6 +2391,16 @@ IDENTIFICATION DIVISION.
            END-IF
 
            MOVE "---------------------" TO OUTPUT-RECORD
+           PERFORM PRINT-LINE
+           
+      *>   Display menu options after messages (without header)
+           MOVE "1. Send a New Message" TO OUTPUT-RECORD
+           PERFORM PRINT-LINE
+
+           MOVE "2. View My Messages" TO OUTPUT-RECORD
+           PERFORM PRINT-LINE
+
+           MOVE "3. Back to Main Menu" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
            .
 
