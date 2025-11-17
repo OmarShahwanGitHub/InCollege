@@ -1,98 +1,137 @@
-==== INCOLLEGE MAIN MENU ====
 Welcome to InCollege!
 1. Log In
 2. Create New Account
 Enter your choice:
 Please enter your username:
 Please enter your password:
-Welcome tomato!
-==== PROFILE MENU ====
+You have successfully logged in.
+Welcome, test!
+Main Menu:
 1. Create/Edit My Profile
 2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-7. View My Network
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
 8. Messages
-9. Logout
+9. Exit
 Enter your choice:
---- Messages Menu ---
-1. Send a New Message
-2. View My Messages
-3. Back to Main Menu
-Enter your choice:
---- Your Messages ---
-You have no messages.
----------------------
---- Messages Menu ---
-1. Send a New Message
-2. View My Messages
-3. Back to Main Menu
-Enter your choice:
-==== PROFILE MENU ====
+--- Your Profile ---
+Name: Test User
+University: USMC
+Major: Grunt
+Graduation Year: 2027
+About Me: NO STEP BACK!!!
+Experience:
+  Title: Cadet
+  Company: USMC
+  Dates: 2022-2027
+  Description: Nice place
+Education:
+  Degree: Marine
+  University: USMC
+  Years: 2022-2027e
+--- END OF PROFILE VIEW ---
+Main Menu:
 1. Create/Edit My Profile
 2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-7. View My Network
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
 8. Messages
-9. Logout
+9. Exit
 Enter your choice:
-Logging out.
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Please enter your username:
-Please enter your password:
-Welcome aibek!
-==== PROFILE MENU ====
+Enter the full name of the person you are looking for:
+No one by that name could be found.
+Main Menu:
 1. Create/Edit My Profile
 2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-7. View My Network
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
 8. Messages
-9. Logout
+9. Exit
 Enter your choice:
---- Messages Menu ---
-1. Send a New Message
-2. View My Messages
-3. Back to Main Menu
-Enter your choice:
---- Your Messages ---
-From: test
-Message: I'm doing well, I'll be free on Sunday
----
-From: test
-Message: I'm doing well, I'll be free on Sunday (duplicate)
----
----------------------
---- Messages Menu ---
-1. Send a New Message
-2. View My Messages
-3. Back to Main Menu
-Enter your choice:
-==== PROFILE MENU ====
+--- Your Profile ---
+Name: Test User
+University: USMC
+Major: Grunt
+Graduation Year: 2027
+About Me: NO STEP BACK!!!
+Experience:
+  Title: Cadet
+  Company: USMC
+  Dates: 2022-2027
+  Description: Nice place
+Education:
+  Degree: Marine
+  University: USMC
+  Years: 2022-2027e
+--- END OF PROFILE VIEW ---
+Main Menu:
 1. Create/Edit My Profile
 2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-7. View My Network
+3. Search for User
+4. Learn a New Skill
+5. View My Pending Connection Requests
+6. View My Network
+7. Job Search/Internship
 8. Messages
-9. Logout
+9. Exit
 Enter your choice:
-Logging out.
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
 Enter your choice:
+--- Available Job Listings ---
+-----------------------------
+Enter job number to view details, or 0 to go back:
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+--- Your Job Applications ---
+Application Summary for test
+------------------------------
+Total Applications: 0
+------------------------------
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+Invalid choice, please try again
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+--- Available Job Listings ---
+-----------------------------
+Enter job number to view details, or 0 to go back:
+Error: No job found with the provided number. Please try again.
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+Invalid choice, please try again
+--- Job Search/Internship Menu ---
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Enter your choice:
+--- END_OF_PROGRAM_EXECUTION ---

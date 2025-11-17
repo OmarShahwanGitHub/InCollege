@@ -305,10 +305,6 @@ IDENTIFICATION DIVISION.
        .
        
        MAIN-MENU.
-           MOVE "==== INCOLLEGE MAIN MENU ====" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
-
            MOVE "Welcome to InCollege!" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
@@ -497,12 +493,15 @@ IDENTIFICATION DIVISION.
                
                MOVE WS-USERNAME TO CURRENT-USERNAME
                IF WS-LOGIN-SUCCESS = "Y"
-      *> EMPTYING THE VARIALBE
+                   MOVE "You have successfully logged in." TO OUTPUT-RECORD
+                   DISPLAY OUTPUT-RECORD
+                   WRITE OUTPUT-RECORD
+                   
+      *> Clear the message variable and build welcome message
                    MOVE SPACES TO WS-MESSAGE
-      *> CONCATINATING STRINGS TO DISPLAY AND WRITE WELCOME MESSAGE INTO
-      *> A FILE
-                   STRING "Welcome " DELIMITED BY SIZE
-                       WS-USERNAME DELIMITED BY SPACE
+      *> Concatenate strings to display and write welcome message to file
+                   STRING "Welcome, " DELIMITED BY SIZE
+                       FUNCTION TRIM(WS-USERNAME TRAILING) DELIMITED BY SPACE
                        "!" DELIMITED BY SIZE
                        INTO WS-MESSAGE
                    END-STRING
@@ -522,7 +521,7 @@ IDENTIFICATION DIVISION.
            .
 
        POST-LOGIN-MENU.
-           MOVE "==== PROFILE MENU ====" TO OUTPUT-RECORD
+           MOVE "Main Menu:" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
@@ -534,23 +533,23 @@ IDENTIFICATION DIVISION.
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           MOVE "3. Search for a job" TO OUTPUT-RECORD
+           MOVE "3. Search for User" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           MOVE "4. Find someone you know" TO OUTPUT-RECORD
+           MOVE "4. Learn a New Skill" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           MOVE "5. Learn a new skill" TO OUTPUT-RECORD
+           MOVE "5. View My Pending Connection Requests" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           MOVE "6. View My Pending Connection Requests" TO OUTPUT-RECORD
+           MOVE "6. View My Network" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           MOVE "7. View My Network" TO OUTPUT-RECORD
+           MOVE "7. Job Search/Internship" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
@@ -559,7 +558,7 @@ IDENTIFICATION DIVISION.
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           MOVE "9. Logout" TO OUTPUT-RECORD
+           MOVE "9. Exit" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
@@ -579,15 +578,15 @@ IDENTIFICATION DIVISION.
                        WHEN 2
                            PERFORM PROFILE-VIEW
                        WHEN 3
-                           PERFORM JOB-MENU UNTIL WS-EOF-FLAG = "Y" OR WS-USER-CHOICE = 9
-                       WHEN 4
                            PERFORM SEARCH-USER
-                       WHEN 5
+                       WHEN 4
                            PERFORM LEARN-SKILL-MENU
-                       WHEN 6
+                       WHEN 5
                            PERFORM VIEW-PENDING-REQUESTS
-                       WHEN 7
+                       WHEN 6
                            PERFORM VIEW-MY-NETWORK
+                       WHEN 7
+                           PERFORM JOB-MENU UNTIL WS-EOF-FLAG = "Y" OR WS-USER-CHOICE = 9
       *> === EPIC 8 NEW MENU OPTION ===
                        WHEN 8
       *> DISPLAY "DEBUG:" WS-MSG-CHOICE
@@ -629,7 +628,7 @@ IDENTIFICATION DIVISION.
                EXIT PARAGRAPH
            END-IF
 
-           MOVE "==== YOUR PROFILE ====" TO OUTPUT-RECORD
+           MOVE "--- Your Profile ---" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
@@ -829,7 +828,7 @@ IDENTIFICATION DIVISION.
                IF TEMP-FIRST-NAME NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   MOVE "Error: This is a required field. Please enter a non-empty value." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
@@ -864,7 +863,7 @@ IDENTIFICATION DIVISION.
                IF TEMP-LAST-NAME NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   MOVE "Error: This is a required field. Please enter a non-empty value." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
@@ -899,7 +898,7 @@ IDENTIFICATION DIVISION.
                IF TEMP-UNIVERSITY NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   MOVE "Error: This is a required field. Please enter a non-empty value." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
@@ -933,7 +932,7 @@ IDENTIFICATION DIVISION.
                IF TEMP-MAJOR NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   MOVE "Error: This is a required field. Please enter a non-empty value." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
@@ -973,7 +972,7 @@ IDENTIFICATION DIVISION.
                    FUNCTION NUMVAL(TEMP-GRAD-YEAR) <= 2035
                    MOVE "Y" TO WS-VALID-GRAD-YEAR
                ELSE
-                   MOVE "Please enter a valid graduation year. (1925-2035)" TO OUTPUT-RECORD
+                   MOVE "Error: Please enter a valid graduation year between 1925 and 2035." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
@@ -1747,7 +1746,7 @@ IDENTIFICATION DIVISION.
            CLOSE ACCOUNTS-FILE.
        
        JOB-MENU.
-           MOVE "==== Job Search/Internship Menu ====" TO OUTPUT-RECORD
+           MOVE "--- Job Search/Internship Menu ---" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
@@ -1768,9 +1767,19 @@ IDENTIFICATION DIVISION.
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           READ INPUT-FILE INTO WS-USER-CHOICE
-             AT END MOVE "Y" TO WS-EOF-FLAG
-             NOT AT END
+           MOVE "Enter your choice:" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO WS-TEMP-INPUT
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+                   NOT AT END
+                       MOVE WS-TEMP-INPUT(1:1) TO WS-USER-CHOICE
+               END-READ
+           END-IF
+           
+           IF WS-EOF-FLAG NOT = "Y"
                EVALUATE WS-USER-CHOICE
                  WHEN 1
                    MOVE "Posting a job..." TO OUTPUT-RECORD
@@ -1788,10 +1797,7 @@ IDENTIFICATION DIVISION.
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
 
-      *> NEED TO ASSIGN USER CHOICE TO 9 TO EXIT THE LOOP TOWARDS MAIN
-      *> MENU
-      *> WHEN 3 should return back to main menu (1. login, 2. register)
-      *> it returns to main menu for me, pls report if it doesn't for u
+      *> Set WS-USER-CHOICE to 9 to exit the loop and return to main menu
                    MOVE 9 TO WS-USER-CHOICE
                    EXIT PARAGRAPH
                  WHEN OTHER
@@ -1799,7 +1805,7 @@ IDENTIFICATION DIVISION.
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-EVALUATE
-           END-READ
+           END-IF
        .
        
        POST-A-JOB.
@@ -1821,7 +1827,7 @@ IDENTIFICATION DIVISION.
            ADD 1 TO TEMP-LAST-JOB-ID
            MOVE TEMP-LAST-JOB-ID TO JR-ID
 
-           MOVE "Job Titile: " TO OUTPUT-RECORD
+           MOVE "Job Title: " TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
@@ -1834,7 +1840,7 @@ IDENTIFICATION DIVISION.
                    END-READ
                END-IF
                IF WS-EOF-FLAG = "Y"
-                   MOVE "Failed to post a job. EOF during Title" TO OUTPUT-RECORD
+                   MOVE "Error: Unexpected end of input file while entering job title." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                    EXIT PARAGRAPH
@@ -1842,7 +1848,7 @@ IDENTIFICATION DIVISION.
                IF JR-TITLE NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   MOVE "Error: This is a required field. Please enter a non-empty value." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
@@ -1861,7 +1867,7 @@ IDENTIFICATION DIVISION.
                    END-READ
                END-IF
                IF WS-EOF-FLAG = "Y"
-                   MOVE "Failed to post a job. EOF during Description" TO OUTPUT-RECORD
+                   MOVE "Error: Unexpected end of input file while entering job description." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                    EXIT PARAGRAPH
@@ -1869,7 +1875,7 @@ IDENTIFICATION DIVISION.
                IF JR-DESC NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   MOVE "Error: This is a required field. Please enter a non-empty value." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
@@ -1888,7 +1894,7 @@ IDENTIFICATION DIVISION.
                    END-READ
                END-IF
                IF WS-EOF-FLAG = "Y"
-                   MOVE "Failed to post a job. EOF during Employer" TO OUTPUT-RECORD
+                   MOVE "Error: Unexpected end of input file while entering employer name." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                    EXIT PARAGRAPH
@@ -1896,7 +1902,7 @@ IDENTIFICATION DIVISION.
                IF JR-EMPLOYER NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   MOVE "Error: This is a required field. Please enter a non-empty value." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
@@ -1915,7 +1921,7 @@ IDENTIFICATION DIVISION.
                    END-READ
                END-IF
                IF WS-EOF-FLAG = "Y"
-                   MOVE "Failed to post a job. EOF during Location" TO OUTPUT-RECORD
+                   MOVE "Error: Unexpected end of input file while entering job location." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                    EXIT PARAGRAPH
@@ -1923,7 +1929,7 @@ IDENTIFICATION DIVISION.
                IF JR-LOCATION NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
+                   MOVE "Error: This is a required field. Please enter a non-empty value." TO OUTPUT-RECORD
                    DISPLAY OUTPUT-RECORD
                    WRITE OUTPUT-RECORD
                END-IF
@@ -1975,18 +1981,24 @@ IDENTIFICATION DIVISION.
            END-PERFORM
            CLOSE JOBS-FILE
 
+           MOVE "-----------------------------" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
            MOVE "Enter job number to view details, or 0 to go back:" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
 
-           READ INPUT-FILE INTO WS-TEMP-INPUT
-               AT END MOVE "Y" TO WS-EOF-FLAG
-               NOT AT END
-                   IF FUNCTION NUMVAL(WS-TEMP-INPUT) > 0
-                       MOVE FUNCTION NUMVAL(WS-TEMP-INPUT) TO WS-TARGET-JOB-ID
-                       PERFORM VIEW-JOB-DETAILS
-                   END-IF
-           END-READ
+           IF WS-EOF-FLAG NOT = "Y"
+               READ INPUT-FILE INTO WS-TEMP-INPUT
+                   AT END MOVE "Y" TO WS-EOF-FLAG
+                   NOT AT END
+                       IF FUNCTION NUMVAL(WS-TEMP-INPUT) > 0
+                           MOVE FUNCTION NUMVAL(WS-TEMP-INPUT) TO WS-TARGET-JOB-ID
+                           PERFORM VIEW-JOB-DETAILS
+                       END-IF
+               END-READ
+           END-IF
            .
 
        VIEW-JOB-DETAILS.
@@ -1994,7 +2006,7 @@ IDENTIFICATION DIVISION.
            MOVE 1 TO TEMP-LAST-JOB-ID
            MOVE 'N' TO WS-JOBS-FILE-EOF
            MOVE 'N' TO WS-TARGET-JOB-ID-FOUND
-      *> added OR TEMP-LAST-JOB-ID = WS-TARGET-JOB-ID
+      *> Search through jobs until we find the target job ID or reach end of file
            PERFORM UNTIL WS-JOBS-FILE-EOF = 'Y' OR TEMP-LAST-JOB-ID > WS-TARGET-JOB-ID
                READ JOBS-FILE INTO JOBS-FILE-RECORD
                    AT END MOVE 'Y' TO WS-JOBS-FILE-EOF
@@ -2002,36 +2014,40 @@ IDENTIFICATION DIVISION.
                        IF TEMP-LAST-JOB-ID = WS-TARGET-JOB-ID
                            MOVE 'Y' TO WS-TARGET-JOB-ID-FOUND
 
-                           MOVE "=== Job Details ===" TO OUTPUT-RECORD
+                           MOVE "--- Job Details ---" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
 
                            MOVE SPACES TO OUTPUT-RECORD
-                           STRING "Title: " JR-TITLE INTO OUTPUT-RECORD
+                           STRING "Title: " FUNCTION TRIM(JR-TITLE TRAILING) INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
 
                            MOVE SPACES TO OUTPUT-RECORD
-                           STRING "Description: " JR-DESC INTO OUTPUT-RECORD
+                           STRING "Description: " FUNCTION TRIM(JR-DESC TRAILING) INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
 
                            MOVE SPACES TO OUTPUT-RECORD
-                           STRING "Employer: " JR-EMPLOYER INTO OUTPUT-RECORD
+                           STRING "Employer: " FUNCTION TRIM(JR-EMPLOYER TRAILING) INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
 
                            MOVE SPACES TO OUTPUT-RECORD
-                           STRING "Location: " JR-LOCATION INTO OUTPUT-RECORD
+                           STRING "Location: " FUNCTION TRIM(JR-LOCATION TRAILING) INTO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
 
                            IF JR-SALARY NOT = SPACES
                                MOVE SPACES TO OUTPUT-RECORD
-                               STRING "Salary: " JR-SALARY INTO OUTPUT-RECORD
+                               STRING "Salary: " FUNCTION TRIM(JR-SALARY TRAILING) INTO OUTPUT-RECORD
                                DISPLAY OUTPUT-RECORD
                                WRITE OUTPUT-RECORD
                            END-IF
+
+                           MOVE "-------------------" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
 
                            MOVE "1. Apply for this Job" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
@@ -2040,22 +2056,25 @@ IDENTIFICATION DIVISION.
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
 
-                           READ INPUT-FILE INTO WS-TEMP-INPUT
-                               AT END MOVE "Y" TO WS-EOF-FLAG
-                               NOT AT END
-                                   IF WS-TEMP-INPUT(1:1) = "1"
-                                       PERFORM APPLY-FOR-JOB
-                                   END-IF
-                           END-READ
+                           MOVE "Enter your choice:" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
+
+                           IF WS-EOF-FLAG NOT = "Y"
+                               READ INPUT-FILE INTO WS-TEMP-INPUT
+                                   AT END MOVE "Y" TO WS-EOF-FLAG
+                                   NOT AT END
+                                       IF WS-TEMP-INPUT(1:1) = "1"
+                                           PERFORM APPLY-FOR-JOB
+                                       END-IF
+                               END-READ
+                           END-IF
                        END-IF
                        ADD 1 TO TEMP-LAST-JOB-ID
                END-READ
            END-PERFORM
            IF WS-TARGET-JOB-ID-FOUND = 'N'
-             MOVE "Error. No job by provided number found! (see below)" TO OUTPUT-RECORD
-             DISPLAY OUTPUT-RECORD
-             WRITE OUTPUT-RECORD
-             MOVE WS-TARGET-JOB-ID TO OUTPUT-RECORD
+             MOVE "Error: No job found with the provided number. Please try again." TO OUTPUT-RECORD
              DISPLAY OUTPUT-RECORD
              WRITE OUTPUT-RECORD
            END-IF
@@ -2086,16 +2105,17 @@ IDENTIFICATION DIVISION.
              WRITE APPLICATION-RECORD
              CLOSE APPLICATIONS-FILE
 
-      *> this can be changed to MOVE SPACES TO OUTPUT-RECORD
+      *> Build success message for application submission
              MOVE SPACES TO WS-MESSAGE
-             STRING "Application submitted for " FUNCTION TRIM(JR-TITLE TRAILING)
-                    " at " FUNCTION TRIM(JR-EMPLOYER TRAILING) INTO WS-MESSAGE
+             STRING "Your application for " FUNCTION TRIM(JR-TITLE TRAILING)
+                    " at " FUNCTION TRIM(JR-EMPLOYER TRAILING) 
+                    " has been submitted." INTO WS-MESSAGE
              END-STRING
              DISPLAY WS-MESSAGE
              MOVE WS-MESSAGE TO OUTPUT-RECORD
              WRITE OUTPUT-RECORD
            ELSE
-             MOVE "Sorry, you've already applied for this job" TO OUTPUT-RECORD
+             MOVE "Error: You have already applied for this job." TO OUTPUT-RECORD
              DISPLAY OUTPUT-RECORD
              WRITE OUTPUT-RECORD
            END-IF
@@ -2105,6 +2125,18 @@ IDENTIFICATION DIVISION.
            MOVE "--- Your Job Applications ---" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
+           
+           MOVE SPACES TO WS-MESSAGE
+           STRING "Application Summary for " CURRENT-USERNAME INTO WS-MESSAGE
+           END-STRING
+           MOVE WS-MESSAGE TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           
+           MOVE "------------------------------" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           
            MOVE 0 TO WS-COUNTER
 
            OPEN INPUT APPLICATIONS-FILE
@@ -2123,6 +2155,10 @@ IDENTIFICATION DIVISION.
 
            MOVE SPACES TO OUTPUT-RECORD
            STRING "Total Applications: " WS-COUNTER INTO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+
+           MOVE "------------------------------" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            .
@@ -2150,7 +2186,7 @@ IDENTIFICATION DIVISION.
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
 
-                           MOVE "---" TO OUTPUT-RECORD
+                           MOVE "------------------------------" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        END-IF
@@ -2376,7 +2412,7 @@ IDENTIFICATION DIVISION.
                            ADD 1 TO WS-MESSAGE-COUNT
                            MOVE SPACES TO OUTPUT-RECORD
                            STRING "From: " DELIMITED BY SIZE
-                                  MS-SENDER DELIMITED BY SPACE
+                                  FUNCTION TRIM(MS-SENDER TRAILING) DELIMITED BY SPACE
                                   INTO OUTPUT-RECORD
                            END-STRING
                            DISPLAY OUTPUT-RECORD
@@ -2384,7 +2420,7 @@ IDENTIFICATION DIVISION.
 
                            MOVE SPACES TO OUTPUT-RECORD
                            STRING "Message: " DELIMITED BY SIZE
-                                  MS-CONTENT DELIMITED BY SIZE
+                                  FUNCTION TRIM(MS-CONTENT TRAILING) DELIMITED BY SIZE
                                   INTO OUTPUT-RECORD
                            END-STRING
                            DISPLAY OUTPUT-RECORD
@@ -2434,6 +2470,12 @@ IDENTIFICATION DIVISION.
            .
 
        CLEANUP.
+      *> Display end of program message
+           MOVE "--- END_OF_PROGRAM_EXECUTION ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           
+      *> Close all files gracefully
            CLOSE INPUT-FILE
            CLOSE OUTPUT-FILE
            CLOSE ACCOUNTS-FILE
@@ -2444,4 +2486,5 @@ IDENTIFICATION DIVISION.
            CLOSE CONNECTIONS-FILE 
       *> === EPIC 8 CLEANUP ===
            CLOSE MESSAGES-FILE
+           CLOSE APPLICATIONS-FILE
        .
