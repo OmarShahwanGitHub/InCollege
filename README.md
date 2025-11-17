@@ -40,6 +40,11 @@ To run a sample flow, ensure `InCollege-Input.txt` contains the sequence you wan
    duplicate-request and self-request validation
 - Persistent storage of pending requests and established connections
 
+### Week 10: Stability & I/O Improvements
+- Centralized output mirroring via `PRINT-LINE` helper in `InCollege.cob` ensures every message shown on screen is also written to `InCollege-Output.txt`.
+- Menus refactored to use the helper (Main, Post-login, Learn Skill, Jobs, Messages) reducing duplication and ensuring consistent formatting.
+- File handling remains robust: missing data files are created on first run.
+
 ### Week 8: Messaging (New)
 - New post-login menu option: `8. Messages`
 - Messages submenu:

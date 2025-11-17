@@ -222,6 +222,12 @@ IDENTIFICATION DIVISION.
            PERFORM MAIN-MENU UNTIL WS-EOF-FLAG = "Y"
            PERFORM CLEANUP
            STOP RUN.
+      
+      *> Centralized output helper: mirrors to screen and output file
+       PRINT-LINE.
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           .
        
        INITIALIZE-PROGRAM.
            OPEN INPUT INPUT-FILE
@@ -306,20 +312,16 @@ IDENTIFICATION DIVISION.
        
        MAIN-MENU.
            MOVE "==== INCOLLEGE MAIN MENU ====" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "Welcome to InCollege!" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "1. Log In" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "2. Create New Account" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
       *> COMMENT THIS BEFORE DEPLOYMENT!
       *> MOVE "0. DEVELOPER MODE FOR DEGUBBING" TO OUTPUT-RECORD
@@ -327,8 +329,7 @@ IDENTIFICATION DIVISION.
       *> WRITE OUTPUT-RECORD
 
            MOVE "Enter your choice:" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE "Y" TO WS-EOF-FLAG
@@ -345,9 +346,8 @@ IDENTIFICATION DIVISION.
       *> WHEN 0
       *> PERFORM DEBUG-JOBS
                        WHEN OTHER
-                           MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                          MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
+                          PERFORM PRINT-LINE
                    END-EVALUATE
            END-READ.
        
@@ -358,14 +358,12 @@ IDENTIFICATION DIVISION.
 
            IF WS-ACCOUNT-COUNT >= 5
               MOVE "All permitted accounts have been created, Max 5 accounts." TO OUTPUT-RECORD
-              DISPLAY OUTPUT-RECORD
-              WRITE OUTPUT-RECORD
+                  PERFORM PRINT-LINE
               EXIT PARAGRAPH
            END-IF
 
            MOVE "Enter Username:" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            IF WS-EOF-FLAG NOT = "Y"
              READ INPUT-FILE INTO WS-USERNAME
                  AT END MOVE "Y" TO WS-EOF-FLAG
@@ -376,8 +374,7 @@ IDENTIFICATION DIVISION.
            MOVE "N" TO WS-VALID-PASS
            PERFORM UNTIL WS-VALID-PASS = "Y" OR WS-EOF-FLAG = "Y"
                MOVE "Enter Password:" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+               PERFORM PRINT-LINE
                IF WS-EOF-FLAG NOT = "Y"
                  READ INPUT-FILE INTO WS-PASSWORD
                     AT END MOVE "Y" TO WS-EOF-FLAG
@@ -392,8 +389,7 @@ IDENTIFICATION DIVISION.
       *> OF THE ACCOUNTS.DOC
            IF WS-VALID-PASS = "N"
              MOVE "Failed to create an account." TO OUTPUT-RECORD
-             DISPLAY OUTPUT-RECORD
-             WRITE OUTPUT-RECORD
+                         PERFORM PRINT-LINE
      
              CLOSE ACCOUNTS-FILE
              EXIT PARAGRAPH
@@ -523,49 +519,38 @@ IDENTIFICATION DIVISION.
 
        POST-LOGIN-MENU.
            MOVE "==== PROFILE MENU ====" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "1. Create/Edit My Profile" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "2. View My Profile" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "3. Search for a job" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "4. Find someone you know" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "5. Learn a new skill" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "6. View My Pending Connection Requests" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "7. View My Network" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
       *> === EPIC 8 NEW MENU OPTION ===
            MOVE "8. Messages" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "9. Logout" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "Enter your choice:" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            IF WS-EOF-FLAG NOT = "Y"
            READ INPUT-FILE INTO WS-TEMP-INPUT
@@ -1650,36 +1635,28 @@ IDENTIFICATION DIVISION.
 
        LEARN-SKILL-MENU.
            MOVE "Learn a New Skill" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "1. Programming" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "2. Data Analysis" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "3. Digital Marketing" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "4. Project Management" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "5. Communication" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "6. Go Back" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "Enter your choice:" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            
            IF WS-EOF-FLAG NOT = "Y"
            READ INPUT-FILE INTO WS-TEMP-INPUT
@@ -1689,32 +1666,25 @@ IDENTIFICATION DIVISION.
                    EVALUATE WS-USER-CHOICE
                        WHEN 1
                            MOVE "Programming is under construction." TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM PRINT-LINE
                        WHEN 2
                            MOVE "Data Analysis is under construction." TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM PRINT-LINE
                        WHEN 3
                            MOVE "Digital Marketing is under construction." TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM PRINT-LINE
                        WHEN 4
                            MOVE "Project Management under construction." TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM PRINT-LINE
                        WHEN 5
                            MOVE "Communication is under construction." TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM PRINT-LINE
                        WHEN 6
                            MOVE "Returning to main menu..." TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM PRINT-LINE
                        WHEN OTHER
                            MOVE "Invalid choice, please try again." TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM PRINT-LINE
                    END-EVALUATE
            END-READ
            END-IF.
@@ -1748,25 +1718,20 @@ IDENTIFICATION DIVISION.
        
        JOB-MENU.
            MOVE "==== Job Search/Internship Menu ====" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "1. Post a Job/Internship" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "2. Browse Jobs/Internships" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
       *> === EPIC 7 NEW MENU OPTION ===
            MOVE "3. View My Applications" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "4. Back to Main Menu" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            READ INPUT-FILE INTO WS-USER-CHOICE
              AT END MOVE "Y" TO WS-EOF-FLAG
@@ -1774,8 +1739,7 @@ IDENTIFICATION DIVISION.
                EVALUATE WS-USER-CHOICE
                  WHEN 1
                    MOVE "Posting a job..." TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                  PERFORM PRINT-LINE
 
                    PERFORM POST-A-JOB
                  WHEN 2
@@ -1785,8 +1749,7 @@ IDENTIFICATION DIVISION.
                    PERFORM VIEW-MY-APPLICATIONS
                  WHEN 4
                    MOVE "Returning back to MAIN MENU..." TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                                     PERFORM PRINT-LINE
 
       *> NEED TO ASSIGN USER CHOICE TO 9 TO EXIT THE LOOP TOWARDS MAIN
       *> MENU
@@ -1796,8 +1759,7 @@ IDENTIFICATION DIVISION.
                    EXIT PARAGRAPH
                  WHEN OTHER
                    MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                                     PERFORM PRINT-LINE
                END-EVALUATE
            END-READ
        .
@@ -2250,24 +2212,19 @@ IDENTIFICATION DIVISION.
       *> === EPIC 8 MESSAGING FUNCTIONS ===
        MESSAGES-MENU.
            MOVE "--- Messages Menu ---" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "1. Send a New Message" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "2. View My Messages" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "3. Back to Main Menu" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "Enter your choice:" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            IF WS-EOF-FLAG NOT = "Y"
                READ INPUT-FILE INTO WS-TEMP-INPUT

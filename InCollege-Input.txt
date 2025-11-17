@@ -1,13 +1,6 @@
 1
-tomato
-tomapasS1+
-8
-2
-3
-9
-1
-aibek
-easypasS1+
+jsmith
+Tech2024!
 8
 2
 3

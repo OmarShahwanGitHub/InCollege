@@ -5,7 +5,7 @@ Welcome to InCollege!
 Enter your choice:
 Please enter your username:
 Please enter your password:
-Welcome tomato!
+Welcome jsmith!
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
@@ -23,55 +23,11 @@ Enter your choice:
 3. Back to Main Menu
 Enter your choice:
 --- Your Messages ---
-You have no messages.
----------------------
---- Messages Menu ---
-1. Send a New Message
-2. View My Messages
-3. Back to Main Menu
-Enter your choice:
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-7. View My Network
-8. Messages
-9. Logout
-Enter your choice:
-Logging out.
-==== INCOLLEGE MAIN MENU ====
-Welcome to InCollege!
-1. Log In
-2. Create New Account
-Enter your choice:
-Please enter your username:
-Please enter your password:
-Welcome aibek!
-==== PROFILE MENU ====
-1. Create/Edit My Profile
-2. View My Profile
-3. Search for a job
-4. Find someone you know
-5. Learn a new skill
-6. View My Pending Connection Requests
-7. View My Network
-8. Messages
-9. Logout
-Enter your choice:
---- Messages Menu ---
-1. Send a New Message
-2. View My Messages
-3. Back to Main Menu
-Enter your choice:
---- Your Messages ---
-From: test
-Message: I'm doing well, I'll be free on Sunday
+From: mchen
+Message: Hey! Thanks for connecting. Would love to discuss the software engineering role you posted.
 ---
-From: test
-Message: I'm doing well, I'll be free on Sunday (duplicate)
+From: agarcia
+Message: Great profile! Let's catch up sometime.
 ---
 ---------------------
 --- Messages Menu ---
