@@ -5,7 +5,119 @@ Welcome to InCollege!
 Enter your choice:
 Please enter your username:
 Please enter your password:
-Welcome jsmith!
+Incorrect username/password, try again.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Invalid choice, please try again
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+All permitted accounts have been created, Max 5 accounts.
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Invalid choice, please try again
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Invalid choice, please try again
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome test!
+==== PROFILE MENU ====
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a new skill
+6. View My Pending Connection Requests
+7. View My Network
+8. Messages
+9. Logout
+Enter your choice:
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Posting a job...
+Job Titile:
+Description:
+Employer:
+Location:
+Salary (optional):
+Job posted successfully!
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Posting a job...
+Job Titile:
+Description:
+Employer:
+Location:
+Salary (optional):
+Job posted successfully!
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+--- Available Job Listings ---
+0001. Senior Developer at InnovateTech (Remote)
+0002. UX Designer at CreativeSolutions (San Francisco, CA)
+0003. Senior Developer at InnovateTech (Remote)
+0004. UX Designer at CreativeSolutions (San Francisco, CA)
+Enter job number to view details, or 0 to go back:
+=== Job Details ===
+Title: Senior Developer
+Description: Lead backend development for new products.
+Employer: InnovateTech
+Location: Remote
+Salary: $120,000/year
+1. Apply for this Job
+2. Back to Job List
+Sorry, you've already applied for this job
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+--- Your Job Applications ---
+Job Title: Senior Developer
+Employer: InnovateTech
+Location: Remote
+---
+Total Applications: 1
+==== Job Search/Internship Menu ====
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+Returning back to MAIN MENU...
+==== INCOLLEGE MAIN MENU ====
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+Enter your choice:
+Please enter your username:
+Please enter your password:
+Welcome test!
 ==== PROFILE MENU ====
 1. Create/Edit My Profile
 2. View My Profile
@@ -23,11 +135,23 @@ Enter your choice:
 3. Back to Main Menu
 Enter your choice:
 --- Your Messages ---
-From: mchen
-Message: Hey! Thanks for connecting. Would love to discuss the software engineering role you posted.
+From: aibek
+Message: Hello, I hope you're doing well, let me know when you're free
 ---
-From: agarcia
-Message: Great profile! Let's catch up sometime.
+From: aibek
+Message: This is another message
+---
+From: aibek
+Message: This is just a test
+---
+From: aibek
+Message: This is just a test (duplicate)
+---
+From: tomato
+Message: This is tomato and my very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very long message
+---
+From: potato
+Message: Hi this is potato
 ---
 ---------------------
 --- Messages Menu ---
