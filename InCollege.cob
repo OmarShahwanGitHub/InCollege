@@ -457,9 +457,8 @@ IDENTIFICATION DIVISION.
                AND WS-HAS-SPECIAL = "Y"
                MOVE "Y" TO WS-VALID-PASS
            ELSE
-               MOVE "Error: Password must include at least 1 uppercase, 1 digit, and 1 special character." TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+                   MOVE "Error: Password must include at least 1 uppercase, 1 digit, and 1 special character." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
            END-IF
            .
 
@@ -467,8 +466,7 @@ IDENTIFICATION DIVISION.
            MOVE "N" TO WS-LOGIN-SUCCESS
            
            MOVE "Please enter your username:" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            IF WS-EOF-FLAG NOT = "Y"
              READ INPUT-FILE INTO WS-USERNAME
@@ -477,8 +475,7 @@ IDENTIFICATION DIVISION.
            END-IF
 
            MOVE "Please enter your password:" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            IF WS-EOF-FLAG NOT = "Y"
                READ INPUT-FILE INTO WS-PASSWORD
@@ -502,16 +499,14 @@ IDENTIFICATION DIVISION.
                        INTO WS-MESSAGE
                    END-STRING
 
-                   DISPLAY WS-MESSAGE
                    MOVE WS-MESSAGE TO OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   PERFORM PRINT-LINE
 
       *> 9 = Log Out in POST-LOGIN-MENU 
                    PERFORM POST-LOGIN-MENU UNTIL WS-USER-CHOICE = 9 OR WS-EOF-FLAG = "Y"
                ELSE
-                   MOVE "Incorrect username/password, try again." TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE "Login failed: incorrect username or password. Please try again." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                END-IF
            END-IF
            .
@@ -571,7 +566,8 @@ IDENTIFICATION DIVISION.
                        WHEN 6
                            PERFORM VIEW-MY-NETWORK
                        WHEN 7
-                           PERFORM JOB-MENU
+                           PERFORM JOB-MENU UNTIL WS-USER-CHOICE = 4 OR WS-EOF-FLAG = "Y"
+                           MOVE 0 TO WS-USER-CHOICE
                        WHEN 8
                            PERFORM MESSAGES-MENU UNTIL WS-MSG-CHOICE = 3 OR WS-EOF-FLAG = "Y"
                            MOVE 0 TO WS-MSG-CHOICE
@@ -780,16 +776,14 @@ IDENTIFICATION DIVISION.
 
       *>REQUIRED
            MOVE "Enter First Name: " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
       *>added IF BLOCK to add skip functionality if required field is
       *>nonempty
            IF FOUND-PROFILE-FLAG = "Y" AND
              PR-FIRST-NAME NOT = SPACES AND
              PR-FIRST-NAME NOT = LOW-VALUE
                MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+               PERFORM PRINT-LINE
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
       *>CHECKING IF THE VALUE ENTERED NON-EMPTY
@@ -808,23 +802,20 @@ IDENTIFICATION DIVISION.
                IF TEMP-FIRST-NAME NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE "First name is required. Please enter a non-empty value." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                END-IF
            END-PERFORM
            MOVE TEMP-FIRST-NAME TO PR-FIRST-NAME
 
       *>REQUIRED
            MOVE "Enter Last Name: " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            IF FOUND-PROFILE-FLAG = "Y" AND
              PR-LAST-NAME NOT EQUAL SPACES AND
              PR-LAST-NAME NOT = LOW-VALUE
                MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+               PERFORM PRINT-LINE
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
            PERFORM UNTIL WS-VALID-REQUIRED = "Y"
@@ -843,23 +834,20 @@ IDENTIFICATION DIVISION.
                IF TEMP-LAST-NAME NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE "Last name is required. Please enter a non-empty value." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                END-IF
            END-PERFORM
            MOVE TEMP-LAST-NAME TO PR-LAST-NAME
 
       *>REQUIRED
            MOVE "Enter University: " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            IF FOUND-PROFILE-FLAG = "Y" AND
              PR-UNIVERSITY NOT EQUAL SPACES AND
              PR-UNIVERSITY NOT = LOW-VALUE
                MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+               PERFORM PRINT-LINE
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
            PERFORM UNTIL WS-VALID-REQUIRED = "Y"
@@ -878,23 +866,20 @@ IDENTIFICATION DIVISION.
                IF TEMP-UNIVERSITY NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE "University is required. Please enter a non-empty value." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                END-IF
            END-PERFORM
            MOVE TEMP-UNIVERSITY TO PR-UNIVERSITY
 
       *>REQUIRED
            MOVE "Enter Major: " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            IF FOUND-PROFILE-FLAG = "Y" AND
              PR-MAJOR NOT EQUAL SPACES AND
              PR-MAJOR NOT = LOW-VALUE
                MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+               PERFORM PRINT-LINE
            END-IF
            MOVE "N" TO WS-VALID-REQUIRED
            PERFORM UNTIL WS-VALID-REQUIRED = "Y"
@@ -912,23 +897,20 @@ IDENTIFICATION DIVISION.
                IF TEMP-MAJOR NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE "Major is required. Please enter a non-empty value." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                END-IF
            END-PERFORM
            MOVE TEMP-MAJOR TO PR-MAJOR
 
       *>REQUIRED
            MOVE "Enter Graduation Year: " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            IF FOUND-PROFILE-FLAG = "Y" AND
              PR-GRAD-YEAR NOT EQUAL SPACES AND
              PR-GRAD-YEAR NOT = LOW-VALUE
                MOVE "(Leave empty to keep the old record)" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+               PERFORM PRINT-LINE
            END-IF
       *>Graduation year validation
            MOVE "N" TO WS-VALID-GRAD-YEAR
@@ -952,9 +934,8 @@ IDENTIFICATION DIVISION.
                    FUNCTION NUMVAL(TEMP-GRAD-YEAR) <= 2035
                    MOVE "Y" TO WS-VALID-GRAD-YEAR
                ELSE
-                   MOVE "Please enter a valid graduation year. (1925-2035)" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE "Error: Please enter a valid graduation year (1925-2035)." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                END-IF
            END-PERFORM
 
@@ -964,8 +945,7 @@ IDENTIFICATION DIVISION.
            MOVE FUNCTION NUMVAL(TEMP-GRAD-YEAR) TO PR-GRAD-YEAR
 
            MOVE "About Me (optional, blank = skip/keep): " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            IF WS-EOF-FLAG NOT = "Y"
                READ INPUT-FILE INTO TEMP-ABOUT-ME
                    AT END MOVE "Y" TO WS-EOF-FLAG
@@ -978,8 +958,7 @@ IDENTIFICATION DIVISION.
            MOVE 0 TO TEMP-EXP-COUNT
            PERFORM UNTIL TEMP-EXP-COUNT >= 3 OR WS-EOF-FLAG = "Y"
                MOVE "=== Add Experience (optional, max 3 entries. Enter 'DONE' to finish) ===" TO OUTPUT-RECORD
-               DISPLAY OUTPUT-RECORD
-               WRITE OUTPUT-RECORD
+               PERFORM PRINT-LINE
 
                ADD 1 TO TEMP-EXP-COUNT
                MOVE SPACES TO OUTPUT-RECORD
@@ -1364,9 +1343,8 @@ IDENTIFICATION DIVISION.
                   "." DELIMITED BY SIZE
                   INTO WS-MESSAGE
            END-STRING
-           DISPLAY WS-MESSAGE
            MOVE WS-MESSAGE TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            .
 
        VIEW-PENDING-REQUESTS.
@@ -1558,9 +1536,8 @@ IDENTIFICATION DIVISION.
                   " accepted!" DELIMITED BY SIZE
                   INTO WS-MESSAGE
            END-STRING
-           DISPLAY WS-MESSAGE
            MOVE WS-MESSAGE TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            .
 
        REJECT-CONNECTION-REQUEST.
@@ -1574,9 +1551,8 @@ IDENTIFICATION DIVISION.
                   " rejected." DELIMITED BY SIZE
                   INTO WS-MESSAGE
            END-STRING
-           DISPLAY WS-MESSAGE
            MOVE WS-MESSAGE TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            .
 
        REMOVE-CONNECTION-REQUEST.
@@ -1744,8 +1720,6 @@ IDENTIFICATION DIVISION.
                  WHEN 3
                    PERFORM VIEW-MY-APPLICATIONS
                                 WHEN 4
-                                    MOVE "Returning back to MAIN MENU..." TO OUTPUT-RECORD
-                                                                        PERFORM PRINT-LINE
                                     EXIT PARAGRAPH
                  WHEN OTHER
                    MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
@@ -1773,9 +1747,8 @@ IDENTIFICATION DIVISION.
            ADD 1 TO TEMP-LAST-JOB-ID
            MOVE TEMP-LAST-JOB-ID TO JR-ID
 
-           MOVE "Job Titile: " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           MOVE "Job Title: " TO OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "N" TO WS-VALID-REQUIRED
       *>CHECKING IF THE VALUE ENTERED NON-EMPTY
@@ -1787,22 +1760,19 @@ IDENTIFICATION DIVISION.
                END-IF
                IF WS-EOF-FLAG = "Y"
                    MOVE "Failed to post a job. EOF during Title" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                    EXIT PARAGRAPH
                END-IF
                IF JR-TITLE NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE "Title is required. Please enter a non-empty value." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                END-IF
            END-PERFORM
 
            MOVE "Description: " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "N" TO WS-VALID-REQUIRED
       *>CHECKING IF THE VALUE ENTERED NON-EMPTY
@@ -1814,22 +1784,19 @@ IDENTIFICATION DIVISION.
                END-IF
                IF WS-EOF-FLAG = "Y"
                    MOVE "Failed to post a job. EOF during Description" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                    EXIT PARAGRAPH
                END-IF
                IF JR-DESC NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE "Description is required. Please enter a non-empty value." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                END-IF
            END-PERFORM
 
            MOVE "Employer: " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "N" TO WS-VALID-REQUIRED
       *>CHECKING IF THE VALUE ENTERED NON-EMPTY
@@ -1841,22 +1808,19 @@ IDENTIFICATION DIVISION.
                END-IF
                IF WS-EOF-FLAG = "Y"
                    MOVE "Failed to post a job. EOF during Employer" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                    EXIT PARAGRAPH
                END-IF
                IF JR-EMPLOYER NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE "Employer is required. Please enter a non-empty value." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                END-IF
            END-PERFORM
 
            MOVE "Location: " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "N" TO WS-VALID-REQUIRED
       *>CHECKING IF THE VALUE ENTERED NON-EMPTY
@@ -1868,22 +1832,19 @@ IDENTIFICATION DIVISION.
                END-IF
                IF WS-EOF-FLAG = "Y"
                    MOVE "Failed to post a job. EOF during Location" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                    EXIT PARAGRAPH
                END-IF
                IF JR-LOCATION NOT = SPACES
                    MOVE "Y" TO WS-VALID-REQUIRED 
                ELSE
-                   MOVE "This is a required field. Please enter non-empty value" TO OUTPUT-RECORD
-                   DISPLAY OUTPUT-RECORD
-                   WRITE OUTPUT-RECORD
+                   MOVE "Location is required. Please enter a non-empty value." TO OUTPUT-RECORD
+                   PERFORM PRINT-LINE
                END-IF
            END-PERFORM
 
            MOVE "Salary (optional): " TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            IF WS-EOF-FLAG NOT = "Y"
              READ INPUT-FILE INTO JR-SALARY
                  AT END MOVE "Y" TO WS-EOF-FLAG
@@ -1897,15 +1858,13 @@ IDENTIFICATION DIVISION.
            WRITE JOBS-FILE-RECORD
 
            MOVE "Job posted successfully!" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            CLOSE JOBS-FILE
        .
        BROWSE-JOBS.
            MOVE "--- Available Job Listings ---" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            OPEN INPUT JOBS-FILE
            MOVE 1 TO TEMP-LAST-JOB-ID
@@ -1922,8 +1881,7 @@ IDENTIFICATION DIVISION.
                        " at " FUNCTION TRIM(JR-EMPLOYER TRAILING)
                        " (" FUNCTION TRIM(JR-LOCATION TRAILING) ")" INTO OUTPUT-RECORD
                        END-STRING
-                       DISPLAY OUTPUT-RECORD
-                       WRITE OUTPUT-RECORD
+                       PERFORM PRINT-LINE
                        ADD 1 TO TEMP-LAST-JOB-ID
                END-READ
            END-PERFORM
@@ -1933,8 +1891,7 @@ IDENTIFICATION DIVISION.
            PERFORM PRINT-LINE
 
            MOVE "Enter job number to view details, or 0 to go back:" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            READ INPUT-FILE INTO WS-TEMP-INPUT
                AT END MOVE "Y" TO WS-EOF-FLAG
@@ -1999,12 +1956,19 @@ IDENTIFICATION DIVISION.
                            MOVE "2. Back to Job List" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
+                           
+                           MOVE "Enter your choice:" TO OUTPUT-RECORD
+                           DISPLAY OUTPUT-RECORD
+                           WRITE OUTPUT-RECORD
 
                            READ INPUT-FILE INTO WS-TEMP-INPUT
                                AT END MOVE "Y" TO WS-EOF-FLAG
                                NOT AT END
                                    IF WS-TEMP-INPUT(1:1) = "1"
+                                       CLOSE JOBS-FILE
                                        PERFORM APPLY-FOR-JOB
+                                       PERFORM BROWSE-JOBS
+                                       EXIT PARAGRAPH
                                    END-IF
                            END-READ
                        END-IF
@@ -2051,13 +2015,11 @@ IDENTIFICATION DIVISION.
                   STRING "Your application for " FUNCTION TRIM(JR-TITLE TRAILING)
                       " at " FUNCTION TRIM(JR-EMPLOYER TRAILING) " has been submitted." INTO WS-MESSAGE
                   END-STRING
-             DISPLAY WS-MESSAGE
              MOVE WS-MESSAGE TO OUTPUT-RECORD
-             WRITE OUTPUT-RECORD
+             PERFORM PRINT-LINE
            ELSE
              MOVE "Sorry, you've already applied for this job" TO OUTPUT-RECORD
-             DISPLAY OUTPUT-RECORD
-             WRITE OUTPUT-RECORD
+             PERFORM PRINT-LINE
            END-IF
            .
 
@@ -2099,6 +2061,37 @@ IDENTIFICATION DIVISION.
            WRITE OUTPUT-RECORD
            .
 
+       RELIST-JOBS-AFTER-APPLY.
+           MOVE "--- Available Job Listings ---" TO OUTPUT-RECORD
+           PERFORM PRINT-LINE
+           OPEN INPUT JOBS-FILE
+           MOVE 1 TO TEMP-LAST-JOB-ID
+           MOVE 'N' TO WS-JOBS-FILE-EOF
+           PERFORM UNTIL WS-JOBS-FILE-EOF = 'Y'
+               READ JOBS-FILE INTO JOBS-FILE-RECORD
+                   AT END MOVE 'Y' TO WS-JOBS-FILE-EOF
+                   NOT AT END
+                       MOVE SPACES TO OUTPUT-RECORD
+                       MOVE TEMP-LAST-JOB-ID TO WS-LEN
+                       MOVE WS-LEN TO WS-JOB-INDEX-DISPLAY
+                       STRING FUNCTION TRIM(WS-JOB-INDEX-DISPLAY) ". " FUNCTION TRIM(JR-TITLE TRAILING)
+                              " at " FUNCTION TRIM(JR-EMPLOYER TRAILING)
+                              " (" FUNCTION TRIM(JR-LOCATION TRAILING) ")" INTO OUTPUT-RECORD
+                       END-STRING
+                       PERFORM PRINT-LINE
+                       ADD 1 TO TEMP-LAST-JOB-ID
+               END-READ
+           END-PERFORM
+           CLOSE JOBS-FILE
+           MOVE "-----------------------------" TO OUTPUT-RECORD
+           PERFORM PRINT-LINE
+           MOVE "Enter job number to view details, or 0 to go back:" TO OUTPUT-RECORD
+           PERFORM PRINT-LINE
+           READ INPUT-FILE INTO WS-TEMP-INPUT
+               AT END MOVE "Y" TO WS-EOF-FLAG
+           END-READ
+           .
+
        SHOW-APPLICATION-DETAIL.
            OPEN INPUT JOBS-FILE
            MOVE 'N' TO WS-JOBS-FILE-EOF
@@ -2122,7 +2115,7 @@ IDENTIFICATION DIVISION.
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
 
-                           MOVE "---" TO OUTPUT-RECORD
+                           MOVE "------------------------------" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
                        END-IF
@@ -2317,9 +2310,8 @@ IDENTIFICATION DIVISION.
                   " successfully!" DELIMITED BY SIZE
                   INTO WS-MESSAGE
            END-STRING
-           DISPLAY WS-MESSAGE
            MOVE WS-MESSAGE TO OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            .
 
        VIEW-MY-MESSAGES.
@@ -2358,8 +2350,7 @@ IDENTIFICATION DIVISION.
                            WRITE OUTPUT-RECORD
 
                            MOVE "---" TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
+                           PERFORM PRINT-LINE
                        END-IF
                END-READ
            END-PERFORM
@@ -2373,8 +2364,7 @@ IDENTIFICATION DIVISION.
            END-IF
 
            MOVE "---------------------" TO OUTPUT-RECORD
-           DISPLAY OUTPUT-RECORD
-           WRITE OUTPUT-RECORD
+           PERFORM PRINT-LINE
            .
 
        CHECK-IF-CONNECTED.
