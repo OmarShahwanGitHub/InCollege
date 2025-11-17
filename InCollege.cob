@@ -214,6 +214,7 @@ IDENTIFICATION DIVISION.
       *> === EPIC 9 NEW WORKING STORAGE ===
        77  WS-MESSAGES-EOF        PIC X VALUE "N".
        77  WS-MESSAGE-COUNT       PIC 9(4) VALUE 0.
+    77  WS-JOB-INDEX-DISPLAY   PIC Z(4).
 
        PROCEDURE DIVISION.
        MAIN-LOGIC.
@@ -311,9 +312,6 @@ IDENTIFICATION DIVISION.
        .
        
        MAIN-MENU.
-           MOVE "==== INCOLLEGE MAIN MENU ====" TO OUTPUT-RECORD
-           PERFORM PRINT-LINE
-
            MOVE "Welcome to InCollege!" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
@@ -493,11 +491,12 @@ IDENTIFICATION DIVISION.
                
                MOVE WS-USERNAME TO CURRENT-USERNAME
                IF WS-LOGIN-SUCCESS = "Y"
+                  MOVE "You have successfully logged in." TO OUTPUT-RECORD
+                  PERFORM PRINT-LINE
       *> EMPTYING THE VARIALBE
                    MOVE SPACES TO WS-MESSAGE
-      *> CONCATINATING STRINGS TO DISPLAY AND WRITE WELCOME MESSAGE INTO
-      *> A FILE
-                   STRING "Welcome " DELIMITED BY SIZE
+      *> CONCATINATING STRINGS TO DISPLAY AND WRITE WELCOME MESSAGE INTO A FILE
+                   STRING "Welcome, " DELIMITED BY SIZE
                        WS-USERNAME DELIMITED BY SPACE
                        "!" DELIMITED BY SIZE
                        INTO WS-MESSAGE
@@ -517,8 +516,8 @@ IDENTIFICATION DIVISION.
            END-IF
            .
 
-       POST-LOGIN-MENU.
-           MOVE "==== PROFILE MENU ====" TO OUTPUT-RECORD
+      POST-LOGIN-MENU.
+         MOVE "Main Menu:" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
            MOVE "1. Create/Edit My Profile" TO OUTPUT-RECORD
@@ -527,26 +526,26 @@ IDENTIFICATION DIVISION.
            MOVE "2. View My Profile" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
-           MOVE "3. Search for a job" TO OUTPUT-RECORD
+         MOVE "3. Search for User" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
-           MOVE "4. Find someone you know" TO OUTPUT-RECORD
+         MOVE "4. Learn a New Skill" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
-           MOVE "5. Learn a new skill" TO OUTPUT-RECORD
+         MOVE "5. View My Pending Connection Requests" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
-           MOVE "6. View My Pending Connection Requests" TO OUTPUT-RECORD
+         MOVE "6. View My Network" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
-           MOVE "7. View My Network" TO OUTPUT-RECORD
+     *> === EPIC 8 NEW MENU OPTION ===
+         MOVE "7. Job Search/Internship" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
-      *> === EPIC 8 NEW MENU OPTION ===
-           MOVE "8. Messages" TO OUTPUT-RECORD
-           PERFORM PRINT-LINE
+         MOVE "8. Messages" TO OUTPUT-RECORD
+         PERFORM PRINT-LINE
 
-           MOVE "9. Logout" TO OUTPUT-RECORD
+         MOVE "9. Exit" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
            MOVE "Enter your choice:" TO OUTPUT-RECORD
@@ -564,25 +563,20 @@ IDENTIFICATION DIVISION.
                        WHEN 2
                            PERFORM PROFILE-VIEW
                        WHEN 3
-                           PERFORM JOB-MENU UNTIL WS-EOF-FLAG = "Y" OR WS-USER-CHOICE = 9
-                       WHEN 4
                            PERFORM SEARCH-USER
-                       WHEN 5
+                       WHEN 4
                            PERFORM LEARN-SKILL-MENU
-                       WHEN 6
+                       WHEN 5
                            PERFORM VIEW-PENDING-REQUESTS
-                       WHEN 7
+                       WHEN 6
                            PERFORM VIEW-MY-NETWORK
-      *> === EPIC 8 NEW MENU OPTION ===
+                       WHEN 7
+                           PERFORM JOB-MENU
                        WHEN 8
-      *> DISPLAY "DEBUG:" WS-MSG-CHOICE
                            PERFORM MESSAGES-MENU UNTIL WS-MSG-CHOICE = 3 OR WS-EOF-FLAG = "Y"
                            MOVE 0 TO WS-MSG-CHOICE
                        WHEN 9
-                           MOVE "Logging out." TO OUTPUT-RECORD
-                           DISPLAY OUTPUT-RECORD
-                           WRITE OUTPUT-RECORD
-
+                           MOVE "Y" TO WS-EOF-FLAG
                            EXIT PARAGRAPH
                        WHEN OTHER
                            MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
@@ -1717,7 +1711,7 @@ IDENTIFICATION DIVISION.
            CLOSE ACCOUNTS-FILE.
        
        JOB-MENU.
-           MOVE "==== Job Search/Internship Menu ====" TO OUTPUT-RECORD
+           MOVE "--- Job Search/Internship Menu ---" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
            MOVE "1. Post a Job/Internship" TO OUTPUT-RECORD
@@ -1731,6 +1725,8 @@ IDENTIFICATION DIVISION.
            PERFORM PRINT-LINE
 
            MOVE "4. Back to Main Menu" TO OUTPUT-RECORD
+           PERFORM PRINT-LINE
+           MOVE "Enter your choice:" TO OUTPUT-RECORD
            PERFORM PRINT-LINE
 
            READ INPUT-FILE INTO WS-USER-CHOICE
@@ -1747,16 +1743,10 @@ IDENTIFICATION DIVISION.
       *> PERFORM BROWSE-JOBS (FUTURE FEATURE)
                  WHEN 3
                    PERFORM VIEW-MY-APPLICATIONS
-                 WHEN 4
-                   MOVE "Returning back to MAIN MENU..." TO OUTPUT-RECORD
-                                     PERFORM PRINT-LINE
-
-      *> NEED TO ASSIGN USER CHOICE TO 9 TO EXIT THE LOOP TOWARDS MAIN
-      *> MENU
-      *> WHEN 3 should return back to main menu (1. login, 2. register)
-      *> it returns to main menu for me, pls report if it doesn't for u
-                   MOVE 9 TO WS-USER-CHOICE
-                   EXIT PARAGRAPH
+                                WHEN 4
+                                    MOVE "Returning back to MAIN MENU..." TO OUTPUT-RECORD
+                                                                        PERFORM PRINT-LINE
+                                    EXIT PARAGRAPH
                  WHEN OTHER
                    MOVE "Invalid choice, please try again" TO OUTPUT-RECORD
                                      PERFORM PRINT-LINE
@@ -1926,7 +1916,9 @@ IDENTIFICATION DIVISION.
                    NOT AT END
                        MOVE SPACES TO OUTPUT-RECORD
       *>FUNCTION TRIM(JR-TITLE TRAILING) rightmost whitespaces
-                       STRING TEMP-LAST-JOB-ID ". " FUNCTION TRIM(JR-TITLE TRAILING)
+                       MOVE TEMP-LAST-JOB-ID TO WS-LEN
+                       MOVE WS-LEN TO WS-JOB-INDEX-DISPLAY
+                       STRING FUNCTION TRIM(WS-JOB-INDEX-DISPLAY) ". " FUNCTION TRIM(JR-TITLE TRAILING)
                        " at " FUNCTION TRIM(JR-EMPLOYER TRAILING)
                        " (" FUNCTION TRIM(JR-LOCATION TRAILING) ")" INTO OUTPUT-RECORD
                        END-STRING
@@ -1936,6 +1928,9 @@ IDENTIFICATION DIVISION.
                END-READ
            END-PERFORM
            CLOSE JOBS-FILE
+
+           MOVE "-----------------------------" TO OUTPUT-RECORD
+           PERFORM PRINT-LINE
 
            MOVE "Enter job number to view details, or 0 to go back:" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
@@ -1964,7 +1959,7 @@ IDENTIFICATION DIVISION.
                        IF TEMP-LAST-JOB-ID = WS-TARGET-JOB-ID
                            MOVE 'Y' TO WS-TARGET-JOB-ID-FOUND
 
-                           MOVE "=== Job Details ===" TO OUTPUT-RECORD
+                           MOVE "--- Job Details ---" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
                            WRITE OUTPUT-RECORD
 
@@ -1994,6 +1989,9 @@ IDENTIFICATION DIVISION.
                                DISPLAY OUTPUT-RECORD
                                WRITE OUTPUT-RECORD
                            END-IF
+
+                           MOVE "-------------------" TO OUTPUT-RECORD
+                           PERFORM PRINT-LINE
 
                            MOVE "1. Apply for this Job" TO OUTPUT-RECORD
                            DISPLAY OUTPUT-RECORD
@@ -2049,10 +2047,10 @@ IDENTIFICATION DIVISION.
              CLOSE APPLICATIONS-FILE
 
       *> this can be changed to MOVE SPACES TO OUTPUT-RECORD
-             MOVE SPACES TO WS-MESSAGE
-             STRING "Application submitted for " FUNCTION TRIM(JR-TITLE TRAILING)
-                    " at " FUNCTION TRIM(JR-EMPLOYER TRAILING) INTO WS-MESSAGE
-             END-STRING
+                  MOVE SPACES TO WS-MESSAGE
+                  STRING "Your application for " FUNCTION TRIM(JR-TITLE TRAILING)
+                      " at " FUNCTION TRIM(JR-EMPLOYER TRAILING) " has been submitted." INTO WS-MESSAGE
+                  END-STRING
              DISPLAY WS-MESSAGE
              MOVE WS-MESSAGE TO OUTPUT-RECORD
              WRITE OUTPUT-RECORD
@@ -2068,6 +2066,15 @@ IDENTIFICATION DIVISION.
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            MOVE 0 TO WS-COUNTER
+
+           MOVE SPACES TO OUTPUT-RECORD
+           STRING "Application Summary for " CURRENT-USERNAME INTO OUTPUT-RECORD
+           END-STRING
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           MOVE "------------------------------" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
 
            OPEN INPUT APPLICATIONS-FILE
            MOVE 'N' TO WS-APPLICATIONS-EOF
@@ -2085,6 +2092,9 @@ IDENTIFICATION DIVISION.
 
            MOVE SPACES TO OUTPUT-RECORD
            STRING "Total Applications: " WS-COUNTER INTO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
+           MOVE "------------------------------" TO OUTPUT-RECORD
            DISPLAY OUTPUT-RECORD
            WRITE OUTPUT-RECORD
            .
@@ -2391,6 +2401,9 @@ IDENTIFICATION DIVISION.
            .
 
        CLEANUP.
+           MOVE "--- END_OF_PROGRAM_EXECUTION ---" TO OUTPUT-RECORD
+           DISPLAY OUTPUT-RECORD
+           WRITE OUTPUT-RECORD
            CLOSE INPUT-FILE
            CLOSE OUTPUT-FILE
            CLOSE ACCOUNTS-FILE
